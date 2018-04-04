@@ -87,3 +87,5 @@ echo "Please add the following settings for dein to the top of your vimrc (Vim) 
 echo "Done."
 
 echo "Complete setup dein!"
+
+
