@@ -1,4 +1,4 @@
-# My Vim environment
+# (Very) Easy Installer
 setup vim environment.
 
 ## How to install
