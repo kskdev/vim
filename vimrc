@@ -2,15 +2,15 @@
 
 
 " set backspace=indent,eol,start
-set encoding=utf-8 "vimの内部文字コードをUTF-8に設定"
-set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8 "読み込む文字コードを設定"
-set fileencoding=utf-8 "ファイルの書き込み時の文字コードをUTF-8に設定"
+set encoding=utf-8 "Set character code as UTF-8
+set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8 "Set reading code
+set fileencoding=utf-8 "Set character code as UTF-8 in writing"
 set fileformats=unix,dos,mac
-set noswapfile
-set nobackup
+set noswapfile  " No make swap file
+set nobackup " No make backup file
 highlight Normal ctermbg=none
-set guioptions+=a "クリップボードにヤンクする"
-autocmd BufWritePre * :%s/\s\+$//ge "行末の無駄なスペースを削除
+set guioptions+=a "Yank clipboard"
+autocmd BufWritePre * :%s/\s\+$//ge "Delete wasted space at end of line
 
 :"::::::::::::::::::::::::::::::::::
 "::::::::::display setting
