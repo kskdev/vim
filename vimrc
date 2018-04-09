@@ -43,6 +43,11 @@ set smartindent
 
 
 "::::::::::::::::::::::::::::::::::::::
+"::::::::::indent autoComplete
+set wildmenu
+set wildmode=list:full
+
+"::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
 inoremap <silent> <ESC><ESC> <ESC>
 
