@@ -76,6 +76,7 @@ call dein#add('Shougo/neosnippet-snippets')
 call dein#add('itchyny/lightline.vim')
 call dein#add('Townk/vim-autoclose')
 call dein#add('honza/vim-snippets')
+call dein#add('tpope/vim-fugitive') " Git wrapper so awesome
 call dein#add('ujihisa/neco-look') " Auto complete english word
 call dein#add('rhysd/accelerated-jk') " Accelerate 'j' 'k' command
 call dein#add('tomtom/tcomment_vim') " comment out command:gcc
