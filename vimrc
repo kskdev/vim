@@ -50,6 +50,8 @@ set wildmode=list:full
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
 inoremap <silent> <ESC><ESC> <ESC>
+inoremap <silent> fff <ESC>
+inoremap <silent> っっｆ <ESC>
 
 " 入力モードでのカーソル移動
 " inoremap <S-j> <Down>
