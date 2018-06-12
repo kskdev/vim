@@ -76,7 +76,6 @@ set runtimepath^=$HOME/.vim/dein/repos/github.com/Shougo/dein.vim
 call dein#begin(expand('$HOME/.vim/dein'))
 call dein#add('Shougo/dein.vim')
 " ===== plugins =====
-" call dein#add('ryanoasis/vim-devicons')
 call dein#add('scrooloose/nerdtree')
 call dein#add('tiagofumo/vim-nerdtree-syntax-highlight')
 
@@ -117,15 +116,6 @@ endif
 " ### nerdtree
 autocmd VimEnter * execute 'NERDTree'
 
-
-
-" ------------------------------------------------------------
-" ### vim-devicons
-" let g:webdevicons_conceal_nerdtree_brackets = 1
-" let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
-" let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-" let g:NERDTreeDirArrowExpandable = '▸'
-" let g:NERDTreeDirArrowCollapsible = '▾'
 
 
 
