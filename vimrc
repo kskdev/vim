@@ -114,7 +114,7 @@ endif
 
 " ------------------------------------------------------------
 " ### nerdtree
-autocmd VimEnter * execute 'NERDTree'
+" autocmd VimEnter * execute 'NERDTree'
 
 
 
