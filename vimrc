@@ -10,7 +10,7 @@ set noswapfile  " No make swap file
 set nobackup " No make backup file
 highlight Normal ctermbg=none
 set guioptions+=a "Yank clipboard"
-autocmd BufWritePre * :%s/\s\+$//ge "Delete wasted space at end of line
+" autocmd BufWritePre * :%s/\s\+$//ge "Delete wasted space at end of line
 
 :"::::::::::::::::::::::::::::::::::
 "::::::::::display setting
@@ -76,7 +76,10 @@ set runtimepath^=$HOME/.vim/dein/repos/github.com/Shougo/dein.vim
 call dein#begin(expand('$HOME/.vim/dein'))
 call dein#add('Shougo/dein.vim')
 " ===== plugins =====
-call dein#add('Shougo/unite.vim')
+" call dein#add('ryanoasis/vim-devicons')
+call dein#add('scrooloose/nerdtree')
+call dein#add('tiagofumo/vim-nerdtree-syntax-highlight')
+
 call dein#add('Shougo/neocomplete.vim')
 call dein#add('Shougo/neosnippet.vim')
 call dein#add('Shougo/neosnippet-snippets')
@@ -105,6 +108,24 @@ if dein#check_install()
 endif
 
 
+
+
+
+
+
+" ------------------------------------------------------------
+" ### nerdtree
+autocmd VimEnter * execute 'NERDTree'
+
+
+
+" ------------------------------------------------------------
+" ### vim-devicons
+" let g:webdevicons_conceal_nerdtree_brackets = 1
+" let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+" let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+" let g:NERDTreeDirArrowExpandable = '▸'
+" let g:NERDTreeDirArrowCollapsible = '▾'
 
 
 
