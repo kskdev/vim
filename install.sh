@@ -24,7 +24,6 @@ if ! [ -e "$INSTALL_DIR" ]; then
   git clone https://github.com/Shougo/dein.vim "$INSTALL_DIR"
 fi
 
-
 echo "Complete setup dein!"
 
 
