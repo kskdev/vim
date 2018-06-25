@@ -33,6 +33,7 @@ cp ./vimrc ~/.vimrc
 # vim7.4のサポートをしなくなったらしいので，以下の2行の処理が必要
 cd ~/.vim/dein/repos/github.com/Shougo/dein.vim
 git checkout 1.0
+
 cd ~
 vim
 
