@@ -6,5 +6,4 @@ setup vim environment.
 2. $ cd ./vim
 3. $ sh ./install.sh
 
-### About
-This file also serves as a git command exercise...
+
