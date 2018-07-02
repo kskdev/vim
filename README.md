@@ -1,4 +1,4 @@
-# (Very) Easy Installer
+# Installer
 setup vim environment.
 
 ## How to install
@@ -6,4 +6,8 @@ setup vim environment.
 2. $ cd ./vim
 3. $ sh ./install.sh
 
+
+## 注意事項
+- 何とかしてtomlで管理できるようにする(最大の目標)
+- ```git branch foo``` や ```git checkout foo```覚えたてホヤホヤ(ちょっと感動)
 
