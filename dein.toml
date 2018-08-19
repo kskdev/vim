@@ -1,0 +1,79 @@
+[[plugins]]  # プラグインマネージャー
+repo = 'Shougo/dein.vim'
+
+
+
+[[plugins]]  # カラースキーマ
+repo = 'joshdick/onedark.vim'
+hook_add = '''
+syntax on
+colorscheme onedark
+'''
+
+
+
+[[plugins]]  # ステータスバーの見た目を変える
+repo = 'vim-airline/vim-airline'
+hook_add = '''
+let g:airline_theme='onedark'
+'''
+
+
+
+[[plugins]]  # インデントの可視化
+repo = 'Yggdroot/indentLine'
+hook_add = '''
+let g:indentLine_char = '¦'
+'''
+
+
+
+[[plugins]]  # j,k キーでカーソル移動の高速化
+repo = 'rhysd/accelerated-jk'
+hook_add = '''
+nmap j <Plug>(accelerated_jk_gj)
+nmap k <Plug>(accelerated_jk_gk)
+'''
+
+
+
+[[plugins]]  # sキーで特定文字へカーソルジャンプ
+repo = 'easymotion/vim-easymotion'
+hook_add = '''
+let g:EasyMotion_do_mapping = 0
+nmap s <Plug>(easymotion-s2)
+xmap s <Plug>(easymotion-s2)
+omap z <Plug>(easymotion-s2)
+nmap g/ <Plug>(easymotion-sn)
+xmap g/ <Plug>(easymotion-sn)
+omap g/ <Plug>(easymotion-tn)
+let g:EasyMotion_smartcase = 1
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+let g:EasyMotion_startofline = 0
+let g:EasyMotion_keys = 'QZASDFGHJKL;'
+let g:EasyMotion_use_upper = 1
+let g:EasyMotion_enter_jump_first = 1
+'''
+
+
+
+[[plugins]]  # 括弧補間
+repo = 'Townk/vim-autoclose'
+
+
+
+[[plugins]]  # gcc でコメントアウト
+repo = 'tomtom/tcomment_vim'
+
+
+
+[[plugins]]  # スニペット管理プラグイン
+repo = 'Shougo/neosnippet'
+
+
+
+[[plugins]]  # neosinippetのデフォルトスニペット定義ファイル
+repo = 'Shougo/neosnippet-snippets'
+
+

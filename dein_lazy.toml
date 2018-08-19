@@ -1,0 +1,55 @@
+[[plugins]]  # ディレクトリツリーを表示する
+repo = 'scrooloose/nerdtree'
+
+
+
+[[plugins]]  # バッファ上のコードを実行し、その結果をVimへ出力
+repo = 'thinca/vim-quickrun'
+
+
+
+[[plugins]]  # オートコンプリートプラグイン
+repo = 'Shougo/neocomplete.vim'
+hook_add = '''
+""" 一般設定 """
+"  自動ポップアップ (0:無効 1:有効)
+let g:acp_enableAtStartup = 0
+"  neocompleteの使用 (0:無効 1:有効)
+let g:neocomplete#enable_at_startup=1
+" スマートケースの利用 (0:無効 1:有効)
+let g:neocomplete#enable_smart_case=1
+"  ポップアップで表示される候補の数
+let g:neocomplete#max_list = 10
+"  キーワードの長さ
+let g:neocomplete#max_keyword_width = 80
+"  大文字小文字を無視して候補を出す (0:無効 1:有効)
+let g:neocomplete#enable_ignore_case = 1
+"  補完候補の出力に必要なキーワードの数
+let g:neocomplete#sources#syntax#min_keyword_lenth=2
+"  補完時に画面上部に出てくるdocstringを非表示にする
+autocmd FileType python setlocal completeopt-=preview
+
+""" キーマッピング """
+inoremap <expr><C-g> neocomplete#undo_completion()
+inoremap <expr><C-l> neocomplete#complete_common_string()
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<CR>"
+inoremap <expr><C-n> pumvisible() ? "\<C-n>" : "\<C-x>\<C-u>\<C-p>"
+inoremap <expr><C-c> neocomplete#cancel_popup()
+inoremap <expr><C-u> neocomplete#undo_completion()
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+
+""" jedi-vim との連携 """
+"  omnifuncにjediを用いたneocompleteによる補完を設定
+autocmd FileType python setlocal omnifunc=jedi#completions
+'''
+
+
+
+[[plugins]]  # Python用オートコンプリートプラグイン jedi-vim
+repo = 'davidhalter/jedi-vim'
+on_ft = 'python'
+# ...導入前に確認しておきたいこと
+# この記事を参照 https://wonderwall.hatenablog.com/entry/2017/01/29/213052
+
+
