@@ -7,6 +7,8 @@
 1. $ git clone https://github.com/kskdev/vim
 2. $ cd ./vim
 3. $ sh ./install.sh
+4. 色々インストールされるのでしばらく待つ
+5. vimを開きなおせばインストール完了!
 
 ## Memo
 - dein.vim + toml でプラグイン管理をできるようになった
