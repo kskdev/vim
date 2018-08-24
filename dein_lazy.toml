@@ -1,10 +1,8 @@
-[[plugins]]  # ディレクトリツリーを表示する
-repo = 'scrooloose/nerdtree'
-
-
-
-[[plugins]]  # バッファ上のコードを実行し、その結果をVimへ出力
-repo = 'thinca/vim-quickrun'
+[[plugins]]  # Python用オートコンプリートプラグイン jedi-vim
+repo = 'davidhalter/jedi-vim'
+on_ft = 'python'
+# ...導入前に確認しておきたいこと
+# この記事を参照 https://wonderwall.hatenablog.com/entry/2017/01/29/213052
 
 
 
@@ -43,13 +41,5 @@ inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 "  omnifuncにjediを用いたneocompleteによる補完を設定
 autocmd FileType python setlocal omnifunc=jedi#completions
 '''
-
-
-
-[[plugins]]  # Python用オートコンプリートプラグイン jedi-vim
-repo = 'davidhalter/jedi-vim'
-on_ft = 'python'
-# ...導入前に確認しておきたいこと
-# この記事を参照 https://wonderwall.hatenablog.com/entry/2017/01/29/213052
 
 

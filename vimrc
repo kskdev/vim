@@ -54,14 +54,21 @@ inoremap <silent> fff <ESC>
 inoremap <silent> っっｆ <ESC>
 
 " 入力モードでのカーソル移動
-" inoremap <S-j> <Down>
-" inoremap <S-k> <Up>
-" inoremap <S-h> <Left>
-" inoremap <S-l> <Right>
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
 
 " ノーマルモード時だけ ; と : を入れ替える(US配列に打ちやすさを考慮)
 nnoremap ;; :
 
+" 日本語入力モードでもコマンドを入力できるようにする
+nnoremap あ a
+nnoremap い i
+nnoremap う u
+nnoremap お o
+nnoremap っd dd
+nnoremap っy yy
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "

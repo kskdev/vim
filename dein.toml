@@ -77,3 +77,18 @@ repo = 'Shougo/neosnippet'
 repo = 'Shougo/neosnippet-snippets'
 
 
+
+[[plugins]]  # ディレクトリツリーを表示する
+repo = 'scrooloose/nerdtree'
+hook_add = '''
+'''
+
+
+
+
+[[plugins]]  # バッファ上のコードを実行し、その結果をVimへ出力
+repo = 'thinca/vim-quickrun'
+
+
+
+
