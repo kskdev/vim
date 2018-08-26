@@ -40,6 +40,10 @@ inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 """ jedi-vim との連携 """
 "  omnifuncにjediを用いたneocompleteによる補完を設定
 autocmd FileType python setlocal omnifunc=jedi#completions
+"  オムニ補完の有効化(パスの補完も出来るようになるはず  ただし遅くなるかも)
+if !exists('g:neocomplete#force_omni_input_patterns')
+    let g:neocomplete#force_omni_input_patterns = {}
+endif
 '''
 
 
