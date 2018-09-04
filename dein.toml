@@ -92,3 +92,7 @@ repo = 'thinca/vim-quickrun'
 
 
 
+[[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
+repo = 'nelstrom/vim-visual-star-search'
+
+
