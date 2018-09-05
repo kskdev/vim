@@ -8,6 +8,3 @@ mkdir -p ~/.vim
 cp ./dein.toml ~/.vim/dein.toml
 cp ./dein_lazy.toml ~/.vim/dein_lazy.toml
 
-vim
-
-
