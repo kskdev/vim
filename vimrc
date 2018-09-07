@@ -10,7 +10,10 @@ set noswapfile  " No make swap file
 set nobackup " No make backup file
 highlight Normal ctermbg=none
 set guioptions+=a "Yank clipboard"
-" autocmd BufWritePre * :%s/\s\+$//ge "Delete wasted space at end of line
+" If you have vim >=8.0 or Neovim >= 0.1.5
+if (has("termguicolors"))
+ set termguicolors
+endif
 
 :"::::::::::::::::::::::::::::::::::
 "::::::::::display setting
