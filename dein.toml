@@ -29,7 +29,7 @@ nmap <S-Tab> <Plug>AirlineSelectNextTab
 repo = 'vim-airline/vim-airline-themes'
 hook_add = '''
 " テーマ一覧 (https://github.com/vim-airline/vim-airline/wiki/Screenshots)
-let g:airline_theme='murmur'
+let g:airline_theme='onedark'
 '''
 
 [[plugins]]  # vim でgit の操作を行う
