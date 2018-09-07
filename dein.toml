@@ -3,11 +3,11 @@ repo = 'Shougo/dein.vim'
 
 
 
-[[plugins]]  # カラースキーマ
-repo = 'joshdick/onedark.vim'
+[[plugins]]  # カラースキーマ(おすすめは onedark)
+ repo = 'jacoborus/tender.vim'
 hook_add = '''
 syntax on
-colorscheme onedark
+colorscheme tender
 '''
 
 
@@ -29,9 +29,8 @@ nmap <S-Tab> <Plug>AirlineSelectNextTab
 repo = 'vim-airline/vim-airline-themes'
 hook_add = '''
 " テーマ一覧 (https://github.com/vim-airline/vim-airline/wiki/Screenshots)
-let g:airline_theme='onedark'
+let g:airline_theme='murmur'
 '''
-
 
 [[plugins]]  # vim でgit の操作を行う
 repo = 'tpope/vim-fugitive'
