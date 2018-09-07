@@ -1,57 +1,82 @@
 "//		vim setting and tips		//
 
-
-" set backspace=indent,eol,start
-set encoding=utf-8 "Set character code as UTF-8
-set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8 "Set reading code
-set fileencoding=utf-8 "Set character code as UTF-8 in writing"
+" Backspaceで既存の文字を削除できるように設定
+set backspace=start,eol,indent 
+"Set character code as UTF-8
+set encoding=utf-8 
+"Set reading code
+set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8 
+"ファイルに書き込む文字コードを指定する
+set fileencoding=utf-8 
 set fileformats=unix,dos,mac
-set noswapfile  " No make swap file
-set nobackup " No make backup file
+" スワップファイル不要
+set noswapfile  
+" バックアップファイル不要
+set nobackup 
+" 背景の透過処理
 highlight Normal ctermbg=none
-set guioptions+=a "Yank clipboard"
-" If you have vim >=8.0 or Neovim >= 0.1.5
-if (has("termguicolors"))
+" 24bitカラーの適用 (vim>=8.0 or Neovim>=0.1.5)
+if (has("termguicolors")) 
  set termguicolors
 endif
 
 :"::::::::::::::::::::::::::::::::::
 "::::::::::display setting
-set number "行数を表示"
-set ruler "ステータスラインに行数を表示 "
-set cursorline "カーソル業をハイライトする"
-set showmatch "対応する括弧をハイライトする"
-set showcmd "入力中のコマンドを表示する"
-set showmode "現在のモードを表示する"
-set scrolloff=3 "N行余裕を持たせてスクロール"
-set laststatus=2 "ステータスラインを常に表示"
-set notitle "エディタの編集タイトルを表示しない"
+"行数を表示
+set number 
+"ステータスラインに行数を表示 
+set ruler 
+"カーソル業をハイライト
+set cursorline 
+"対応する括弧をハイライト
+set showmatch 
+"入力中のコマンドを表示
+set showcmd 
+"現在のコマンドモードを表示
+set showmode 
+"N行余裕を持たせてスクロール
+set scrolloff=3 
+"ステータスラインを常に表示
+set laststatus=2 
+"エディタの編集タイトルを表示しない
+set notitle 
 
 
 ":::::::::::::::::::::::::::::::::::::
 "::::::::::search setting
-set hlsearch
-set ignorecase
-set smartcase
-set incsearch
-" Delete highlight
+" 検索結果のハイライト表示
+set hlsearch 
+" 大文字小文字を無視して検索．ただしsmartcase と組み合わせることで，
+"" 小文字検索:大小文字を無視. 大文字検索:大小文字を区別
+set ignorecase 
+set smartcase 
+" 入力文字数を増やすと候補が絞られる
+set incsearch 
+" Esc2回押しで検索ハイライトを削除
 nnoremap <ESC><ESC> :nohlsearch<CR><ESC>
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::indent setting
+" Tabを押した時，Tab文字を使わず半角スペースを使う
 set expandtab
+" タブ文字の幅の設定
 set tabstop=4
+" 自動インデントの幅
 set shiftwidth=4
+" 改行時に行からインデントの増減を行う．
 set smartindent
 
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::indent autoComplete
+" CLモードでTabキーによるファイル名補完を有効化
 set wildmenu
+" ファイル名補完の挙動 (lists:補完したリスト , full:Tabを押して次の候補を補完)
 set wildmode=list:full
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
+" Normal Mode に戻るためのコマンド
 inoremap <silent> <ESC><ESC> <ESC>
 inoremap <silent> fff <ESC>
 inoremap <silent> っっｆ <ESC>
