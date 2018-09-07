@@ -28,17 +28,46 @@ nmap <S-Tab> <Plug>AirlineSelectNextTab
 [[plugins]]  # vim-airline のテーマ
 repo = 'vim-airline/vim-airline-themes'
 hook_add = '''
+" テーマ一覧 (https://github.com/vim-airline/vim-airline/wiki/Screenshots)
 let g:airline_theme='onedark'
 '''
 
 
+[[plugins]]  # vim でgit の操作を行う
+repo = 'tpope/vim-fugitive'
 
-[[plugins]]  # インデントの可視化 (将来的にやめて別のプラグインへ移行)
-repo = 'Yggdroot/indentLine'
+
+
+[[plugins]]  # git の diffを左端に表示
+repo = 'airblade/vim-gitgutter'
+
+
+
+[[plugins]]  # Ctrl+p でファイルの検索
+repo = 'ctrlpvim/ctrlp.vim'
 hook_add = '''
-let g:indentLine_color_term = 111
-let g:indentLine_color_gui = '#708090'
-let g:indentLine_char = '' "use ¦, ┆ or │
+" # キャッシュを使用して検索を高速化 (ファイルサイズが大きい場合効果的)
+let g:ctrlp_use_caching = 1
+" # vim終了時にキャッシュをクリアしない
+let g:ctrlp_clear_cache_on_exit = 0
+" # <C-r>でキャッシュをクリアして再検索
+let g:ctrlp_prompt_mappings = { 'PrtClearCache()': ['<C-r>'] }
+'''
+
+
+
+[[plugins]]  # インデントの可視化 
+repo = 'nathanaelkane/vim-indent-guides'
+hook_add = '''
+" indent guideの有効
+let g:indent_guides_enable_on_vim_startup = 1
+" 自動で色を付けない
+let g:indent_guides_auto_colors = 0
+" ガイドの幅を設定
+let g:indent_guides_guide_size = 1
+" 色の変更(詳しい配色 'ctermbg vim'等で検索 )
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=236
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=238
 '''
 
 
@@ -46,6 +75,7 @@ let g:indentLine_char = '' "use ¦, ┆ or │
 [[plugins]]  # j,k キーでカーソル移動の高速化
 repo = 'rhysd/accelerated-jk'
 hook_add = '''
+" j,kにキーマッピング
 nmap j <Plug>(accelerated_jk_gj)
 nmap k <Plug>(accelerated_jk_gk)
 '''
@@ -83,32 +113,18 @@ repo = 'tomtom/tcomment_vim'
 
 
 
-[[plugins]]  # スニペット管理プラグイン
-repo = 'Shougo/neosnippet'
-hook_add = '''
-let g:neosnippet#snippets_directory='~/.cache/neosnippet'
-" SuperTab like snippets behavior.
-imap  <expr><TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ neosnippet#expandable_or_jumpable() ?
-    \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-    \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-if has('conceal')
-  set conceallevel=2 concealcursor=i
-endif
-'''
-
-
-
-[[plugins]]  # neosinippetのデフォルトスニペット定義ファイル
-repo = 'Shougo/neosnippet-snippets'
-
-
-
 [[plugins]]  # ディレクトリツリーを表示する
 repo = 'scrooloose/nerdtree'
 hook_add = '''
+" Vimの起動時にNerdTreeも起動
+" autocmd vimenter * NERDTree
+" ただし，ファイルを指定してVimを開く時はNerdTreeを起動しない
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" ディレクトリの表示記号を変更
+let g:NERDTreeDirArrows = 1
+let g:NERDTreeDirArrowExpandable  = '▶'
+let g:NERDTreeDirArrowCollapsible = '▼'
 '''
 
 
