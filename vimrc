@@ -53,11 +53,6 @@ inoremap <silent> <ESC><ESC> <ESC>
 inoremap <silent> fff <ESC>
 inoremap <silent> っっｆ <ESC>
 
-" 入力モードでのカーソル移動
-inoremap <C-j> <Down>
-inoremap <C-k> <Up>
-inoremap <C-h> <Left>
-inoremap <C-l> <Right>
 
 " ノーマルモード時だけ ; と : を入れ替える(US配列に打ちやすさを考慮)
 nnoremap ;; :
