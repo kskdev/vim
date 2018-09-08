@@ -4,7 +4,7 @@ repo = 'Shougo/dein.vim'
 
 
 [[plugins]]  # カラースキーマ(おすすめは onedark)
- repo = 'jacoborus/tender.vim'
+repo = 'jacoborus/tender.vim'
 hook_add = '''
 syntax on
 colorscheme tender
@@ -21,6 +21,8 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 " Shift-Tab でタブの切り替え
 nmap <S-Tab> <Plug>AirlineSelectNextTab
+" ALE(dein_lazy.tomlに記載)のための拡張設定
+let g:airline#extensions#ale#enabled = 1
 '''
 
 
@@ -39,17 +41,24 @@ repo = 'tpope/vim-fugitive'
 
 [[plugins]]  # git の diffを左端に表示
 repo = 'airblade/vim-gitgutter'
-
+hook_add = '''
+" 常に表示 (vimのバージョン違いに対応)
+if exists('&signcolumn')  " Vim 7.4.2201
+    set signcolumn=yes
+else
+    let g:gitgutter_sign_column_always = 1
+endif
+'''
 
 
 [[plugins]]  # Ctrl+p でファイルの検索
 repo = 'ctrlpvim/ctrlp.vim'
 hook_add = '''
-" # キャッシュを使用して検索を高速化 (ファイルサイズが大きい場合効果的)
+" キャッシュを使用して検索を高速化 (ファイルサイズが大きい場合効果的)
 let g:ctrlp_use_caching = 1
-" # vim終了時にキャッシュをクリアしない
+" vim終了時にキャッシュをクリアしない
 let g:ctrlp_clear_cache_on_exit = 0
-" # <C-r>でキャッシュをクリアして再検索
+" <C-r>でキャッシュをクリアして再検索
 let g:ctrlp_prompt_mappings = { 'PrtClearCache()': ['<C-r>'] }
 '''
 
@@ -135,7 +144,6 @@ repo = 'thinca/vim-quickrun'
 
 [[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
 repo = 'nelstrom/vim-visual-star-search'
-
 
 
 
