@@ -83,12 +83,16 @@ repo = 'Shougo/neosnippet-snippets'
 repo = 'w0rp/ale'
 hook_add = '''
 " 表示設定
-" let g:ale_sign_error = 'X'
-" let g:ale_sign_warning = '!'
+" let g:ale_sign_error = 'XX'
+" let g:ale_sign_warning = '!!'
 " highlight clear ALEWarningSign
 let g:ale_sign_column_always = 1
 " ファイルを開いた時，lint非実行
-let g:ale_lint_on_enter = 1
+let g:ale_lint_on_enter = 0
+" ファイルをセーブした時のみlinterを実行
+let g:ale_fix_on_save = 1
+" 1MB以上のファイルはlintを実行しない
+let g:ale_maximum_file_size = 1
 " pylintをLinterとして登録
 let g:ale_linters = {
     \ 'python': ['flake8'],
