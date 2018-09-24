@@ -16,9 +16,9 @@ set nobackup
 " 背景の透過処理
 highlight Normal ctermbg=none
 " 24bitカラーの適用 (vim>=8.0 or Neovim>=0.1.5)
-if (has("termguicolors")) 
- set termguicolors
-endif
+" if (has("termguicolors")) 
+"  set termguicolors
+" endif
 
 :"::::::::::::::::::::::::::::::::::
 "::::::::::display setting
