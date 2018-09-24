@@ -3,11 +3,11 @@ repo = 'Shougo/dein.vim'
 
 
 
-[[plugins]]  # カラースキーマ(おすすめは onedark)
-repo = 'jacoborus/tender.vim'
+[[plugins]]  # カラースキーマ
+repo = 'joshdick/onedark.vim'
 hook_add = '''
 syntax on
-colorscheme tender
+colorscheme onedark
 '''
 
 
@@ -124,11 +124,6 @@ repo = 'tomtom/tcomment_vim'
 [[plugins]]  # ディレクトリツリーを表示する
 repo = 'scrooloose/nerdtree'
 hook_add = '''
-" Vimの起動時にNerdTreeも起動
-" autocmd vimenter * NERDTree
-" ただし，ファイルを指定してVimを開く時はNerdTreeを起動しない
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 " ディレクトリの表示記号を変更
 let g:NERDTreeDirArrows = 1
 let g:NERDTreeDirArrowExpandable  = '▶'
