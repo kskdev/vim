@@ -141,4 +141,7 @@ repo = 'thinca/vim-quickrun'
 repo = 'nelstrom/vim-visual-star-search'
 
 
+#  --- ネタプラグイン --- #
 
+[[plugins]]  # カーソルキー使うと怒られる
+repo = 'modsound/gips-vim'
