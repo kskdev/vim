@@ -1,13 +1,13 @@
 "//		vim setting and tips		//
 
-" Backspaceで既存の文字を削除できるように設定
+"Backspaceで既存の文字を削除できるように設定
 set backspace=start,eol,indent 
 "Set character code as UTF-8
 set encoding=utf-8 
 "Set reading code
-set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8 
+set fileencodings=iso-2022-jp,cp932,sjis,euc-jp,utf-8 
 "ファイルに書き込む文字コードを指定する
-set fileencoding=utf-8 
+set fenc=utf-8 
 set fileformats=unix,dos,mac
 " スワップファイル不要
 set noswapfile  
@@ -15,10 +15,7 @@ set noswapfile
 set nobackup 
 " 背景の透過処理
 highlight Normal ctermbg=none
-" 24bitカラーの適用 (vim>=8.0 or Neovim>=0.1.5)
-" if (has("termguicolors")) 
-"  set termguicolors
-" endif
+
 
 :"::::::::::::::::::::::::::::::::::
 "::::::::::display setting
@@ -55,6 +52,7 @@ set incsearch
 " Esc2回押しで検索ハイライトを削除
 nnoremap <ESC><ESC> :nohlsearch<CR><ESC>
 
+
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::indent setting
 " Tabを押した時，Tab文字を使わず半角スペースを使う
@@ -74,13 +72,13 @@ set wildmenu
 " ファイル名補完の挙動 (lists:補完したリスト , full:Tabを押して次の候補を補完)
 set wildmode=list:full
 
+
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
 " Normal Mode に戻るためのコマンド
 inoremap <silent> <ESC><ESC> <ESC>
 inoremap <silent> fff <ESC>
 inoremap <silent> っっｆ <ESC>
-
 
 " ノーマルモード時だけ ; と : を入れ替える(US配列に打ちやすさを考慮)
 nnoremap ;; :
@@ -92,6 +90,8 @@ nnoremap う u
 nnoremap お o
 nnoremap っd dd
 nnoremap っy yy
+
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "
