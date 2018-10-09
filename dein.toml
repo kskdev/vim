@@ -143,5 +143,9 @@ repo = 'nelstrom/vim-visual-star-search'
 
 #  --- ネタプラグイン --- #
 
-[[plugins]]  # カーソルキー使うと怒られる
+[[plugins]]  # カーソルキー動作停止+何か表示される
 repo = 'modsound/gips-vim'
+hook_add = '''
+" テキストリストのパスを指定 (english_words or quickref_vim or gundam or tsundere)
+let g:gips_reading_txt = '~/.vim/dein/repos/github.com/modsound/gips-vim/autoload/dict/tsundere.txt'
+'''
