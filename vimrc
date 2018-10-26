@@ -2,12 +2,11 @@
 
 "Backspaceで既存の文字を削除できるように設定
 set backspace=start,eol,indent 
-"Set character code as UTF-8
+" バッファの文字コードの設定
 set encoding=utf-8 
-"Set reading code
+" 設定した候補から自動で文字コードを設定
 set fileencodings=iso-2022-jp,cp932,sjis,euc-jp,utf-8 
-"ファイルに書き込む文字コードを指定する
-set fenc=utf-8 
+"ファイルフォーマットをOSから自動で設定
 set fileformats=unix,dos,mac
 " スワップファイル不要
 set noswapfile  
@@ -27,6 +26,8 @@ set ruler
 set cursorline 
 "対応する括弧をハイライト
 set showmatch 
+" showmatchのハイライト時間を調整(1 is 0.1sec)
+matchtime=1
 "入力中のコマンドを表示
 set showcmd 
 "現在のコマンドモードを表示
@@ -37,14 +38,14 @@ set scrolloff=3
 set laststatus=2 
 "エディタの編集タイトルを表示しない
 set notitle 
-
+" 補完候補ポップアップの数を調整
+set pumheight=10
 
 ":::::::::::::::::::::::::::::::::::::
 "::::::::::search setting
 " 検索結果のハイライト表示
 set hlsearch 
-" 大文字小文字を無視して検索．ただしsmartcase と組み合わせることで，
-"" 小文字検索:大小文字を無視. 大文字検索:大小文字を区別
+" 大文字小文字を無視して検索．smartcaseとの組み合わせで，小文字検索:大小文字を無視 and 大文字検索:大小文字を区別
 set ignorecase 
 set smartcase 
 " 入力文字数を増やすと候補が絞られる
@@ -105,7 +106,6 @@ if &compatible
 endif
 
 " dein.vimインストール時に指定したディレクトリをセット
-" let s:dein_dir = expand('~/.cache/dein')
 let s:dein_dir = expand('~/.vim/dein')
 
 " dein.vimの実体があるディレクトリをセット
@@ -138,7 +138,7 @@ endif
 filetype plugin indent on
 syntax enable
 
-" If you want to install not installed plugins on startup.
+" プラグインが入っていなければvim起動時に自動でインストール
 if dein#check_install()
   call dein#install()
 endif
