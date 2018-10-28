@@ -27,7 +27,7 @@ set cursorline
 "対応する括弧をハイライト
 set showmatch 
 " showmatchのハイライト時間を調整(1 is 0.1sec)
-matchtime=1
+set matchtime=1
 "入力中のコマンドを表示
 set showcmd 
 "現在のコマンドモードを表示
