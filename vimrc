@@ -119,11 +119,6 @@ if &runtimepath !~# '/dein.vim'
   execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 endif
 
-" プラグインが入っていなければvim起動時に自動でインストール
-if dein#check_install()
-  call dein#install()
-endif
-
 if dein#load_state(s:dein_dir)
   call dein#begin(s:dein_dir)
 
@@ -142,3 +137,8 @@ endif
 
 filetype plugin indent on
 syntax enable
+
+" プラグインが入っていなければvim起動時に自動でインストール
+if dein#check_install()
+  call dein#install()
+endif
