@@ -18,6 +18,12 @@
 を実行するとvim7とかでもインストール出来るかもしれない.(1.5 は公式のREADMEに書いてあった) <br>
 vim8なら関係ない話(vim8でエラーが出たら別の問題だと思われる．)
 
+因みにvim8のインストール方法(Ubuntu)は以下の通り．
+```
+sudo add-apt-repository ppa:jonathonf/vim
+sudo apt update
+sudo apt install vim
+```
 
 ## Memo
 - dein.vim + toml でプラグイン管理をできるようになった
