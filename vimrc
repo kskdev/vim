@@ -65,14 +65,20 @@ set shiftwidth=4
 " 改行時に行からインデントの増減を行う．
 set smartindent
 
-
 "::::::::::::::::::::::::::::::::::::::
-"::::::::::indent autoComplete
+"::::::::::autoComplete setting
 " CLモードでTabキーによるファイル名補完を有効化
 set wildmenu
-" ファイル名補完の挙動 (lists:補完したリスト , full:Tabを押して次の候補を補完)
-set wildmode=list:full
+" 大文字小文字を無視
+set wildignorecase
+" 補完一覧を表示
+set wildmode=list,full
 
+" 補完候補が1つでもポップアップを表示
+set completeopt=menuone
+" ファイルパス補完 (スラッシュを入力した時，補完が自動発動)
+" ref : http://io-fia.blogspot.com/2012/11/vimvimrc.html)
+imap <expr> / pumvisible() ? "\<C-E>/\<C-X>\<C-F>\<C-P>" : "/\<C-X>\<C-F>\<C-P>"
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
@@ -94,11 +100,17 @@ nnoremap っy yy
 
 
 
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "
 "   dein.vim setting
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+filetype on
+filetype plugin on
+filetype indent on
+syntax enable
 
 
 if &compatible
@@ -134,9 +146,6 @@ if dein#load_state(s:dein_dir)
   call dein#end()
   call dein#save_state()
 endif
-
-filetype plugin indent on
-syntax enable
 
 " プラグインが入っていなければvim起動時に自動でインストール
 if dein#check_install()

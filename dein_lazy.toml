@@ -2,16 +2,20 @@
 # ...導入前に確認しておきたいこと
 # この記事を参照 https://wonderwall.hatenablog.com/entry/2017/01/29/213052
 repo = 'davidhalter/jedi-vim'
-on_ft = 'python'
+on_ft = ['python']
 
 
 
 [[plugins]]  # オートコンプリートプラグイン
+# この辺を参考に作る
+# https://www.karakaram.com/neocomplcache#install-vimproc
+# 一部のファイルを開いた時のみ対応する
 repo = 'Shougo/neocomplete.vim'
+on_ft = ['python', 'c']
 hook_add = '''
 """ 一般設定 """
 "  自動ポップアップ (0:無効 1:有効)
-let g:acp_enableAtStartup = 0
+" let g:acp_enableAtStartup = 0
 "  neocompleteの使用 (0:無効 1:有効)
 let g:neocomplete#enable_at_startup=1
 " スマートケースの利用 (0:無効 1:有効)
@@ -23,7 +27,7 @@ let g:neocomplete#max_keyword_width = 80
 "  大文字小文字を無視して候補を出す (0:無効 1:有効)
 let g:neocomplete#enable_ignore_case = 1
 "  補完候補の出力に必要なキーワードの数
-let g:neocomplete#sources#syntax#min_keyword_lenth=2
+let g:neocomplete#sources#syntax#min_keyword_lenth=1
 "  補完時に画面上部に出てくるdocstringを非表示にする
 autocmd FileType python setlocal completeopt-=preview
 
@@ -37,13 +41,20 @@ inoremap <expr><C-c> neocomplete#cancel_popup()
 inoremap <expr><C-u> neocomplete#undo_completion()
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 
-""" jedi-vim との連携 """
-"  omnifuncにjediを用いたneocompleteによる補完を設定
-autocmd FileType python setlocal omnifunc=jedi#completions
+" 文字を入力するたびに補完を表示(特定言語のみ適応)
+function! LiveComplete()
+    for k in split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_",'\zs')
+    exec "inoremap <expr> " . k . " pumvisible() ? '" . k . "' : '" . k . "\<C-X>\<C-O>\<C-P>'"
+    endfor
+endfunction
+autocmd FileType python call LiveComplete()
+autocmd FileType c call LiveComplete()
 
+""" 各言語との連携 """
+autocmd FileType python setlocal omnifunc=jedi#completions
 let g:jedi#auto_vim_configuration = 0
 
-"  オムニ補完の有効化(パスの補完も出来るようになるはず  ただし遅くなるかも)
+"  オムニ補完の有効化(遅くなる)
 if !exists('g:neocomplete#force_omni_input_patterns')
     let g:neocomplete#force_omni_input_patterns = {}
 endif
@@ -51,54 +62,4 @@ endif
 let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
 
 '''
-
-
-
-
-[[plugins]]  # スニペット管理プラグイン
-repo = 'Shougo/neosnippet'
-hook_add = '''
-let g:neosnippet#snippets_directory='~/.cache/neosnippet'
-" SuperTab like snippets behavior.
-imap  <expr><TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ neosnippet#expandable_or_jumpable() ?
-    \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-    \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-if has('conceal')
-  set conceallevel=2 concealcursor=i
-endif
-'''
-
-
-
-[[plugins]]  # neosinippetのデフォルトスニペット定義ファイル
-repo = 'Shougo/neosnippet-snippets'
-
-
-
-[[plugins]]  # 非同期型 Linter
-# gitgutterとの競合問題が未解決(同時に表示したい)
-repo = 'w0rp/ale'
-hook_add = '''
-" 表示設定
-" let g:ale_sign_error = 'XX'
-" let g:ale_sign_warning = '!!'
-" highlight clear ALEWarningSign
-let g:ale_sign_column_always = 1
-" ファイルを開いた時，lint非実行
-let g:ale_lint_on_enter = 0
-" ファイルをセーブした時のみlinterを実行
-let g:ale_fix_on_save = 1
-" 1MB以上のファイルはlintを実行しない
-let g:ale_maximum_file_size = 1
-" pylintをLinterとして登録
-let g:ale_linters = {
-    \ 'python': ['flake8'],
-    \ }
-" 各ツールの実行オプションを変更してPythonパスを固定
-let g:ale_python_pylint_executable = 'flake8'
-'''
-
 

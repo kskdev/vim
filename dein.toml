@@ -3,6 +3,11 @@ repo = 'Shougo/dein.vim'
 
 
 
+[[plugins]]  # 非同期処理用プラグイン(deinがあるのに必要か?)
+repo = 'Shougo/vimproc.vim'
+
+
+
 [[plugins]]  # カラースキーマ
 repo = 'joshdick/onedark.vim'
 hook_add = '''
@@ -21,7 +26,7 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 " Shift-Tab でタブの切り替え
 nmap <S-Tab> <Plug>AirlineSelectNextTab
-" ALE(dein_lazy.tomlに記載)のための拡張設定
+" ALE(dein_lazy.tomlに記載)のための拡張設定 (使ってない)
 let g:airline#extensions#ale#enabled = 1
 '''
 
@@ -33,6 +38,8 @@ hook_add = '''
 " テーマ一覧 (https://github.com/vim-airline/vim-airline/wiki/Screenshots)
 let g:airline_theme='onedark'
 '''
+
+
 
 [[plugins]]  # vim でgit の操作を行う
 repo = 'tpope/vim-fugitive'
@@ -104,7 +111,7 @@ let g:EasyMotion_smartcase = 1
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 let g:EasyMotion_startofline = 0
-let g:EasyMotion_keys = 'QZASDFGHJKL;'
+let g:EasyMotion_keys = 'ASDFGHJKL'
 let g:EasyMotion_use_upper = 1
 let g:EasyMotion_enter_jump_first = 1
 '''
@@ -132,8 +139,12 @@ let g:NERDTreeDirArrowCollapsible = '▼'
 
 
 
-[[plugins]]  # バッファ上のコードを実行し、その結果をVimへ出力
-repo = 'thinca/vim-quickrun'
+[[plugins]]  # ga で見た目を整形する
+repo = 'junegunn/vim-easy-align'
+hook_add = '''
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+'''
 
 
 
@@ -141,7 +152,6 @@ repo = 'thinca/vim-quickrun'
 repo = 'nelstrom/vim-visual-star-search'
 
 
-#  --- ネタプラグイン --- #
 
 [[plugins]]  # カーソルキー動作停止+何か表示される
 repo = 'modsound/gips-vim'
@@ -149,3 +159,4 @@ hook_add = '''
 " テキストリストのパスを指定 (english_words or quickref_vim or gundam or tsundere)
 let g:gips_reading_txt = '~/.vim/dein/repos/github.com/modsound/gips-vim/autoload/dict/tsundere.txt'
 '''
+
