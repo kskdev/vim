@@ -79,6 +79,7 @@ set completeopt=menuone
 " ファイルパス補完 (スラッシュを入力した時，補完が自動発動)
 " ref : http://io-fia.blogspot.com/2012/11/vimvimrc.html)
 imap <expr> / pumvisible() ? "\<C-E>/\<C-X>\<C-F>\<C-P>" : "/\<C-X>\<C-F>\<C-P>"
+" inoremap <expr> " . k . " pumvisible() ? '" . k . "' : '" . k . "\<C-X>\<C-O>\<C-P>'
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map

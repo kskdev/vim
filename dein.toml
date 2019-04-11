@@ -5,6 +5,7 @@ repo = 'Shougo/dein.vim'
 
 [[plugins]]  # 非同期処理用プラグイン(deinがあるのに必要か?)
 repo = 'Shougo/vimproc.vim'
+build = 'make'
 
 
 
