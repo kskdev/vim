@@ -2,53 +2,60 @@
 repo = 'Shougo/dein.vim'
 
 
-
-[[plugins]]  # 非同期処理用プラグイン(deinがあるのに必要か?)
-repo = 'Shougo/vimproc.vim'
-build = 'make'
-
-
-
 [[plugins]]  # カラースキーマ
 repo = 'joshdick/onedark.vim'
 hook_add = '''
-syntax on
 colorscheme onedark
 '''
 
 
-
-[[plugins]]  # ステータスバーカスタム
-repo = 'vim-airline/vim-airline'
-hook_add = '''
-" タブの有効化
-let g:airline#extensions#tabline#enabled = 1
-" タブに番号を表示
-let g:airline#extensions#tabline#buffer_idx_mode = 1
-" Shift-Tab でタブの切り替え
-nmap <S-Tab> <Plug>AirlineSelectNextTab
-" ALE(dein_lazy.tomlに記載)のための拡張設定 (使ってない)
-let g:airline#extensions#ale#enabled = 1
-'''
-
-
-
 [[plugins]]  # vim-airline のテーマ
 repo = 'vim-airline/vim-airline-themes'
-hook_add = '''
+depends = ['vim-airline/vim-airline']
+hook_source = '''
 " テーマ一覧 (https://github.com/vim-airline/vim-airline/wiki/Screenshots)
 let g:airline_theme='onedark'
 '''
 
 
+[[plugins]]  # ステータスバーカスタム
+repo = 'vim-airline/vim-airline'
+hook_add = '''
+" Shift-Tab でタブの切り替え
+nmap <S-Tab> <Plug>AirlineSelectNextTab
+'''
+hook_source = '''
+" タブの有効化
+let g:airline#extensions#tabline#enabled = 1
+" タブに番号を表示
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+" ALE(dein_lazy.tomlに記載)のための拡張設定 (使ってない)
+let g:airline#extensions#ale#enabled = 0
+" power line font の有効化 (フォントが無いと動かない)
+let g:airline_powerline_fonts = 0
+'''
 
-[[plugins]]  # vim でgit の操作を行う
-repo = 'tpope/vim-fugitive'
 
+[[plugins]]  # インデントの可視化 
+repo = 'nathanaelkane/vim-indent-guides'
+hook_add = '''
+" 色の変更(詳しい配色 'ctermbg vim'等で検索 ) 配色はカラースキーマに合わせて設定した
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=236
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=238
+'''
+hook_source = '''
+" indent guideの有効
+let g:indent_guides_enable_on_vim_startup = 1
+" 自動で色を付けない
+let g:indent_guides_auto_colors = 0
+" ガイドの幅を設定
+let g:indent_guides_guide_size = 1
+'''
 
 
 [[plugins]]  # git の diffを左端に表示
 repo = 'airblade/vim-gitgutter'
+on_i = 1
 hook_add = '''
 " 常に表示 (vimのバージョン違いに対応)
 if exists('&signcolumn')  " Vim 7.4.2201
@@ -61,7 +68,8 @@ endif
 
 [[plugins]]  # Ctrl+p でファイルの検索
 repo = 'ctrlpvim/ctrlp.vim'
-hook_add = '''
+on_i = 1
+hook_source = '''
 " キャッシュを使用して検索を高速化 (ファイルサイズが大きい場合効果的)
 let g:ctrlp_use_caching = 1
 " vim終了時にキャッシュをクリアしない
@@ -69,23 +77,6 @@ let g:ctrlp_clear_cache_on_exit = 0
 " <C-r>でキャッシュをクリアして再検索
 let g:ctrlp_prompt_mappings = { 'PrtClearCache()': ['<C-r>'] }
 '''
-
-
-
-[[plugins]]  # インデントの可視化 
-repo = 'nathanaelkane/vim-indent-guides'
-hook_add = '''
-" indent guideの有効
-let g:indent_guides_enable_on_vim_startup = 1
-" 自動で色を付けない
-let g:indent_guides_auto_colors = 0
-" ガイドの幅を設定
-let g:indent_guides_guide_size = 1
-" 色の変更(詳しい配色 'ctermbg vim'等で検索 )
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=236
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=238
-'''
-
 
 
 [[plugins]]  # j,k キーでカーソル移動の高速化
@@ -97,47 +88,38 @@ nmap k <Plug>(accelerated_jk_gk)
 '''
 
 
-
 [[plugins]]  # sキーで特定文字へカーソルジャンプ
 repo = 'easymotion/vim-easymotion'
 hook_add = '''
 let g:EasyMotion_do_mapping = 0
-nmap s <Plug>(easymotion-s2)
-xmap s <Plug>(easymotion-s2)
-omap z <Plug>(easymotion-s2)
-nmap g/ <Plug>(easymotion-sn)
-xmap g/ <Plug>(easymotion-sn)
-omap g/ <Plug>(easymotion-tn)
 let g:EasyMotion_smartcase = 1
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
 let g:EasyMotion_startofline = 0
 let g:EasyMotion_keys = 'ASDFGHJKL'
 let g:EasyMotion_use_upper = 1
 let g:EasyMotion_enter_jump_first = 1
+nmap s <Plug>(easymotion-s2)
+xmap s <Plug>(easymotion-s2)
+omap z <Plug>(easymotion-s2)
 '''
-
 
 
 [[plugins]]  # 括弧補間
 repo = 'Townk/vim-autoclose'
 
 
-
 [[plugins]]  # gcc でコメントアウト
 repo = 'tomtom/tcomment_vim'
 
 
-
 [[plugins]]  # ディレクトリツリーを表示する
 repo = 'scrooloose/nerdtree'
-hook_add = '''
+on_i = 1
+hook_source = '''
 " ディレクトリの表示記号を変更
 let g:NERDTreeDirArrows = 1
 let g:NERDTreeDirArrowExpandable  = '▶'
 let g:NERDTreeDirArrowCollapsible = '▼'
 '''
-
 
 
 [[plugins]]  # ga で見た目を整形する
@@ -148,16 +130,146 @@ nmap ga <Plug>(EasyAlign)
 '''
 
 
-
 [[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
 repo = 'nelstrom/vim-visual-star-search'
-
 
 
 [[plugins]]  # カーソルキー動作停止+何か表示される
 repo = 'modsound/gips-vim'
 hook_add = '''
 " テキストリストのパスを指定 (english_words or quickref_vim or gundam or tsundere)
+if has('nvim')
+let g:gips_reading_txt = '~/.config/nvim/repos/github.com/modsound/gips-vim/autoload/dict/tsundere.txt'
+else
 let g:gips_reading_txt = '~/.vim/dein/repos/github.com/modsound/gips-vim/autoload/dict/tsundere.txt'
+endif
 '''
+
+
+# tomlにシンタックスハイライトをつける
+[[plugins]]
+repo = 'cespare/vim-toml'
+on_ft = ['toml']
+
+
+# deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
+[[plugins]]
+repo = 'roxma/vim-hug-neovim-rpc'
+on_if = '!has("nvim")'
+depends = ['deoplete.nvim']
+
+
+# deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
+[[plugins]]
+repo = 'roxma/nvim-yarp'
+on_if = '!has("nvim")'
+depends = ['deoplete.nvim']
+
+
+# オートコンプリートプラグイン
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'
+on_event = 'InsertEnter'
+on_i = 1
+hook_add = '''
+" Pythonインタープリタのパスを指定
+let g:python3_host_prog = expand(substitute(system('which python3'),"\n","",""))
+let g:python_host_prog = expand(substitute(system('which python2'),"\n","",""))
+'''
+hook_source = '''
+" ### deopleteの設定 ### "
+" deoplete 有効化
+let g:deoplete#enable_at_startup = 1
+
+" 補完に掛かる時間を指定(ms)
+let g:deoplete#auto_complete_delay = 0
+let g:deoplete#auto_refresh_delay = 0
+" 補完が始まるまでに必要な文字数
+let g:deoplete#auto_complete_start_length = 1
+" キャメルケースに対応(細かいことはよくわからん)
+let g:deoplete#enable_camel_case = 1
+" 大文字小文字を無視して補完する
+let g:deoplete#enable_ignore_case = 1
+" 補完機能が作用するたびに候補表示を再表示するかどうか
+let g:deoplete#enable_refresh_always = 1 
+" 大文字小文字の区別
+let g:deoplete#enable_smart_case = 0
+" TODO よくわからん
+let g:deoplete#file#enable_buffer_path = 1
+" 補完候補の表示数の最大値を設定
+let g:deoplete#max_list = 40
+
+" ### キーマッピング ### "
+" TAB で補完(順選択)
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" Shift TAB で補完(逆順選択)
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+" 補完候補選択時，リターンの挙動を制御(選択決定時に改行しない)
+inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<CR>"
+'''
+
+
+# Python用 補完プラグイン
+[[plugins]]
+repo = 'zchee/deoplete-jedi'
+on_ft = ['python']
+depends = ['deoplete.nvim']
+on_i = 1
+hook_source = '''
+" Python のパスを設定
+let PYTHON3_PATH = substitute(system('which python3'),"\n","","")
+let g:deoplete#sources#jedi#python_path = $PYTHON3_PATH
+'''
+
+
+# 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
+[[plugins]]
+repo = 'ujihisa/neco-look'
+depends = ['deoplete.nvim']
+on_i = 1
+
+
+# docker用 補完プラグイン
+[[plugins]]
+repo = 'zchee/deoplete-docker'
+on_ft = ['dockerfile']
+depends = ['deoplete.nvim']
+on_i = 1
+
+
+# スニペットファイル
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+on_i = 1
+
+
+# スニペットの動作定義
+[[plugins]]
+repo = 'Shougo/neosnippet.vim'
+depends = ['neosnippet-snippets']
+on_ft = ['snippet']
+on_i = 1
+hook_add = '''
+" Plugin key-mappings.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+xmap <C-k> <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+" imap <expr><TAB>
+"  \ pumvisible() ? "\<C-n>" :
+"  \ neosnippet#expandable_or_jumpable() ?
+"  \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+" \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+'''
+
 
