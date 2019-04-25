@@ -105,8 +105,6 @@ if &compatible
     set nocompatible
 endif
 
-set pyxversion=3
-
 " dein.vimインストール時に指定したディレクトリをセット
 if has('nvim')
     let s:dein_dir = expand('~/.config/nvim')
