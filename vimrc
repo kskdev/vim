@@ -77,9 +77,9 @@ set wildmode=list,full
 " 補完候補が1つでもポップアップを表示
 set completeopt=menuone
 " ファイルパス補完 (スラッシュを入力した時，補完が自動発動)
+" deopleteに任せるので不要
 " ref : http://io-fia.blogspot.com/2012/11/vimvimrc.html)
-imap <expr> / pumvisible() ? "\<C-E>/\<C-X>\<C-F>\<C-P>" : "/\<C-X>\<C-F>\<C-P>"
-" inoremap <expr> " . k . " pumvisible() ? '" . k . "' : '" . k . "\<C-X>\<C-O>\<C-P>'
+" imap <expr> / pumvisible() ? "\<C-E>/\<C-X>\<C-F>\<C-P>" : "/\<C-X>\<C-F>\<C-P>"
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
@@ -88,18 +88,11 @@ inoremap <silent> <ESC><ESC> <ESC>
 inoremap <silent> fff <ESC>
 inoremap <silent> っっｆ <ESC>
 
+" vimのファイルパス補完のマッピングを変更
+inoremap <C-x><C-f> <C-X><C-F><C-P>
+
 " ノーマルモード時だけ ; と : を入れ替える(US配列に打ちやすさを考慮)
 nnoremap ;; :
-
-" 日本語入力モードでもコマンドを入力できるようにする
-nnoremap あ a
-nnoremap い i
-nnoremap う u
-nnoremap お o
-nnoremap っd dd
-nnoremap っy yy
-
-
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -108,47 +101,56 @@ nnoremap っy yy
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-filetype on
-filetype plugin on
-filetype indent on
-syntax enable
-
-
 if &compatible
-  set nocompatible
+    set nocompatible
 endif
 
+set pyxversion=3
+
 " dein.vimインストール時に指定したディレクトリをセット
-let s:dein_dir = expand('~/.vim/dein')
+if has('nvim')
+    let s:dein_dir = expand('~/.config/nvim')
+else
+    let s:dein_dir = expand('~/.vim/dein')
+endif
+
 
 " dein.vimの実体があるディレクトリをセット
 let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
 
 " dein.vimが存在していない場合はgithubからclone
 if &runtimepath !~# '/dein.vim'
-  if !isdirectory(s:dein_repo_dir)
-    execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
-  endif
-  execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+    if !isdirectory(s:dein_repo_dir)
+        execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
+    endif
+    execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 endif
 
+
+" tomlファイルのディレクトリをセット
+if has('nvim')
+    let s:toml_dir = expand('~/.config/nvim')
+else
+    let s:toml_dir = expand('~/.vim')
+endif
 if dein#load_state(s:dein_dir)
-  call dein#begin(s:dein_dir)
-
-  " dein.toml, dein_layz.tomlファイルのディレクトリをセット
-  let s:toml_dir = expand('~/.vim')
-
-  " 起動時に読み込むプラグイン群
-  call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
-
-  " 遅延読み込みしたいプラグイン群
-  call dein#load_toml(s:toml_dir . '/dein_lazy.toml', {'lazy': 1})
-
-  call dein#end()
-  call dein#save_state()
+    call dein#begin(s:dein_dir)
+    call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
+    call dein#end()
+    call dein#save_state()
 endif
+
 
 " プラグインが入っていなければvim起動時に自動でインストール
-if dein#check_install()
-  call dein#install()
+if !has('vim')
+    if dein#check_install()
+        call dein#install()
+    endif
 endif
+
+filetype on
+filetype plugin on
+filetype indent on
+syntax enable
+" set background=dark
+
