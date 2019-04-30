@@ -14,7 +14,10 @@ set noswapfile
 set nobackup 
 " 背景の透過処理
 highlight Normal ctermbg=none
-
+" マウス操作を受け付ける
+set mouse=a
+" ヤンクをClipboardに入れる
+set clipboard=unnamed
 
 :"::::::::::::::::::::::::::::::::::
 "::::::::::display setting
@@ -38,8 +41,6 @@ set scrolloff=3
 set laststatus=2 
 "エディタの編集タイトルを表示しない
 set notitle 
-" 補完候補ポップアップの数を調整
-set pumheight=10
 
 ":::::::::::::::::::::::::::::::::::::
 "::::::::::search setting
@@ -51,7 +52,7 @@ set smartcase
 " 入力文字数を増やすと候補が絞られる
 set incsearch 
 " Esc2回押しで検索ハイライトを削除
-nnoremap <ESC><ESC> :nohlsearch<CR><ESC>
+nnoremap <ESC> :nohlsearch<CR><ESC>
 
 
 "::::::::::::::::::::::::::::::::::::::
@@ -76,9 +77,7 @@ set wildmode=list,full
 
 " 補完候補が1つでもポップアップを表示
 set completeopt=menuone
-" ファイルパス補完 (スラッシュを入力した時，補完が自動発動)
-" deopleteに任せるので不要
-" ref : http://io-fia.blogspot.com/2012/11/vimvimrc.html)
+" スラッシュを入力した時，ファイルパス補完が自動発動 (deopleteに任せるので不要)
 " imap <expr> / pumvisible() ? "\<C-E>/\<C-X>\<C-F>\<C-P>" : "/\<C-X>\<C-F>\<C-P>"
 
 "::::::::::::::::::::::::::::::::::::::
@@ -131,24 +130,23 @@ if has('nvim')
 else
     let s:toml_dir = expand('~/.vim')
 endif
-if dein#load_state(s:dein_dir)
+
+" プラグインのロード(tomlファイルの内容)
+" if dein#load_state(s:dein_dir)
     call dein#begin(s:dein_dir)
     call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
     call dein#end()
-    call dein#save_state()
-endif
+    " call dein#save_state()  " TODO 初回起動時以外deopleteが起動しなくなるのを防ぐためコメント化
+" endif
 
 
 " プラグインが入っていなければvim起動時に自動でインストール
-if !has('vim')
-    if dein#check_install()
-        call dein#install()
-    endif
+if dein#check_install()
+    call dein#install()
 endif
 
 filetype on
 filetype plugin on
 filetype indent on
-syntax enable
-" set background=dark
+syntax on
 

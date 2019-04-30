@@ -1,20 +1,24 @@
+# プラグインをdeinで管理
+# 参考サイト
+# https://qiita.com/kawaz/items/ee725f6214f91337b42b
+
+
 [[plugins]]  # プラグインマネージャー
 repo = 'Shougo/dein.vim'
 
 
-[[plugins]]  # カラースキーマ
-repo = 'joshdick/onedark.vim'
+[[plugins]]  # カラースキーマの設定(テーマ一覧:http://vimcolors.com/ , flazz/vim-colorschemesもおすすめ)
+# my fav : joshdick/onedark.vim cocopon/iceberg.vim 'morhetz/gruvbox'
+repo = 'morhetz/gruvbox'
 hook_add = '''
-colorscheme onedark
+colorscheme gruvbox
 '''
 
 
-[[plugins]]  # vim-airline のテーマ
+[[plugins]]  # vim-airline のテーマの設定(テーマ一覧:https://github.com/vim-airline/vim-airline/wiki/Screenshots)
 repo = 'vim-airline/vim-airline-themes'
-depends = ['vim-airline/vim-airline']
 hook_source = '''
-" テーマ一覧 (https://github.com/vim-airline/vim-airline/wiki/Screenshots)
-let g:airline_theme='onedark'
+let g:airline_theme='gruvbox'
 '''
 
 
@@ -29,10 +33,23 @@ hook_source = '''
 let g:airline#extensions#tabline#enabled = 1
 " タブに番号を表示
 let g:airline#extensions#tabline#buffer_idx_mode = 1
-" ALE(dein_lazy.tomlに記載)のための拡張設定 (使ってない)
-let g:airline#extensions#ale#enabled = 0
 " power line font の有効化 (フォントが無いと動かない)
 let g:airline_powerline_fonts = 0
+" ALE(dein_lazy.tomlに記載)のための拡張設定
+let g:airline#extensions#ale#enabled = 1
+
+" 表示領域の編集
+let g:lightline = {
+  \'active': {
+  \  'left': [
+  \    ['mode', 'paste'],
+  \    ['readonly', 'filename', 'modified', 'ale'],
+  \  ]
+  \},
+  \'component_function': {
+  \  'ale': 'ALEGetStatusLine'
+  \}
+\ }
 '''
 
 
@@ -50,32 +67,6 @@ let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_auto_colors = 0
 " ガイドの幅を設定
 let g:indent_guides_guide_size = 1
-'''
-
-
-[[plugins]]  # git の diffを左端に表示
-repo = 'airblade/vim-gitgutter'
-on_i = 1
-hook_add = '''
-" 常に表示 (vimのバージョン違いに対応)
-if exists('&signcolumn')  " Vim 7.4.2201
-    set signcolumn=yes
-else
-    let g:gitgutter_sign_column_always = 1
-endif
-'''
-
-
-[[plugins]]  # Ctrl+p でファイルの検索
-repo = 'ctrlpvim/ctrlp.vim'
-on_i = 1
-hook_source = '''
-" キャッシュを使用して検索を高速化 (ファイルサイズが大きい場合効果的)
-let g:ctrlp_use_caching = 1
-" vim終了時にキャッシュをクリアしない
-let g:ctrlp_clear_cache_on_exit = 0
-" <C-r>でキャッシュをクリアして再検索
-let g:ctrlp_prompt_mappings = { 'PrtClearCache()': ['<C-r>'] }
 '''
 
 
@@ -103,23 +94,48 @@ omap z <Plug>(easymotion-s2)
 '''
 
 
+[[plugins]]  # git の diffを左端に表示
+repo = 'airblade/vim-gitgutter'
+hook_source = '''
+let g:gitgutter_sign_column_always = 0
+let g:gitgutter_override_sign_column_highlight = 1
+let g:gitgutter_sign_added = '+'
+let g:gitgutter_sign_modified = '~'
+let g:gitgutter_sign_removed = '-'
+" let g:gitgutter_sign_removed_first_line = '^'
+" let g:gitgutter_sign_modified_removed = 'w'
+'''
+
+
+[[plugins]]  # Ctrl+p でファイルの検索
+repo = 'ctrlpvim/ctrlp.vim'
+hook_source = '''
+" キャッシュディレクトリの設定
+let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
+" キャッシュを使用して検索を高速化 (ファイルサイズが大きい場合効果的)
+let g:ctrlp_use_caching = 1
+" vim終了時にキャッシュをクリアしない
+let g:ctrlp_clear_cache_on_exit = 0
+" 遅延再描画
+let g:ctrlp_lazy_update = 1
+" CtrlPのウィンドウ最大高さ
+let g:ctrlp_max_height = 10
+" 無視するディレクトリ
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn|idea)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+'''
+
+
+[[plugins]]  # vimを開きながら編集中のファイルを実行
+repo = 'thinca/vim-quickrun'
+
+
+
 [[plugins]]  # 括弧補間
 repo = 'Townk/vim-autoclose'
-
-
-[[plugins]]  # gcc でコメントアウト
-repo = 'tomtom/tcomment_vim'
-
-
-[[plugins]]  # ディレクトリツリーを表示する
-repo = 'scrooloose/nerdtree'
-on_i = 1
-hook_source = '''
-" ディレクトリの表示記号を変更
-let g:NERDTreeDirArrows = 1
-let g:NERDTreeDirArrowExpandable  = '▶'
-let g:NERDTreeDirArrowCollapsible = '▼'
-'''
 
 
 [[plugins]]  # ga で見た目を整形する
@@ -128,6 +144,10 @@ hook_add = '''
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 '''
+
+
+[[plugins]]  # gcc でコメントアウト
+repo = 'tomtom/tcomment_vim'
 
 
 [[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
@@ -146,35 +166,41 @@ endif
 '''
 
 
-# tomlにシンタックスハイライトをつける
-[[plugins]]
+[[plugins]]  # tomlファイルにシンタックスハイライトを適用
 repo = 'cespare/vim-toml'
 on_ft = ['toml']
+
+
+[[plugins]] # カーソル位置のコンテキストに合わせてftを切り替える
+repo = 'osyo-manga/vim-precious'
+depends = ['context_filetype.vim']
+
+
+[[plugins]] # カーソル位置のコンテキストのftを判定
+repo = 'Shougo/context_filetype.vim'
 
 
 # deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
 [[plugins]]
 repo = 'roxma/vim-hug-neovim-rpc'
-on_if = '!has("nvim")'
-depends = ['deoplete.nvim']
+if = '!has("nvim")'
 
 
 # deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
 [[plugins]]
 repo = 'roxma/nvim-yarp'
-on_if = '!has("nvim")'
-depends = ['deoplete.nvim']
+if = '!has("nvim")'
 
 
 # オートコンプリートプラグイン
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
-on_event = 'InsertEnter'
-on_i = 1
 hook_add = '''
 " Pythonインタープリタのパスを指定
-let g:python3_host_prog = expand(substitute(system('which python3'),"\n","",""))
-let g:python_host_prog = expand(substitute(system('which python2'),"\n","",""))
+let g:python3_host_prog = substitute(system('which python3'),"\n","","")
+let g:python_host_prog = substitute(system('which python2'),"\n","","")
+" 補完候補ポップアップの数を調整
+set pumheight=12
 '''
 hook_source = '''
 " ### deopleteの設定 ### "
@@ -183,7 +209,8 @@ let g:deoplete#enable_at_startup = 1
 
 " 補完に掛かる時間を指定(ms)
 let g:deoplete#auto_complete_delay = 0
-let g:deoplete#auto_refresh_delay = 0
+" 非同期時から同期に移る時間(ms)
+let g:deoplete#auto_refresh_delay = 10
 " 補完が始まるまでに必要な文字数
 let g:deoplete#auto_complete_start_length = 1
 " キャメルケースに対応(細かいことはよくわからん)
@@ -191,21 +218,25 @@ let g:deoplete#enable_camel_case = 1
 " 大文字小文字を無視して補完する
 let g:deoplete#enable_ignore_case = 1
 " 補完機能が作用するたびに候補表示を再表示するかどうか
-let g:deoplete#enable_refresh_always = 1 
+let g:deoplete#enable_refresh_always = 1
 " 大文字小文字の区別
 let g:deoplete#enable_smart_case = 0
 " TODO よくわからん
-let g:deoplete#file#enable_buffer_path = 1
+let g:deoplete#file#enable_buffer_path = 0
 " 補完候補の表示数の最大値を設定
-let g:deoplete#max_list = 40
+let g:deoplete#max_list = 1000
+" マルチバイト文字の補完を無効化
+let g:skip_multibyte = 1
+" deopleteの並列処理のスレッド数 (default : 4)
+let g:deoplete#num_processes = 8
 
 " ### キーマッピング ### "
 " TAB で補完(順選択)
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 " Shift TAB で補完(逆順選択)
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-" 補完候補選択時，リターンの挙動を制御(選択決定時に改行しない)
-inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<CR>"
+" 補完候補選択時，リターンの挙動を制御(選択決定時に改行しない)  " 上手く動作しないので凍結
+" inoremap <expr><CR> pumvisible() ? deoplete#close_popup() : "\<CR>"
 '''
 
 
@@ -213,63 +244,101 @@ inoremap <expr><CR> pumvisible() ? "\<C-y>" : "\<CR>"
 [[plugins]]
 repo = 'zchee/deoplete-jedi'
 on_ft = ['python']
-depends = ['deoplete.nvim']
-on_i = 1
 hook_source = '''
 " Python のパスを設定
-let PYTHON3_PATH = substitute(system('which python3'),"\n","","")
-let g:deoplete#sources#jedi#python_path = $PYTHON3_PATH
+let g:deoplete#sources#jedi#python_path = substitute(system('which python3'),"\n","","")
 '''
-
-
-# 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
-[[plugins]]
-repo = 'ujihisa/neco-look'
-depends = ['deoplete.nvim']
-on_i = 1
 
 
 # docker用 補完プラグイン
 [[plugins]]
 repo = 'zchee/deoplete-docker'
-on_ft = ['dockerfile']
-depends = ['deoplete.nvim']
-on_i = 1
+
+
+# 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
+[[plugins]]
+repo = 'ujihisa/neco-look'
+
+
+# vimコマンド補完用プラグイン
+[[plugins]]
+repo = 'Shougo/neco-vim'
 
 
 # スニペットファイル
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
-on_i = 1
 
 
 # スニペットの動作定義
 [[plugins]]
 repo = 'Shougo/neosnippet.vim'
-depends = ['neosnippet-snippets']
+depends = ['neosnippet-snippets']  # TODO ここを消すと補完候補が表示されなくなる... Why??
 on_ft = ['snippet']
-on_i = 1
 hook_add = '''
+" 設定はデフォルト設定のまま
 " Plugin key-mappings.
 " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-imap <C-k> <Plug>(neosnippet_expand_or_jump)
-smap <C-k> <Plug>(neosnippet_expand_or_jump)
-xmap <C-k> <Plug>(neosnippet_expand_target)
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
 
 " SuperTab like snippets behavior.
 " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-" imap <expr><TAB>
-"  \ pumvisible() ? "\<C-n>" :
-"  \ neosnippet#expandable_or_jumpable() ?
-"  \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
-" smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-" \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 
 " For conceal markers.
 if has('conceal')
   set conceallevel=2 concealcursor=niv
 endif
+'''
+
+
+[[plugins]]
+repo = 'w0rp/ale'
+hook_add = '''
+" エラーと警告の表示色を変更
+autocmd Colorscheme * highlight aleErrorSign term=bold cterm=bold ctermfg=196
+autocmd Colorscheme * highlight aleWarningSign term=bold cterm=bold ctermfg=172
+'''
+hook_source = '''
+" ### Linter(Warning Error チェック)の設定 ### "
+" 利用するLinterの指定
+let g:ale_linters = {'python': ['pylint', 'flake8', 'mypy'],}
+" エラー・警告表示の行を常に表示
+let g:ale_sign_column_always = 1
+" 保存時にLinterを実行
+let g:ale_lint_on_save = 1
+" ファイルを開いた時，lint実行設定	
+let g:ale_lint_on_enter = 1
+" 編集時にLinterの実行設定
+let g:ale_lint_on_text_changed = 'never'
+" 余計な空白の警告表示設定
+let b:ale_warn_about_trailing_whitespace = 0
+" 警告表示時の文字設定
+let g:ale_sign_warning = '->'
+" エラー表示時の文字設定
+let g:ale_sign_error = '>>'
+" Linterを実行するファイルサイズ上限[Byte]
+let g:ale_maximum_file_size = 1000000
+" カーソルを行に合わせたときに表示するメッセージのフォーマット設定
+let g:ale_echo_msg_error_str = 'Error'
+let g:ale_echo_msg_warning_str = 'Warning'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+" ### Fixer(コード整形ツール)の設定 ### "
+" TODO 現状，現在利用予定が無いためコメント化している
+" 利用するFixerの設定
+let b:ale_fixers = {'python': ['autopep8', 'isort', 'black'],}
+" ファイルをセーブした時のみFixerを実行設定	
+let g:ale_fix_on_save = 0
+" 編集時のFixer実行設定
+let g:ale_fix_on_text_changed = 'never'
 '''
 
 
