@@ -85,7 +85,8 @@ set completeopt=menuone
 " Normal Mode に戻るためのコマンド
 inoremap <silent> <ESC><ESC> <ESC>
 inoremap <silent> fff <ESC>
-inoremap <silent> っっｆ <ESC>
+nnoremap <silent> fff <ESC>
+vnoremap <silent> fff <ESC>
 
 " vimのファイルパス補完のマッピングを変更
 inoremap <C-x><C-f> <C-X><C-F><C-P>
@@ -93,6 +94,9 @@ inoremap <C-x><C-f> <C-X><C-F><C-P>
 " ノーマルモード時だけ ; と : を入れ替える(US配列に打ちやすさを考慮)
 nnoremap ;; :
 
+" インサートモード時左右に動けるようにする
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "

@@ -26,7 +26,8 @@ let g:airline_theme='gruvbox'
 repo = 'vim-airline/vim-airline'
 hook_add = '''
 " Shift-Tab でタブの切り替え
-nmap <S-Tab> <Plug>AirlineSelectNextTab
+" nmap <S-Tab> <Plug>AirlineSelectNextTab
+nmap <C-Tab> <Plug>AirlineSelectNextTab
 '''
 hook_source = '''
 " タブの有効化
@@ -305,6 +306,11 @@ hook_add = '''
 " エラーと警告の表示色を変更
 autocmd Colorscheme * highlight aleErrorSign term=bold cterm=bold ctermfg=196
 autocmd Colorscheme * highlight aleWarningSign term=bold cterm=bold ctermfg=172
+" ### キーマッピング ### "
+" Ctrl+j で補完(順選択)
+nmap <C-j> <Plug>(ale_next)
+" Ctrl+k で補完(逆順選択)
+nmap <C-k> <Plug>(ale_previous)
 '''
 hook_source = '''
 " ### Linter(Warning Error チェック)の設定 ### "
