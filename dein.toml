@@ -9,16 +9,17 @@ repo = 'Shougo/dein.vim'
 
 [[plugins]]  # カラースキーマの設定(テーマ一覧:http://vimcolors.com/ , flazz/vim-colorschemesもおすすめ)
 # my fav : joshdick/onedark.vim cocopon/iceberg.vim 'morhetz/gruvbox'
-repo = 'morhetz/gruvbox'
+repo = 'cocopon/iceberg.vim'
 hook_add = '''
-colorscheme gruvbox
+colorscheme iceberg
+set background=dark
 '''
 
 
 [[plugins]]  # vim-airline のテーマの設定(テーマ一覧:https://github.com/vim-airline/vim-airline/wiki/Screenshots)
 repo = 'vim-airline/vim-airline-themes'
 hook_source = '''
-let g:airline_theme='gruvbox'
+let g:airline_theme='iceberg'
 '''
 
 
@@ -97,14 +98,27 @@ omap z <Plug>(easymotion-s2)
 
 [[plugins]]  # git の diffを左端に表示
 repo = 'airblade/vim-gitgutter'
+hook_add = '''
+" タイピング停止から反映されるまでの時間[ms]
+set updatetime=250
+" ハンク(変更点のかたまり)へジャンプ
+nmap <C-d> <Plug>GitGutterNextHunk
+nmap <C-f> <Plug>GitGutterPrevHunk
+'''
 hook_source = '''
-let g:gitgutter_sign_column_always = 0
-let g:gitgutter_override_sign_column_highlight = 1
-let g:gitgutter_sign_added = '+'
-let g:gitgutter_sign_modified = '~'
-let g:gitgutter_sign_removed = '-'
-" let g:gitgutter_sign_removed_first_line = '^'
-" let g:gitgutter_sign_modified_removed = 'w'
+" プラグインの有効化
+let g:gitgutter_enabled = 1
+" 左端2文字分の空間を常に表示
+set signcolumn=yes " instead of : let g:gitgutter_sign_column_always=1
+" 行のハイライトを起動時から有効にする
+let g:gitgutter_highlight_lines = 0
+let g:gitgutter_async = 1
+let g:gitgutter_override_sign_column_highlight=1
+let g:gitgutter_sign_added='+ '
+let g:gitgutter_sign_modified='~ '
+let g:gitgutter_sign_removed='- '
+" let g:gitgutter_sign_removed_first_line='^ '
+" let g:gitgutter_sign_modified_removed='w '
 '''
 
 
@@ -134,9 +148,15 @@ let g:ctrlp_custom_ignore = {
 repo = 'thinca/vim-quickrun'
 
 
-
 [[plugins]]  # 括弧補間
-repo = 'Townk/vim-autoclose'
+repo = 'jiangmiao/auto-pairs'
+
+
+[[plugins]]  # テキストを囲う
+repo = "tpope/vim-surround"
+# visual mode -> S' : 選択範囲を囲む
+# normal mode -> cs': 囲んでいる範囲を置換
+# normal mode -> ds': 囲んでいる範囲を削除
 
 
 [[plugins]]  # ga で見た目を整形する
@@ -181,6 +201,18 @@ depends = ['context_filetype.vim']
 repo = 'Shougo/context_filetype.vim'
 
 
+[[plugins]] # 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
+repo = 'osyo-manga/vim-over'
+hook_add = '''
+" Ctrl+h でover.vimの起動 
+nnoremap <C-h> :OverCommandLine <CR>%s//g<Left><Left>
+" カーソル下の単語をハイライト付きで置換
+nnoremap sub :OverCommandLine<CR>%s/<C-r><C-w>//g<Left><Left>
+" コピーした文字列をハイライト付きで置換
+nnoremap subp y:OverCommandLine<CR>%s!<C-r>=substitute(@0, '!', '\\!', 'g')<CR>!!gI<Left><Left><Left>
+'''
+
+
 # deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
 [[plugins]]
 repo = 'roxma/vim-hug-neovim-rpc'
@@ -196,10 +228,11 @@ if = '!has("nvim")'
 # オートコンプリートプラグイン
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
+# on_event = 'InsertEnter'
 hook_add = '''
-" Pythonインタープリタのパスを指定
-let g:python3_host_prog = substitute(system('which python3'),"\n","","")
-let g:python_host_prog = substitute(system('which python2'),"\n","","")
+" Python3インタープリターのパス指定
+let g:python3_host_prog = g:python3_path
+let g:python_host_prog = g:python2_path
 " 補完候補ポップアップの数を調整
 set pumheight=12
 '''
@@ -246,8 +279,8 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 repo = 'zchee/deoplete-jedi'
 on_ft = ['python']
 hook_source = '''
-" Python のパスを設定
-let g:deoplete#sources#jedi#python_path = substitute(system('which python3'),"\n","","")
+" 利用するインタプリタの指定
+let g:deoplete#sources#jedi#python_path = g:python3_path
 '''
 
 
@@ -327,9 +360,9 @@ let g:ale_lint_on_text_changed = 'never'
 " 余計な空白の警告表示設定
 let b:ale_warn_about_trailing_whitespace = 0
 " 警告表示時の文字設定
-let g:ale_sign_warning = '->'
+let g:ale_sign_warning = ' ?'
 " エラー表示時の文字設定
-let g:ale_sign_error = '>>'
+let g:ale_sign_error = ' !'
 " Linterを実行するファイルサイズ上限[Byte]
 let g:ale_maximum_file_size = 1000000
 " カーソルを行に合わせたときに表示するメッセージのフォーマット設定
@@ -346,5 +379,3 @@ let g:ale_fix_on_save = 0
 " 編集時のFixer実行設定
 let g:ale_fix_on_text_changed = 'never'
 '''
-
-

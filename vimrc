@@ -5,7 +5,7 @@ set backspace=start,eol,indent
 " バッファの文字コードの設定
 set encoding=utf-8 
 " 設定した候補から自動で文字コードを設定
-set fileencodings=iso-2022-jp,cp932,sjis,euc-jp,utf-8 
+set fileencodings=utf-8,iso-2022-jp,cp932,sjis,euc-jp
 "ファイルフォーマットをOSから自動で設定
 set fileformats=unix,dos,mac
 " スワップファイル不要
@@ -15,9 +15,14 @@ set nobackup
 " 背景の透過処理
 highlight Normal ctermbg=none
 " マウス操作を受け付ける
-set mouse=a
+" set mouse=a
 " ヤンクをClipboardに入れる
-set clipboard=unnamed
+if has("mac")
+    set clipboard+=unnamed
+elseif has("unix")
+    set clipboard+=unnamedplus
+else
+endif
 
 :"::::::::::::::::::::::::::::::::::
 "::::::::::display setting
@@ -115,6 +120,9 @@ else
     let s:dein_dir = expand('~/.vim/dein')
 endif
 
+" Pythonインタープリターのパス指定
+let g:python3_path = substitute(system('which python3'),"\n","","")
+let g:python2_path = substitute(system('which python2'),"\n","","")
 
 " dein.vimの実体があるディレクトリをセット
 let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
@@ -140,7 +148,7 @@ endif
     call dein#begin(s:dein_dir)
     call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
     call dein#end()
-    " call dein#save_state()  " TODO 初回起動時以外deopleteが起動しなくなるのを防ぐためコメント化
+"     call dein#save_state()  " TODO 初回起動時以外deopleteが起動しなくなるのを防ぐためコメント化
 " endif
 
 
