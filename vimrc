@@ -16,6 +16,8 @@ set nobackup
 highlight Normal ctermbg=none
 " マウス操作を受け付ける
 " set mouse=a
+" インサートモードからノーマルモードへの切り替え時間を設定
+set ttimeoutlen=5
 " ヤンクをClipboardに入れる
 if has("mac")
     set clipboard+=unnamed
