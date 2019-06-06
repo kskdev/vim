@@ -9,9 +9,9 @@ repo = 'Shougo/dein.vim'
 
 [[plugins]]  # カラースキーマの設定(テーマ一覧:http://vimcolors.com/ , flazz/vim-colorschemesもおすすめ)
 # my fav : joshdick/onedark.vim cocopon/iceberg.vim 'morhetz/gruvbox'
-repo = 'cocopon/iceberg.vim'
+repo = 'morhetz/gruvbox'
 hook_add = '''
-colorscheme iceberg
+colorscheme gruvbox
 set background=dark
 '''
 
@@ -20,35 +20,37 @@ set background=dark
 repo = 'itchyny/lightline.vim'
 hook_add = '''
 let g:lightline = {
-            \  'colorscheme': 'wombat',
-            \  'mode_map': {'c': 'NORMAL'},
-            \  'active': {
-            \    'left': [
-            \        [ 'mode', 'paste' ], 
-            \        [ 'fugitive' ],
-            \        [ 'readonly', 'relativepath', 'modified' ]
-            \    ],
-            \    'right':[
-            \        [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
-            \        ['lineinfo'],
-            \        [ 'filetype', 'fileformat', 'fileencoding' ]
-            \    ],
-            \  },
-            \  'component': {
-            \        'linenum': '%L',
-            \        'lineinfo': '%l/%L',
-            \        'relativepath': '%f'
-            \  },
-            \    'component_function': {
-            \        'modified': 'LightlineModified',
-            \        'readonly': 'LightlineReadonly',
-            \        'fugitive': 'LightlineFugitive',
-            \        'filename': 'LightlineFilename',
-            \        'fileformat': 'LightlineFileformat',
-            \        'filetype': 'LightlineFiletype',
-            \        'fileencoding': 'LightlineFileencoding',
-            \        'mode': 'LightlineMode'
-            \    },
+            \'colorscheme': 'wombat',
+            \'mode_map': {'c': 'NORMAL'},
+            \'active': {
+            \   'left': [
+            \       [ 'mode', 'paste' ],
+            \       [ 'fugitive' ],
+            \       [ 'readonly', 'relativepath', 'modified' ]
+            \   ],
+            \   'right':[
+            \       [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
+            \       ['lineinfo'],
+            \       [ 'filetype', 'fileformat', 'fileencoding' ]
+            \   ],
+            \},
+            \'component': {
+            \   'linenum': '%L',
+            \   'lineinfo': '%l/%L',
+            \   'relativepath': '%f'
+            \},
+            \'component_function': {
+            \   'modified': 'LightlineModified',
+            \   'readonly': 'LightlineReadonly',
+            \   'fugitive': 'LightlineFugitive',
+            \   'filename': 'LightlineFilename',
+            \   'fileformat': 'LightlineFileformat',
+            \   'filetype': 'LightlineFiletype',
+            \   'fileencoding': 'LightlineFileencoding',
+            \   'mode': 'LightlineMode'
+            \},
+            \'separator': { 'left': '', 'right': '' },
+            \'subseparator': { 'left': '|', 'right': '|' }
             \}
 
 function! LightlineModified()
@@ -97,20 +99,51 @@ endfunction
 [[plugins]]  # ALEによるlint結果をステータスラインに表示するためのlightlineの拡張
 repo = 'maximbaz/lightline-ale'
 depends = ['lightline.vim', 'ale']
-hook_add = '''
+hook_source = '''
 let g:lightline.component_expand = {
-      \  'linter_checking': 'lightline#ale#checking',
-      \  'linter_warnings': 'lightline#ale#warnings',
-      \  'linter_errors': 'lightline#ale#errors',
-      \  'linter_ok': 'lightline#ale#ok',
-      \ }
+            \'linter_checking': 'lightline#ale#checking',
+            \'linter_warnings': 'lightline#ale#warnings',
+            \'linter_errors': 'lightline#ale#errors',
+            \'linter_ok': 'lightline#ale#ok',
+            \ }
 let g:lightline.component_type = {
-      \     'linter_checking': 'right',
-      \     'linter_warnings': 'warning',
-      \     'linter_errors': 'error',
-      \     'linter_ok': 'right',
-      \ }
+            \'linter_checking': 'right',
+            \'linter_warnings': 'warning',
+            \'linter_errors': 'error',
+            \'linter_ok': 'right',
+            \}
 '''
+
+
+[[plugins]]  # ウィンドウ上部のタブを拡張
+repo = 'mengelbrecht/lightline-bufferline'
+depends = ['lightline.vim']
+hook_add = '''
+" タブを常に表示
+set showtabline=2
+'''
+hook_source = '''
+" バッファ名に番号を付与
+let g:lightline#bufferline#show_number  = 2
+" バッファ名を表示するときにパスを省略しない
+let g:lightline#bufferline#shorten_path = 0
+" 名前の付いていないバッファが表示された時の標記方法
+let g:lightline#bufferline#unnamed      = '[No Name]'
+
+" バッファの表示設定
+let g:lightline#bufferline#filename_modifier = ':t'
+let g:lightline.tabline                      = {'left': [['buffers']], 'right': [['close']]}
+let g:lightline.component_expand             = {'buffers': 'lightline#bufferline#buffers'}
+let g:lightline.component_type               = {'buffers': 'tabsel'}
+
+" TODO バッファ番号と操作する値が一致しない.理由はCtrlPが原因らしい
+" CtrlPがバッファ番号2を使用している???
+" 詳しくは次を参照 : https://stackoverflow.com/questions/28394713/vim-what-happened-to-buffer-2
+'''
+
+
+[[plugins]]  # ディレクトリツリーの表示
+repo = 'scrooloose/nerdtree'
 
 
 [[plugins]]  # インデントの可視化 
@@ -366,7 +399,7 @@ repo = 'Shougo/neosnippet-snippets'
 # スニペットの動作定義
 [[plugins]]
 repo = 'Shougo/neosnippet.vim'
-depends = ['neosnippet-snippets']  # TODO ここを消すと補完候補が表示されなくなる... Why??
+depends = ['neosnippet-snippets']  # スニペットファイルに依存する機能のためほぼ必須
 on_ft = ['snippet']
 hook_add = '''
 " 設定はデフォルト設定のまま
