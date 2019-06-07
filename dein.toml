@@ -7,8 +7,8 @@
 repo = 'Shougo/dein.vim'
 
 
-[[plugins]]  # カラースキーマの設定(テーマ一覧:http://vimcolors.com/ , flazz/vim-colorschemesもおすすめ)
-# my fav : joshdick/onedark.vim cocopon/iceberg.vim 'morhetz/gruvbox'
+[[plugins]]  # カラースキーマの設定(テーマ一覧:http://vimcolors.com/)
+# my favorite : joshdick/onedark.vim cocopon/iceberg.vim 'morhetz/gruvbox'
 repo = 'morhetz/gruvbox'
 hook_add = '''
 colorscheme gruvbox
@@ -123,8 +123,8 @@ hook_add = '''
 set showtabline=2
 '''
 hook_source = '''
-" バッファ名に番号を付与
-let g:lightline#bufferline#show_number  = 2
+" バッファ名に番号を表示しない
+let g:lightline#bufferline#show_number  = 0
 " バッファ名を表示するときにパスを省略しない
 let g:lightline#bufferline#shorten_path = 0
 " 名前の付いていないバッファが表示された時の標記方法
@@ -136,9 +136,8 @@ let g:lightline.tabline                      = {'left': [['buffers']], 'right': 
 let g:lightline.component_expand             = {'buffers': 'lightline#bufferline#buffers'}
 let g:lightline.component_type               = {'buffers': 'tabsel'}
 
-" TODO バッファ番号と操作する値が一致しない.理由はCtrlPが原因らしい
-" CtrlPがバッファ番号2を使用している???
-" 詳しくは次を参照 : https://stackoverflow.com/questions/28394713/vim-what-happened-to-buffer-2
+" TODO バッファ番号が連続しない理由は以下のURLを参考に
+" https://stackoverflow.com/questions/28394713/vim-what-happened-to-buffer-2
 '''
 
 
@@ -214,25 +213,29 @@ let g:gitgutter_sign_removed='-'
 '''
 
 
-[[plugins]]  # Ctrl+p でファイルの検索
-repo = 'ctrlpvim/ctrlp.vim'
-hook_source = '''
-" キャッシュディレクトリの設定
-let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
-" キャッシュを使用して検索を高速化 (ファイルサイズが大きい場合効果的)
-let g:ctrlp_use_caching = 1
-" vim終了時にキャッシュをクリアしない
-let g:ctrlp_clear_cache_on_exit = 0
-" 遅延再描画
-let g:ctrlp_lazy_update = 1
-" CtrlPのウィンドウ最大高さ
-let g:ctrlp_max_height = 10
-" 無視するディレクトリ
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn|idea)$',
-  \ 'file': '\v\.(exe|so|dll)$',
-  \ 'link': 'some_bad_symbolic_links',
-  \ }
+[[plugins]]  # ファイル検索 プラグイン(ctrlpより高速なため採用)
+repo = 'junegunn/fzf'
+build = './install --all'
+merged = 0
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+depends = ['fzf']
+hook_add = '''
+nnoremap <leader><leader> :Commands<CR>
+" Ctrl + b で現在開いているバッファの一覧表示及び絞り込み
+nnoremap <C-b> :Buffers<CR>
+" ripgrepによる文字列検索 (TODO 使い方がよくわからん)
+nnoremap <C-g> :Rg<Space>
+" Ctrl + p でファイル検索
+nnoremap <C-p> :call FzfOmniFiles()<CR>
+fun! FzfOmniFiles()
+  let is_git = system('git status')
+  if v:shell_error
+    :Files
+  else
+    :GitFiles
+  endif
+endfun
 '''
 
 
@@ -245,7 +248,7 @@ repo = 'jiangmiao/auto-pairs'
 
 
 [[plugins]]  # テキストを囲う
-repo = "tpope/vim-surround"
+repo = 'tpope/vim-surround'
 # visual mode -> S' : 選択範囲を囲む
 # normal mode -> cs': 囲んでいる範囲を置換
 # normal mode -> ds': 囲んでいる範囲を削除
