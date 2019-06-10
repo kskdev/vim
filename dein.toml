@@ -3,10 +3,6 @@
 # https://qiita.com/kawaz/items/ee725f6214f91337b42b
 
 
-[[plugins]]  # プラグインマネージャー
-repo = 'Shougo/dein.vim'
-
-
 [[plugins]]  # カラースキーマの設定(テーマ一覧:http://vimcolors.com/)
 # my favorite : joshdick/onedark.vim cocopon/iceberg.vim 'morhetz/gruvbox'
 repo = 'morhetz/gruvbox'
@@ -16,7 +12,10 @@ set background=dark
 '''
 
 
-[[plugins]]  # ステータスバーカスタマイズ
+[[plugins]]  # ステータスバーカスタマイズ 
+# 依存関係にあるプラグイン1:'maximbaz/lightline-ale'
+# 依存関係にあるプラグイン2:'mengelbrecht/lightline-bufferline'
+# 依存関係にあるプラグイン3:'w0rp/ale'
 repo = 'itchyny/lightline.vim'
 hook_add = '''
 let g:lightline = {
@@ -24,20 +23,20 @@ let g:lightline = {
             \'mode_map': {'c': 'NORMAL'},
             \'active': {
             \   'left': [
-            \       [ 'mode', 'paste' ],
-            \       [ 'fugitive' ],
-            \       [ 'readonly', 'relativepath', 'modified' ]
+            \       ['mode', 'paste'],
+            \       ['fugitive'],
+            \       ['readonly', 'relativepath', 'modified'],
             \   ],
             \   'right':[
-            \       [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
+            \       ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok'],
+            \       ['filetype', 'fileformat', 'fileencoding'],
             \       ['lineinfo'],
-            \       [ 'filetype', 'fileformat', 'fileencoding' ]
             \   ],
             \},
             \'component': {
             \   'linenum': '%L',
             \   'lineinfo': '%l/%L',
-            \   'relativepath': '%f'
+            \   'relativepath': '%f',
             \},
             \'component_function': {
             \   'modified': 'LightlineModified',
@@ -47,11 +46,37 @@ let g:lightline = {
             \   'fileformat': 'LightlineFileformat',
             \   'filetype': 'LightlineFiletype',
             \   'fileencoding': 'LightlineFileencoding',
-            \   'mode': 'LightlineMode'
+            \   'mode': 'LightlineMode',
             \},
-            \'separator': { 'left': '', 'right': '' },
-            \'subseparator': { 'left': '|', 'right': '|' }
+            \'component_expand': {
+            \   'linter_checking': 'lightline#ale#checking',
+            \   'linter_warnings': 'lightline#ale#warnings',
+            \   'linter_errors': 'lightline#ale#errors',
+            \   'linter_ok': 'lightline#ale#ok',
+            \   'buffers': 'lightline#bufferline#buffers',
+            \},
+            \'component_type': {
+            \   'linter_checking': 'right',
+            \   'linter_warnings': 'warning',
+            \   'linter_errors': 'error',
+            \   'linter_ok': 'right',
+            \   'buffers': 'tabsel',
+            \},
+            \'tabline': {
+            \   'left': [['buffers']],
+            \   'right': [['close']],
+            \},
+            \'separator': {
+            \   'left': '',
+            \   'right': '',
+            \},
+            \'subseparator': {
+            \   'left': '|',
+            \   'right': '|',
+            \},
             \}
+
+" component_function で利用するための関数定義
 
 function! LightlineModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -100,18 +125,11 @@ endfunction
 repo = 'maximbaz/lightline-ale'
 depends = ['lightline.vim', 'ale']
 hook_source = '''
-let g:lightline.component_expand = {
-            \'linter_checking': 'lightline#ale#checking',
-            \'linter_warnings': 'lightline#ale#warnings',
-            \'linter_errors': 'lightline#ale#errors',
-            \'linter_ok': 'lightline#ale#ok',
-            \ }
-let g:lightline.component_type = {
-            \'linter_checking': 'right',
-            \'linter_warnings': 'warning',
-            \'linter_errors': 'error',
-            \'linter_ok': 'right',
-            \}
+" ステータスラインに表示するlintの表示フォーマットの設定
+let g:lightline#ale#indicator_checking='Linting...'
+let g:lightline#ale#indicator_warnings='Warning:'
+let g:lightline#ale#indicator_errors='Error:'
+let g:lightline#ale#indicator_ok='Checked.'
 '''
 
 
@@ -124,17 +142,13 @@ set showtabline=2
 '''
 hook_source = '''
 " バッファ名に番号を表示しない
-let g:lightline#bufferline#show_number  = 0
-" バッファ名を表示するときにパスを省略しない
-let g:lightline#bufferline#shorten_path = 0
+let g:lightline#bufferline#show_number = 0
+" バッファ名を表示するときにパスを省略型で表示
+let g:lightline#bufferline#shorten_path = 1
 " 名前の付いていないバッファが表示された時の標記方法
-let g:lightline#bufferline#unnamed      = '[No Name]'
-
-" バッファの表示設定
-let g:lightline#bufferline#filename_modifier = ':t'
-let g:lightline.tabline                      = {'left': [['buffers']], 'right': [['close']]}
-let g:lightline.component_expand             = {'buffers': 'lightline#bufferline#buffers'}
-let g:lightline.component_type               = {'buffers': 'tabsel'}
+let g:lightline#bufferline#unnamed = '[No Name]'
+" バッファの表示設定(相対パスで表示)
+let g:lightline#bufferline#filename_modifier = '%f'
 
 " TODO バッファ番号が連続しない理由は以下のURLを参考に
 " https://stackoverflow.com/questions/28394713/vim-what-happened-to-buffer-2
@@ -148,14 +162,14 @@ repo = 'scrooloose/nerdtree'
 [[plugins]]  # インデントの可視化 
 repo = 'nathanaelkane/vim-indent-guides'
 hook_add = '''
-" 色の変更(詳しい配色 'ctermbg vim'等で検索 ) 配色はカラースキーマに合わせて設定した
+" 色の変更(詳しい配色 'ctermbg vim'等で検索 ) 配色はカラースキーマに合わせて設定
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=236
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=238
 '''
 hook_source = '''
 " indent guideの有効
 let g:indent_guides_enable_on_vim_startup = 1
-" 自動で色を付けない
+" 自動配色の無効化
 let g:indent_guides_auto_colors = 0
 " ガイドの幅を設定
 let g:indent_guides_guide_size = 1
@@ -173,16 +187,21 @@ nmap k <Plug>(accelerated_jk_gk)
 
 [[plugins]]  # sキーで特定文字へカーソルジャンプ
 repo = 'easymotion/vim-easymotion'
-hook_add = '''
+hook_source = '''
+" デフォルトキーマッピングの無効化()
 let g:EasyMotion_do_mapping = 0
+" 小文字入力時,大文字も含めて検索
 let g:EasyMotion_smartcase = 1
-let g:EasyMotion_startofline = 0
+" ジャンプ先のターゲットキーを指定
 let g:EasyMotion_keys = 'ASDFGHJKL'
+" ターゲットキーを大文字で表示
 let g:EasyMotion_use_upper = 1
-let g:EasyMotion_enter_jump_first = 1
-nmap s <Plug>(easymotion-s2)
-xmap s <Plug>(easymotion-s2)
-omap z <Plug>(easymotion-s2)
+'''
+hook_add = '''
+" s キーを入力後,easymotionを起動(分割ウィンドウに対応)
+nmap s <Plug>(easymotion-overwin-f2)
+xmap s <Plug>(easymotion-overwin-f2)
+omap s <Plug>(easymotion-overwin-f2)
 '''
 
 
@@ -190,34 +209,38 @@ omap z <Plug>(easymotion-s2)
 repo = 'airblade/vim-gitgutter'
 hook_add = '''
 " タイピング停止から反映されるまでの時間[ms]
-set updatetime=250
+set updatetime=100
 " ハンク(変更点のかたまり)へジャンプ
-nmap <C-d> <Plug>GitGutterNextHunk
-nmap <C-f> <Plug>GitGutterPrevHunk
+nmap <C-f> <Plug>GitGutterNextHunk
+nmap <C-d> <Plug>GitGutterPrevHunk
+" 左端2文字分の空間を常に表示
+set signcolumn=yes
 '''
 hook_source = '''
 " プラグインの有効化
 let g:gitgutter_enabled = 1
-" 左端2文字分の空間を常に表示
-set signcolumn=auto " instead of : let g:gitgutter_sign_column_always=1
-
-" 行のハイライトを起動時から有効にする
+" 行のハイライトを無効化
 let g:gitgutter_highlight_lines = 0
+" 非同期で処理 (非同期処理に対応していない場合機能しない)
 let g:gitgutter_async = 1
-let g:gitgutter_override_sign_column_highlight=1
+" 記号を表示するカラムの背景色変更しない
+let g:gitgutter_override_sign_column_highlight = 1
+" 各記号の変更
 let g:gitgutter_sign_added='+'
 let g:gitgutter_sign_modified='~'
 let g:gitgutter_sign_removed='-'
-" let g:gitgutter_sign_removed_first_line='^'
-" let g:gitgutter_sign_modified_removed='w'
+let g:gitgutter_sign_removed_first_line = '^'
+let g:gitgutter_sign_modified_removed = 'w'
 '''
 
 
-[[plugins]]  # ファイル検索 プラグイン(ctrlpより高速なため採用)
+[[plugins]]  # 曖昧検索が可能なツール. go 実装(ctrlpより高速なため採用)
 repo = 'junegunn/fzf'
 build = './install --all'
 merged = 0
-[[plugins]]
+
+
+[[plugins]]  # 'junegunn/fzf' のvim用プラグイン
 repo = 'junegunn/fzf.vim'
 depends = ['fzf']
 hook_add = '''
@@ -227,19 +250,12 @@ nnoremap <C-b> :Buffers<CR>
 " ripgrepによる文字列検索 (TODO 使い方がよくわからん)
 nnoremap <C-g> :Rg<Space>
 " Ctrl + p でファイル検索
-nnoremap <C-p> :call FzfOmniFiles()<CR>
-fun! FzfOmniFiles()
-  let is_git = system('git status')
-  if v:shell_error
-    :Files
-  else
-    :GitFiles
-  endif
-endfun
+nnoremap <C-p> :Files<CR>
 '''
 
 
 [[plugins]]  # vimを開きながら編集中のファイルを実行
+# TODO もう少し有効に利用したいところ
 repo = 'thinca/vim-quickrun'
 
 
@@ -254,9 +270,10 @@ repo = 'tpope/vim-surround'
 # normal mode -> ds': 囲んでいる範囲を削除
 
 
-[[plugins]]  # ga で見た目を整形する
+[[plugins]]  # 表示を整える
 repo = 'junegunn/vim-easy-align'
 hook_add = '''
+"  ga 入力後,指定の文字を入力して実行 (in visual mode)
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 '''
@@ -299,31 +316,31 @@ repo = 'Shougo/context_filetype.vim'
 [[plugins]] # 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
 repo = 'osyo-manga/vim-over'
 hook_add = '''
-" Ctrl+h でover.vimの起動 
-nnoremap <C-h> :OverCommandLine <CR>%s//g<Left><Left>
-" カーソル下の単語をハイライト付きで置換
+" Ctrl+s でover.vimの起動 
+nnoremap <C-s> :OverCommandLine <CR>%s//g<Left><Left>
+" ノーマルモード時に sub と入力することでカーソル下の単語をハイライト付きで置換
 nnoremap sub :OverCommandLine<CR>%s/<C-r><C-w>//g<Left><Left>
-" コピーした文字列をハイライト付きで置換
+" ノーマルモード時に subp と入力することでコピーした文字列をハイライト付きで置換
 nnoremap subp y:OverCommandLine<CR>%s!<C-r>=substitute(@0, '!', '\\!', 'g')<CR>!!gI<Left><Left><Left>
 '''
 
 
-# deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
-[[plugins]]
+
+[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
 repo = 'roxma/vim-hug-neovim-rpc'
 if = '!has("nvim")'
 
 
-# deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
-[[plugins]]
+
+[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
 repo = 'roxma/nvim-yarp'
 if = '!has("nvim")'
 
 
-# オートコンプリートプラグイン
-[[plugins]]
+
+[[plugins]]  # オートコンプリートプラグイン
 repo = 'Shougo/deoplete.nvim'
-# on_event = 'InsertEnter'
+on_event = 'InsertEnter'
 hook_add = '''
 " Python3インタープリターのパス指定
 let g:python3_host_prog = g:python3_path
@@ -335,7 +352,6 @@ hook_source = '''
 " ### deopleteの設定 ### "
 " deoplete 有効化
 let g:deoplete#enable_at_startup = 1
-
 " 補完に掛かる時間を指定(ms)
 let g:deoplete#auto_complete_delay = 0
 " 非同期時から同期に移る時間(ms)
@@ -348,79 +364,71 @@ let g:deoplete#enable_camel_case = 1
 let g:deoplete#enable_ignore_case = 1
 " 補完機能が作用するたびに候補表示を再表示するかどうか
 let g:deoplete#enable_refresh_always = 1
-" 大文字小文字の区別
-let g:deoplete#enable_smart_case = 0
-" TODO よくわからん
-let g:deoplete#file#enable_buffer_path = 0
 " 補完候補の表示数の最大値を設定
-let g:deoplete#max_list = 1000
+let g:deoplete#max_list = 10000
 " マルチバイト文字の補完を無効化
 let g:skip_multibyte = 1
 " deopleteの並列処理のスレッド数 (default : 4)
-let g:deoplete#num_processes = 8
+let g:deoplete#num_processes = 4
 
 " ### キーマッピング ### "
 " TAB で補完(順選択)
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 " Shift TAB で補完(逆順選択)
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-" 補完候補選択時，リターンの挙動を制御(選択決定時に改行しない)  " 上手く動作しないので凍結
-" inoremap <expr><CR> pumvisible() ? deoplete#close_popup() : "\<CR>"
 '''
 
 
-# Python用 補完プラグイン
-[[plugins]]
+[[plugins]]  # Python用 補完プラグイン
 repo = 'zchee/deoplete-jedi'
 on_ft = ['python']
+depends = ['Shougo/deoplete.nvim']
 hook_source = '''
 " 利用するインタプリタの指定
 let g:deoplete#sources#jedi#python_path = g:python3_path
 '''
 
 
-# docker用 補完プラグイン
-[[plugins]]
+
+[[plugins]]  # docker用 補完プラグイン
 repo = 'zchee/deoplete-docker'
+on_ft = ['Dockerfile']
+depends = ['Shougo/deoplete.nvim']
 
 
-# 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
-[[plugins]]
+
+[[plugins]]  # 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
 repo = 'ujihisa/neco-look'
+depends = ['Shougo/deoplete.nvim']
 
 
-# vimコマンド補完用プラグイン
-[[plugins]]
+
+[[plugins]]  # vimコマンド補完用プラグイン
 repo = 'Shougo/neco-vim'
+depends = ['Shougo/deoplete.nvim']
 
 
-# スニペットファイル
-[[plugins]]
+[[plugins]]  # tex記述支援プラグイン
+repo = 'lervag/vimtex'
+hook_source = '''
+'''
+
+
+
+[[plugins]]  # スニペットファイル
 repo = 'Shougo/neosnippet-snippets'
 
 
-# スニペットの動作定義
-[[plugins]]
+
+[[plugins]]  # スニペット補完の動作定義
 repo = 'Shougo/neosnippet.vim'
-depends = ['neosnippet-snippets']  # スニペットファイルに依存する機能のためほぼ必須
+depends = ['neosnippet-snippets', 'Shougo/deoplete.nvim']
 on_ft = ['snippet']
 hook_add = '''
 " 設定はデフォルト設定のまま
-" Plugin key-mappings.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
-
-" SuperTab like snippets behavior.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-"imap <expr><TAB>
-" \ pumvisible() ? "\<C-n>" :
-" \ neosnippet#expandable_or_jumpable() ?
-" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
 " For conceal markers.
 if has('conceal')
   set conceallevel=2 concealcursor=niv
@@ -428,7 +436,7 @@ endif
 '''
 
 
-[[plugins]]
+[[plugins]]  # コードチェッカー(linter)
 repo = 'w0rp/ale'
 hook_add = '''
 " エラーと警告の表示色を変更
@@ -443,15 +451,15 @@ nmap <C-k> <Plug>(ale_previous)
 hook_source = '''
 " ### Linter(Warning Error チェック)の設定 ### "
 " 利用するLinterの指定
-let g:ale_linters = {'python': ['flake8', 'mypy', 'pylint'],}
-" エラー・警告表示の行を常に表示
+let g:ale_linters = {'python': ['flake8', 'mypy', 'pylint'],'tex':['textlint'],}
+" エラー・警告表示記号をシンボルカラムに常に表示
 let g:ale_sign_column_always = 1
 " 保存時にLinterを実行
 let g:ale_lint_on_save = 1
-" ファイルを開いた時，lint実行設定	
+" ファイルを開いた時，lint実行
 let g:ale_lint_on_enter = 1
-" 編集時にLinterの実行設定
-let g:ale_lint_on_text_changed = 'never'
+" 編集時にLinterを実行しない
+let g:ale_lint_on_text_changed = 0
 " 余計な空白の警告表示設定
 let b:ale_warn_about_trailing_whitespace = 0
 " 警告表示時の文字設定
@@ -463,16 +471,18 @@ let g:ale_maximum_file_size = 1000000
 " エラー箇所の文字背景のハイライトを無効化 (Warningまでハイライトされるのは邪魔)
 let g:ale_set_highlights = 0
 " カーソルを行に合わせたときに表示するメッセージのフォーマット設定
-let g:ale_echo_msg_error_str = 'Error'
-let g:ale_echo_msg_warning_str = 'Warning'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_echo_msg_error_str = '[Error]'
+let g:ale_echo_msg_warning_str = ''
+let g:ale_echo_msg_format = '[%linter%]%severity% %s'
 
-" ### Fixer(コード整形ツール)の設定 ### "
-" TODO 現状，現在利用予定が無いためコメント化している
+" ### Fixer(コード整形/修正ツール)の設定 ### "
+" TODO 現状，現在利用予定が無いため無効化している
 " 利用するFixerの設定
 let b:ale_fixers = {'python': ['autopep8', 'isort', 'black'],}
 " ファイルをセーブした時のみFixerを実行設定	
 let g:ale_fix_on_save = 0
 " 編集時のFixer実行設定
-let g:ale_fix_on_text_changed = 'never'
+let g:ale_fix_on_text_changed = 0
 '''
+
+

@@ -58,7 +58,7 @@ set ignorecase
 set smartcase 
 " 入力文字数を増やすと候補が絞られる
 set incsearch 
-" Esc2回押しで検索ハイライトを削除
+" Escで検索ハイライトを削除
 nnoremap <ESC> :nohlsearch<CR><ESC>
 
 
@@ -90,7 +90,7 @@ set completeopt=menuone
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
 " Normal Mode に戻るためのコマンド
-inoremap <silent> <ESC><ESC> <ESC>
+" inoremap <silent> <ESC><ESC> <ESC>
 inoremap <silent> fff <ESC>
 nnoremap <silent> fff <ESC>
 vnoremap <silent> fff <ESC>
@@ -137,7 +137,6 @@ if &runtimepath !~# '/dein.vim'
     execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 endif
 
-
 " tomlファイルのディレクトリをセット
 if has('nvim')
     let s:toml_dir = expand('~/.config/nvim')
@@ -146,12 +145,14 @@ else
 endif
 
 " プラグインのロード(tomlファイルの内容)
-" if dein#load_state(s:dein_dir)
+if dein#load_state(s:dein_dir)
     call dein#begin(s:dein_dir)
+    " dein.vimのインストール
+    call dein#add('Shougo/dein.vim')
+    " その他プラグインのインストール
     call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
     call dein#end()
-"     call dein#save_state()  " TODO 初回起動時以外deopleteが起動しなくなるのを防ぐためコメント化
-" endif
+endif
 
 
 " プラグインが入っていなければvim起動時に自動でインストール

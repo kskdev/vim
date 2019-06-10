@@ -1,12 +1,13 @@
 # About
 ぼくのかんがえたさいきょうのvimかいはつかんきょーをつくる
-
 (永遠に終わらないのでは...?)
 
-## Target Environment
+目標:なるべくポータブルで高機能なエディタを目指す
 
-- Vim 8 over
+## Target Environment
+- vim 8
 - neovim
+- vim 7 は非同期処理が公式だけでは走らないので見送り(本当は対応したい... vimprocとか使わずに)
 
 ## How to install
 1. $ git clone https://github.com/kskdev/vim
@@ -16,8 +17,7 @@
 
 (表示が色々とおかしなことになるかもしれないが，端末を開き直せばOK)
 
-基本的にはここで終了． <br>
-もしvimのバージョンが8未満なら確実にエラーメッセージが飛んでくるため，以下を実行して回避<br>
+基本的にはここで終了.
 
 vim8のインストール方法(Ubuntu)は以下の通り．
 ```
@@ -26,7 +26,8 @@ sudo apt update
 sudo apt install vim
 ```
 
-vim8でdeopleteを有効化する場合はpythonの設定周りで少し手間がかかる．
+vim8でdeopleteやdeniteを有効化する場合はpythonの設定周りで少し手間がかかる．
+(deopleteやdeniteはpythonを利用するため)
 
 面倒な場合はneovimインストールを推奨．
 neovimのインストール方法(Ubuntu)は以下の通り．
@@ -38,11 +39,12 @@ apt-get install -y neovim
 pip install neovim
 ```
 
-## Schedule
+## Update log
 - 2019/06/07
   - ctrlpからfzfへ以降
   - statuslineのプラグインをairlineからlightlineへ以降
-  - neovim(MBP)にて動作確認
+    - statuslineにALEの警告とエラーが表示されなかった問題を修正
+  - neovim(MBP)にて動作確認. vim8(MBP)でも動作を確認
 - 2019/04/30
   - 手元のMBPでvim8.1 及び neovim で動作を確認．
   - ALEなどを追加 & 補完プラグインが上手く動作しないときがあった問題を修正
@@ -55,7 +57,7 @@ pip install neovim
 
 ## Plugins
 
-面白そうなプラグインについて簡単に触れる
+面白そうなプラグイン(現在追加したプラグイン)について簡単に触れる
 
 - 'Shougo/dein.vim'
   - 暗黒美夢王 製のプラグインマネージャー (この他のプラグイン管理はこいつに一任)
@@ -99,9 +101,10 @@ pip install neovim
   - TODO : 画面左端に表示しているが,ALEと競合している... いつか頑張って直す
 
 - 'junegunn/fzf'
-  - ファイル検索
+  - ファイル検索ツール
   - 同等の機能を有した ctrlp より高速だったためこちらを採用
-  - このプラグインはビルド用? 本体機能は 'junegunn/fzf.vim' なのか? 
+  - このプラグインはビルド用
+  - vim用のプラグインは 'junegunn/fzf.vim' として提供
 
 - 'thinca/vim-quickrun'
   - vimを開きながら編集中のファイルを実行 (:Quickrun)
@@ -168,6 +171,10 @@ pip install neovim
 
 - 'ujihisa/neco-look'
   - deopleteに適応した英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
+
+- 'lervag/vimtex'
+  - tex記述用支援プラグイン
+  - 詳しい仕様はまだ調査中...
 
 - 'Shougo/neosnippet.vim'
   - 定義されたスニペットを起動する
