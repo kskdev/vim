@@ -1,6 +1,6 @@
 "//		vim setting and tips		//
 
-"Backspaceで既存の文字を削除できるように設定
+"Backspaceで何でも文字を削除できるように設定
 set backspace=start,eol,indent 
 " バッファの文字コードの設定
 set encoding=utf-8 
@@ -14,17 +14,6 @@ set noswapfile
 set nobackup 
 " 背景の透過処理
 highlight Normal ctermbg=none
-" マウス操作を受け付ける
-" set mouse=a
-" インサートモードからノーマルモードへの切り替え時間を設定
-set ttimeoutlen=5
-" ヤンクをClipboardに入れる
-if has("mac")
-    set clipboard+=unnamed
-elseif has("unix")
-    set clipboard+=unnamedplus
-else
-endif
 
 :"::::::::::::::::::::::::::::::::::
 "::::::::::display setting
@@ -53,14 +42,13 @@ set notitle
 "::::::::::search setting
 " 検索結果のハイライト表示
 set hlsearch 
-" 大文字小文字を無視して検索．smartcaseとの組み合わせで，小文字検索:大小文字を無視 and 大文字検索:大小文字を区別
-set ignorecase 
+" 小文字入力時,大文字も含めて検索
+set ignorecase
 set smartcase 
 " 入力文字数を増やすと候補が絞られる
 set incsearch 
 " Escで検索ハイライトを削除
 nnoremap <ESC> :nohlsearch<CR><ESC>
-
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::indent setting
@@ -87,15 +75,15 @@ set completeopt=menuone
 " スラッシュを入力した時，ファイルパス補完が自動発動 (deopleteに任せるので不要)
 " imap <expr> / pumvisible() ? "\<C-E>/\<C-X>\<C-F>\<C-P>" : "/\<C-X>\<C-F>\<C-P>"
 
+" 補完候補のポップアップ数
+set pumheight=12
+
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
 " Normal Mode に戻るためのコマンド
-" inoremap <silent> <ESC><ESC> <ESC>
-inoremap <silent> fff <ESC>
-nnoremap <silent> fff <ESC>
-vnoremap <silent> fff <ESC>
+inoremap fff <Esc>
 
-" vimのファイルパス補完のマッピングを変更
+"  vimのファイルパス補完のマッピングを変更
 inoremap <C-x><C-f> <C-X><C-F><C-P>
 
 " ノーマルモード時だけ ; と : を入れ替える(US配列に打ちやすさを考慮)
@@ -105,55 +93,106 @@ nnoremap ;; :
 inoremap <C-h> <Left>
 inoremap <C-l> <Right>
 
+" 連続入力が必要なコマンドの入力受付時間[ms]
+set timeoutlen=300
+
+" 画面切り替え(Ctrl+wを2回も押すのは面倒)
+nnoremap <C-w> <C-w><C-w>
+
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"
-"   dein.vim setting
-"
+"  /$$$$$$$            /$$          
+"  | $$__  $$          |__/          
+"  | $$  \ $$  /$$$$$$  /$$ /$$$$$$$ 
+"  | $$  | $$ /$$__  $$| $$| $$__  $$
+"  | $$  | $$| $$$$$$$$| $$| $$  \ $$
+"  | $$  | $$| $$_____/| $$| $$  | $$
+"  | $$$$$$$/|  $$$$$$$| $$| $$  | $$
+"  |_______/  \_______/|__/|__/  |__/
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" OSごとの設定
+if has('mac') " mac用の設定
+    " ヤンクをClipboardに入れる
+    set clipboard+=unnamed
+    " Pythonインタープリターのパス指定
+    let g:python3_path = substitute(system('which python3'),"\n","","")
+    let g:python2_path = substitute(system('which python2'),"\n","","")
+    " プラグインのパス指定
+    let s:neovim_dein_dir = expand('~/.config/nvim')
+    let s:vim_dein_dir = expand('~/.vim/dein')
+    let s:neovim_toml_dir = expand('~/.config/nvim')
+    let s:vim_toml_dir = expand('~/.vim')
+
+elseif has('unix') " unix用の設定
+    " ヤンクをClipboardに入れる
+    set clipboard+=unnamedplus
+    " Pythonインタープリターのパス指定
+    let g:python3_path = expand(substitute(system('which python3'),"\n","",""))
+    let g:python2_path = expand(substitute(system('which python2'),"\n","",""))
+    " プラグインのパス指定
+    let s:neovim_dein_dir = expand('~/.config/nvim')
+    let s:vim_dein_dir = expand('~/.vim/dein')
+    let s:neovim_toml_dir = expand('~/.config/nvim')
+    let s:vim_toml_dir = expand('~/.vim')
+
+elseif has('win64') " 64bit_windows用の設定
+    " Pythonインタープリターのパス指定
+    let g:python3_path = expand('~\Anaconda3\python.exe')
+    " プラグインのパス指定
+    let s:neovim_dein_dir = expand('~\.cache\dein')
+    let s:vim_dein_dir = expand('~\.cache\dein')
+    let s:neovim_toml_dir = expand('~\AppData\Local\nvim')
+    let s:vim_toml_dir = expand('~\.cache\dein')
+
+elseif has('win32unix') " Cygwin固有の設定
+    echo 'No implementation!'
+elseif has('win32') " 32bit_windows固有の設定
+    echo 'No implementation!'
+endif
+
+
+" Python3インタープリターのパス指定
+let g:python3_host_prog = g:python3_path
+" let g:python_host_prog = g:python2_path
+
+" viとの互換を切る
 if &compatible
     set nocompatible
 endif
 
-" dein.vimインストール時に指定したディレクトリをセット
+" dein.vimとtomlファイルのパスをセット
 if has('nvim')
-    let s:dein_dir = expand('~/.config/nvim')
+    let g:dein_dir = s:neovim_dein_dir
+    let s:toml_dir = s:neovim_toml_dir
 else
-    let s:dein_dir = expand('~/.vim/dein')
+    let g:dein_dir = s:vim_dein_dir
+    let s:toml_dir = s:vim_toml_dir
 endif
 
-" Pythonインタープリターのパス指定
-let g:python3_path = substitute(system('which python3'),"\n","","")
-let g:python2_path = substitute(system('which python2'),"\n","","")
-
 " dein.vimの実体があるディレクトリをセット
-let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+if has('mac') || has('unix')
+    let s:dein_repo_dir = g:dein_dir . '/repos/github.com/Shougo/dein.vim'
+else
+    " let s:dein_repo_dir = g:dein_dir . '\repos\github.com\Shougo\dein.vim'
+    let s:dein_repo_dir = g:dein_dir . '/repos/github.com/Shougo/dein.vim'
+endif
 
 " dein.vimが存在していない場合はgithubからclone
 if &runtimepath !~# '/dein.vim'
     if !isdirectory(s:dein_repo_dir)
         execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
     endif
-    execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+    execute 'set runtimepath^=' . s:dein_repo_dir
 endif
 
-" tomlファイルのディレクトリをセット
-if has('nvim')
-    let s:toml_dir = expand('~/.config/nvim')
-else
-    let s:toml_dir = expand('~/.vim')
-endif
-
-" プラグインのロード(tomlファイルの内容)
-if dein#load_state(s:dein_dir)
-    call dein#begin(s:dein_dir)
-    " dein.vimのインストール
-    call dein#add('Shougo/dein.vim')
-    " その他プラグインのインストール
-    call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
-    call dein#end()
-endif
-
+" プラグインのロード
+call dein#begin(g:dein_dir)
+" dein.vimのインストール
+call dein#add(s:dein_repo_dir)
+" その他プラグインのインストール
+call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
+call dein#end()
 
 " プラグインが入っていなければvim起動時に自動でインストール
 if dein#check_install()
@@ -164,4 +203,3 @@ filetype on
 filetype plugin on
 filetype indent on
 syntax on
-

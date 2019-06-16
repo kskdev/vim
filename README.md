@@ -12,14 +12,14 @@
 ## How to install
 1. $ git clone https://github.com/kskdev/vim
 2. $ cd ./vim
-3. $ sh ./install-[neo]vim.sh
+3. $ sh ./install-[win-][neo]vim.sh
 4. [n]vimを起動したらプラグインのインストールが開始
 
 (表示が色々とおかしなことになるかもしれないが，端末を開き直せばOK)
 
 基本的にはここで終了.
 
-vim8のインストール方法(Ubuntu)は以下の通り．
+因みにvim8のインストール方法(Ubuntu)は以下の通り．
 ```
 sudo add-apt-repository ppa:jonathonf/vim
 sudo apt update
@@ -31,17 +31,43 @@ vim8でdeopleteやdeniteを有効化する場合はpythonの設定周りで少�
 
 面倒な場合はneovimインストールを推奨．
 neovimのインストール方法(Ubuntu)は以下の通り．
-pip install はdeopleteなどを利用する場合，必須のプラグイン.
+#### Ubuntu
 ```
 add-apt-repository ppa:neovim-ppa/unstable
 apt-get update
 apt-get install -y neovim
 pip install neovim
 ```
+#### Mac
+```
+brew install neovim
+```
+#### Windows
+- https://github.com/neovim/neovim/releases のlatest releaseからzipをダウンロードして展開
+- 展開して出てきた`Neovim`ディレクトリを`C:/Program files`に移動し,パスを通す
+<br>
+<br>
+<br>
+インストールについて詳しいことは,
+https://github.com/neovim/neovim/wiki/Installing-Neovim
+に記述されているので参考にすること
+
+deopleteなどを利用する場合，要求されるPythonのバージョンが3.6.1+だったりする.
+Python3であれば何でも良い訳じゃない...
 
 ## Update log
+- 2019/06/16
+  - windows環境でもだいたい動作するように編集
+    - win, mac, linux で動くようになったはず
+    - fzfはwinだとビルドされなかったのでバイナリを取得する強引な方法で解決
+    - win にはlookコマンドが無いのでdeopleteによる英単語補完に非対応(知らないだけ?)
+  - neovim(MBP, windows10)にて動作確認.
+  - その他，fugitive.vimの導入など微調整
+  - lazyロードの問題を早く対応すること.
+  - deinのstate_save() とload_state()が微妙に機能してない
+    - 利用すると,deoplete周りが動かなくなる...
 - 2019/06/07
-  - ctrlpからfzfへ以降
+  - ctrlpからfzfへ以降(検索速度が速いから)
   - statuslineのプラグインをairlineからlightlineへ以降
     - statuslineにALEの警告とエラーが表示されなかった問題を修正
   - neovim(MBP)にて動作確認. vim8(MBP)でも動作を確認
@@ -84,6 +110,11 @@ pip install neovim
 - 'scrooloose/nerdtree'
   - ファイルツリーを表示したりする
   - 個人的な使い方はツリーを表示するだけ(ファイルを開いたりするのは後述のfzfで行うため)
+  - Ctrl + n でof/off切り替え
+
+- 'mbbill/undotree'
+  - 変更履歴をツリー形式で表示
+  - Ctrl + u でof/off切り替え
 
 - 'nathanaelkane/vim-indent-guides'
   - インデントを可視化する
@@ -100,18 +131,24 @@ pip install neovim
   - gitで管理されているファイルについて編集箇所を可視化
   - TODO : 画面左端に表示しているが,ALEと競合している... いつか頑張って直す
 
+- 'tpope/vim-fugitive'
+  - vim上でgit操作を行うことが可能
+  - :Gdiff によるdiffがお気に入り
+  - lightlineと連携可能
+
 - 'junegunn/fzf'
   - ファイル検索ツール
   - 同等の機能を有した ctrlp より高速だったためこちらを採用
-  - このプラグインはビルド用
   - vim用のプラグインは 'junegunn/fzf.vim' として提供
+  - このプラグインはビルド用
+    - ビルドと言いつつwin対応にはバイナリをwgetしてしまった...
 
 - 'thinca/vim-quickrun'
   - vimを開きながら編集中のファイルを実行 (:Quickrun)
   - 最新のvimではpopupに対応したらしいので私も追従して対応したい...
 
 - 'jiangmiao/auto-pairs'
-  - 括弧を自動で補完してくれる．ただし，補完の効き方が好みじゃないのでsurround.vim あたりに変えたい
+  - 括弧を自動で補完してくれる．ただし，補完の効き方が好みじゃないのでsurround.vim あたりに変えたい(併用している)
 
 - 'tpope/vim-surround'
   - 括弧やクォーテーションなどを囲む時に大変便利なやつ
@@ -161,7 +198,7 @@ pip install neovim
 
 - 'Shougo/deoplete.nvim'
   - 補完プラグイン．単体で使うより追加の専用プラグインと組み合わせることで真価を発揮
-  - 控えめに言って「神プラグイン」
+  - これが使いたいがためにneovimを導入したと言っても過言ではない
 
 - 'zchee/deoplete-jedi'
   - deoplete用 python補完プラグイン
@@ -179,6 +216,7 @@ pip install neovim
 - 'Shougo/neosnippet.vim'
   - 定義されたスニペットを起動する
   - 'Shougo/neosnippet-snippets'や自前のスニペットファイルがあると良い
+  - deoppetなるものもあるらしいがまた今度
 
 - 'Shougo/neosnippet-snippets'
   - 一般的なスニペットファイル

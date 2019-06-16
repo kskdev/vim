@@ -150,6 +150,11 @@ let g:lightline#bufferline#unnamed = '[No Name]'
 " バッファの表示設定(相対パスで表示)
 let g:lightline#bufferline#filename_modifier = '%f'
 
+" タブの色を変更
+let s:palette = g:lightline#colorscheme#wombat#palette
+let s:palette.tabline.tabsel = [['#d0d0d0', '#5f8787', 232, 209, 'bold']]
+unlet s:palette
+
 " TODO バッファ番号が連続しない理由は以下のURLを参考に
 " https://stackoverflow.com/questions/28394713/vim-what-happened-to-buffer-2
 '''
@@ -157,6 +162,30 @@ let g:lightline#bufferline#filename_modifier = '%f'
 
 [[plugins]]  # ディレクトリツリーの表示
 repo = 'scrooloose/nerdtree'
+hook_add = '''
+" Ctrl + n でツリー表示のon/off切り替え
+nnoremap <C-n> :NERDTreeToggle<CR>
+'''
+
+
+[[plugins]]  # 変更履歴をツリー形式で表示
+repo = 'mbbill/undotree'
+hook_add = '''
+" Ctrl + u でツリー表示のon/off切り替え
+nnoremap <C-u> :UndotreeToggle<CR>
+'''
+hook_source = '''
+" ウィンドウのレイアウトを変更(1-4まで)
+let g:undotree_WindowLayout = 1
+" Undotreeのウィンドウの幅
+let g:undotree_SplitWidth = 20
+" タイムスタンプの省略表示の有効化
+let g:undotree_ShortIndicators = 1
+" 変更箇所のハイライト表示
+let g:undotree_HighlightChangedText = 0
+" Undotreeを起動した時,操作領域を移動
+let g:undotree_SetFocusWhenToggle = 1
+'''
 
 
 [[plugins]]  # インデントの可視化 
@@ -234,23 +263,42 @@ let g:gitgutter_sign_modified_removed = 'w'
 '''
 
 
-[[plugins]]  # 曖昧検索が可能なツール. go 実装(ctrlpより高速なため採用)
+[[plugins]]  # vim上でgit操作を可能にする
+repo = 'tpope/vim-fugitive'
+
+
+[[plugins]]  # 曖昧検索(ファジー検索)が可能なツール. go実装(ctrlpより高速なため採用)
 repo = 'junegunn/fzf'
-build = './install --all'
 merged = 0
+hook_post_update = '''
+if has('unix') || has('mac')
+    let g:dein#plugin.build = './install --all'
+elseif has('win64')
+    " windowsの場合ビルド方法が分からないため,バイナリを取得(かなり強引)
+    let s:fzf_target_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_target_dir . '/fzf.exe')) == 0
+        execute '!wget https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-windows_amd64.zip'
+        execute '!unzip fzf-0.18.0-windows_amd64.zip'
+        execute '!mv fzf.exe' s:fzf_target_dir
+        execute '!rm fzf-0.18.0-windows_amd64.zip'
+    endif
+else
+endif
+'''
 
 
 [[plugins]]  # 'junegunn/fzf' のvim用プラグイン
 repo = 'junegunn/fzf.vim'
 depends = ['fzf']
 hook_add = '''
-nnoremap <leader><leader> :Commands<CR>
 " Ctrl + b で現在開いているバッファの一覧表示及び絞り込み
 nnoremap <C-b> :Buffers<CR>
-" ripgrepによる文字列検索 (TODO 使い方がよくわからん)
-nnoremap <C-g> :Rg<Space>
 " Ctrl + p でファイル検索
 nnoremap <C-p> :Files<CR>
+" ステータスラインの非表示化
+autocmd! FileType fzf
+autocmd  FileType fzf set laststatus=0 noshowmode noruler
+  \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 '''
 
 
@@ -290,12 +338,7 @@ repo = 'nelstrom/vim-visual-star-search'
 [[plugins]]  # カーソルキー動作停止+何か表示される
 repo = 'modsound/gips-vim'
 hook_add = '''
-" テキストリストのパスを指定 (english_words or quickref_vim or gundam or tsundere)
-if has('nvim')
-let g:gips_reading_txt = '~/.config/nvim/repos/github.com/modsound/gips-vim/autoload/dict/tsundere.txt'
-else
-let g:gips_reading_txt = '~/.vim/dein/repos/github.com/modsound/gips-vim/autoload/dict/tsundere.txt'
-endif
+" Select english_words, quickref_vim, gundam or tsundere
 '''
 
 
@@ -325,11 +368,9 @@ nnoremap subp y:OverCommandLine<CR>%s!<C-r>=substitute(@0, '!', '\\!', 'g')<CR>!
 '''
 
 
-
 [[plugins]]  # deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
 repo = 'roxma/vim-hug-neovim-rpc'
 if = '!has("nvim")'
-
 
 
 [[plugins]]  # deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
@@ -337,17 +378,9 @@ repo = 'roxma/nvim-yarp'
 if = '!has("nvim")'
 
 
-
 [[plugins]]  # オートコンプリートプラグイン
 repo = 'Shougo/deoplete.nvim'
 on_event = 'InsertEnter'
-hook_add = '''
-" Python3インタープリターのパス指定
-let g:python3_host_prog = g:python3_path
-let g:python_host_prog = g:python2_path
-" 補完候補ポップアップの数を調整
-set pumheight=12
-'''
 hook_source = '''
 " ### deopleteの設定 ### "
 " deoplete 有効化
@@ -389,18 +422,16 @@ let g:deoplete#sources#jedi#python_path = g:python3_path
 '''
 
 
-
 [[plugins]]  # docker用 補完プラグイン
 repo = 'zchee/deoplete-docker'
 on_ft = ['Dockerfile']
 depends = ['Shougo/deoplete.nvim']
 
 
-
 [[plugins]]  # 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
 repo = 'ujihisa/neco-look'
 depends = ['Shougo/deoplete.nvim']
-
+if = 'has("unix") || has("mac")'  # TODO windowsでlookを使う方法を検討
 
 
 [[plugins]]  # vimコマンド補完用プラグイン
@@ -410,14 +441,14 @@ depends = ['Shougo/deoplete.nvim']
 
 [[plugins]]  # tex記述支援プラグイン
 repo = 'lervag/vimtex'
-hook_source = '''
+depends = ['Shougo/deoplete.nvim']
+on_ft = ['tex']
+hook_add = '''
 '''
-
 
 
 [[plugins]]  # スニペットファイル
 repo = 'Shougo/neosnippet-snippets'
-
 
 
 [[plugins]]  # スニペット補完の動作定義
@@ -484,5 +515,4 @@ let g:ale_fix_on_save = 0
 " 編集時のFixer実行設定
 let g:ale_fix_on_text_changed = 0
 '''
-
 
