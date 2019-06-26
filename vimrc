@@ -1,5 +1,4 @@
 "//		vim setting and tips		//
-
 "Backspaceで何でも文字を削除できるように設定
 set backspace=start,eol,indent 
 " バッファの文字コードの設定
@@ -15,7 +14,7 @@ set nobackup
 " 背景の透過処理
 highlight Normal ctermbg=none
 
-:"::::::::::::::::::::::::::::::::::
+"::::::::::::::::::::::::::::::::::
 "::::::::::display setting
 "行数を表示
 set number 
@@ -69,7 +68,6 @@ set wildmenu
 set wildignorecase
 " 補完一覧を表示
 set wildmode=list,full
-
 " 補完候補が1つでもポップアップを表示
 set completeopt=menuone
 " スラッシュを入力した時，ファイルパス補完が自動発動 (deopleteに任せるので不要)
@@ -80,8 +78,6 @@ set pumheight=12
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
-" Normal Mode に戻るためのコマンド
-inoremap fff <Esc>
 
 "  vimのファイルパス補完のマッピングを変更
 inoremap <C-x><C-f> <C-X><C-F><C-P>
@@ -94,11 +90,28 @@ inoremap <C-h> <Left>
 inoremap <C-l> <Right>
 
 " 連続入力が必要なコマンドの入力受付時間[ms]
-set timeoutlen=300
+set timeoutlen=500
+" ESCを押してからノーマルモードに移行するまでの待機時間[ms]
+set ttimeoutlen=10
 
 " 画面切り替え(Ctrl+wを2回も押すのは面倒)
 nnoremap <C-w> <C-w><C-w>
 
+" インサートモードでESCを入力した時,IMEをOFFにする
+" 何とかしてmac版,win版を作りたいが作れるならとっくに誰かが作ってるはず...
+" 現状 macはkarabinerを利用するしか無いかも?
+function! OffFcitx()
+    if has('unix')
+        call system('fcitx-remote -c')
+        echo 'switched [jp] -> [en]'
+    else
+        echo ''
+    endif
+endfunction
+
+inoremap <ESC> <ESC>:call OffFcitx()<CR>
+inoremap fff <ESC>:call OffFcitx()<CR><ESC>
+inoremap fff <ESC>:call OffFcitx()<CR><ESC>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  /$$$$$$$            /$$          
@@ -117,7 +130,6 @@ if has('mac') " mac用の設定
     set clipboard+=unnamed
     " Pythonインタープリターのパス指定
     let g:python3_path = substitute(system('which python3'),"\n","","")
-    let g:python2_path = substitute(system('which python2'),"\n","","")
     " プラグインのパス指定
     let s:neovim_dein_dir = expand('~/.config/nvim')
     let s:vim_dein_dir = expand('~/.vim/dein')
@@ -129,14 +141,13 @@ elseif has('unix') " unix用の設定
     set clipboard+=unnamedplus
     " Pythonインタープリターのパス指定
     let g:python3_path = expand(substitute(system('which python3'),"\n","",""))
-    let g:python2_path = expand(substitute(system('which python2'),"\n","",""))
     " プラグインのパス指定
     let s:neovim_dein_dir = expand('~/.config/nvim')
     let s:vim_dein_dir = expand('~/.vim/dein')
     let s:neovim_toml_dir = expand('~/.config/nvim')
     let s:vim_toml_dir = expand('~/.vim')
 
-elseif has('win64') " 64bit_windows用の設定
+elseif has('win64') && has('win32') " 64bit & 32bit windows用の設定
     " Pythonインタープリターのパス指定
     let g:python3_path = expand('~\Anaconda3\python.exe')
     " プラグインのパス指定
@@ -147,12 +158,10 @@ elseif has('win64') " 64bit_windows用の設定
 
 elseif has('win32unix') " Cygwin固有の設定
     echo 'No implementation!'
-elseif has('win32') " 32bit_windows固有の設定
-    echo 'No implementation!'
 endif
 
 
-" Python3インタープリターのパス指定
+" Python3インタープリターのパス指定(2系を指定する必要はほぼ無いかも)
 let g:python3_host_prog = g:python3_path
 " let g:python_host_prog = g:python2_path
 
@@ -171,12 +180,7 @@ else
 endif
 
 " dein.vimの実体があるディレクトリをセット
-if has('mac') || has('unix')
-    let s:dein_repo_dir = g:dein_dir . '/repos/github.com/Shougo/dein.vim'
-else
-    " let s:dein_repo_dir = g:dein_dir . '\repos\github.com\Shougo\dein.vim'
-    let s:dein_repo_dir = g:dein_dir . '/repos/github.com/Shougo/dein.vim'
-endif
+let s:dein_repo_dir = g:dein_dir . '/repos/github.com/Shougo/dein.vim'
 
 " dein.vimが存在していない場合はgithubからclone
 if &runtimepath !~# '/dein.vim'
@@ -188,9 +192,7 @@ endif
 
 " プラグインのロード
 call dein#begin(g:dein_dir)
-" dein.vimのインストール
 call dein#add(s:dein_repo_dir)
-" その他プラグインのインストール
 call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
 call dein#end()
 

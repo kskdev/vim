@@ -2,41 +2,35 @@
 ぼくのかんがえたさいきょうのvimかいはつかんきょーをつくる
 (永遠に終わらないのでは...?)
 
-目標:なるべくポータブルで高機能なエディタを目指す
+目標:なるべくポータブルで使いやすいエディタを目指す
+
+いつも利用している環境がどんな端末でも一瞬で整ってほしい
 
 ## Target Environment
-- vim 8
 - neovim
-- vim 7 は非同期処理が公式だけでは走らないので見送り(本当は対応したい... vimprocとか使わずに)
+- vim8
+- vim7 は非同期処理が公式だけでは走らない(vimprocとかがいる)ので見送り(本当は対応したい...)
+
+基本的にneovimでのみ動作を確認している.
+
+vim8も**大体**は使える
 
 ## How to install
 1. $ git clone https://github.com/kskdev/vim
 2. $ cd ./vim
-3. $ sh ./install-[win-][neo]vim.sh
-4. [n]vimを起動したらプラグインのインストールが開始
+3. $ sh ./install-[win-]neovim.sh
+4. `nvim`を起動したらプラグインのインストールが開始
 
 (表示が色々とおかしなことになるかもしれないが，端末を開き直せばOK)
 
 基本的にはここで終了.
 
-因みにvim8のインストール方法(Ubuntu)は以下の通り．
-```
-sudo add-apt-repository ppa:jonathonf/vim
-sudo apt update
-sudo apt install vim
-```
-
-vim8でdeopleteやdeniteを有効化する場合はpythonの設定周りで少し手間がかかる．
-(deopleteやdeniteはpythonを利用するため)
-
-面倒な場合はneovimインストールを推奨．
-neovimのインストール方法(Ubuntu)は以下の通り．
+neovimがない場合の,インストール方法は以下の通り．
 #### Ubuntu
 ```
 add-apt-repository ppa:neovim-ppa/unstable
 apt-get update
 apt-get install -y neovim
-pip install neovim
 ```
 #### Mac
 ```
@@ -45,15 +39,46 @@ brew install neovim
 #### Windows
 - https://github.com/neovim/neovim/releases のlatest releaseからzipをダウンロードして展開
 - 展開して出てきた`Neovim`ディレクトリを`C:/Program files`に移動し,パスを通す
-<br>
-<br>
-<br>
+
 インストールについて詳しいことは,
 https://github.com/neovim/neovim/wiki/Installing-Neovim
-に記述されているので参考にすること
+に記述されているので参考に
+<br>
+<br>
 
+vim8でdeopleteやdeniteを有効化する場合はpythonの設定周りで少し手間がかかる．
+
+(deopleteやdeniteはpythonを利用するため)
+
+面倒なのでneovimインストールを推奨．
+
+因みにvim8のインストール方法(Ubuntu)は以下の通り.
+```
+sudo add-apt-repository ppa:jonathonf/vim
+sudo apt update
+sudo apt install vim
+```
+
+<br>
+<br>
+<br>
+
+##### 注意
 deopleteなどを利用する場合，要求されるPythonのバージョンが3.6.1+だったりする.
-Python3であれば何でも良い訳じゃない...
+Python3であれば何でも良い訳じゃない...?
+
+deoplete などを使おうとする場合,python モジュールの`neovim`が必要.
+(バックエンドでpython3を使っているため?)
+
+インストールは `pip install neovim` でOK.
+
+環境の状況は,`:checkhealth`で状況の確認が可能.(Only neovim)
+
+その後,`:UpdateRemotePlugins`を実行してエラーを吐かなければ恐らく動く.(Only neovim)
+
+pythonのパスを指定する必要があるため,その辺は init.vim (vimrc) にて設定する.
+
+
 
 ## Update log
 - 2019/06/16
@@ -64,7 +89,7 @@ Python3であれば何でも良い訳じゃない...
   - neovim(MBP, windows10)にて動作確認.
   - その他，fugitive.vimの導入など微調整
   - lazyロードの問題を早く対応すること.
-  - deinのstate_save() とload_state()が微妙に機能してない
+  - deinのstate_save() とload_state()が微妙に機能してない(使わないことにした)
     - 利用すると,deoplete周りが動かなくなる...
 - 2019/06/07
   - ctrlpからfzfへ以降(検索速度が速いから)
@@ -81,6 +106,13 @@ Python3であれば何でも良い訳じゃない...
 - ALE(Linter)とGitGutter(Diffの表示)が画面左端で競合してる問題を何とかする
   - 出来れば同時に表示したい
 
+## Memo
+- 最近LSPなるものの存在が気になる.
+- インサートモードからノーマルモードに遷移する時,IMEがonのままならoffにするプラグインがほしい(作りたい)
+  - 想像以上にダルそう
+- 意外とCtrlキーを利用するキーマップになってしまった.小指がお亡くなりになる前にキーマップを再検討(無理そう)
+
+
 ## Plugins
 
 面白そうなプラグイン(現在追加したプラグイン)について簡単に触れる
@@ -89,7 +121,7 @@ Python3であれば何でも良い訳じゃない...
   - 暗黒美夢王 製のプラグインマネージャー (この他のプラグイン管理はこいつに一任)
 
 - 'morhetz/gruvbox'
-  - カラースキーマ(エディタの見た目を変更するためのプラグイン
+  - カラースキーマ(エディタの見た目を変更するためのプラグイン)
   - http://vimcolors.com/ この辺りで探したりすると良いかも?
   - 個人的なおすすめ : 'joshdick/onedark.vim' 'cocopon/iceberg.vim' 'morhetz/gruvbox'
 
@@ -101,20 +133,22 @@ Python3であれば何でも良い訳じゃない...
 - 'maximbaz/lightline-ale'
   - ALEによるlint結果をステータスラインに表示するためのlightlineの拡張
   - lightlineとaleに依存
-  - aleの表示をスッキリさせたかった
+  - aleの表示をカスタマイズさせたかった
+  - 別にプラグインでなくても良いような...?
 
 - 'mengelbrecht/lightline-bufferline'
   - ウィンドウ上部のタブ表示の拡張
   - 自分が今どのファイル(バッファ)を開いているかがわかりやすくなる
+  - 画面上部のタブ周りと下部のstatusline周りの色の設定を記述した.
 
 - 'scrooloose/nerdtree'
   - ファイルツリーを表示したりする
   - 個人的な使い方はツリーを表示するだけ(ファイルを開いたりするのは後述のfzfで行うため)
-  - Ctrl + n でof/off切り替え
+  - 現在, Ctrl + n でof/off切り替え
 
 - 'mbbill/undotree'
   - 変更履歴をツリー形式で表示
-  - Ctrl + u でof/off切り替え
+  - 現在, Ctrl + u でof/off切り替え
 
 - 'nathanaelkane/vim-indent-guides'
   - インデントを可視化する
@@ -124,28 +158,32 @@ Python3であれば何でも良い訳じゃない...
   - たのしい(重要)
 
 - 'easymotion/vim-easymotion'
-  - sキー入力後，続けて文字を打つと特定の文字へカーソルがジャンプする
+  - sキー入力後，続けて文字を打つ(2文字 or 1文字+Enter)とジャンプ先の候補が表示され,その文字を入力するばカーソルがジャンプする
   - ジャンプできる範囲は現在が画面に表示されている領域のみ
 
 - 'airblade/vim-gitgutter'
   - gitで管理されているファイルについて編集箇所を可視化
   - TODO : 画面左端に表示しているが,ALEと競合している... いつか頑張って直す
+  - https://github.com/w0rp/ale/issues/569
+  - 現在, Ctrl+d, Ctrl+f でハンク移動
 
 - 'tpope/vim-fugitive'
   - vim上でgit操作を行うことが可能
   - :Gdiff によるdiffがお気に入り
-  - lightlineと連携可能
+  - :Gblame もなかなか
+  - lightlineと連携
 
 - 'junegunn/fzf'
   - ファイル検索ツール
   - 同等の機能を有した ctrlp より高速だったためこちらを採用
+    - fzf: GO-lang製, ctrlp: Pure vim script
   - vim用のプラグインは 'junegunn/fzf.vim' として提供
   - このプラグインはビルド用
-    - ビルドと言いつつwin対応にはバイナリをwgetしてしまった...
+    - ビルドと言いつつwinでやるのは面倒だったからwin環境だけfzf.exeをwgetしてしまった...
 
 - 'thinca/vim-quickrun'
   - vimを開きながら編集中のファイルを実行 (:Quickrun)
-  - 最新のvimではpopupに対応したらしいので私も追従して対応したい...
+  - 最新のvimではpopupに対応したらしい?ので私も追従して対応したい...
 
 - 'jiangmiao/auto-pairs'
   - 括弧を自動で補完してくれる．ただし，補完の効き方が好みじゃないのでsurround.vim あたりに変えたい(併用している)
@@ -187,6 +225,7 @@ Python3であれば何でも良い訳じゃない...
   - プログラムの危ない部分やエラーが出る場所をコード上に示してくれる
   - 設定で色々な言語に対応可能(この設定ファイルではpythonのみ)
   - 割とWarningがキツくて画面が騒がしい... Errorだけでも良いのに...
+  - 現在インサートモードで Ctrl+j or Ctrl+k でWarningとErrorの位置に移動する
 
 #### オートコンプリートプラグイン
 
@@ -204,10 +243,11 @@ Python3であれば何でも良い訳じゃない...
   - deoplete用 python補完プラグイン
 
 - 'zchee/deoplete-docker'
-  - deoplete用 dockerfile記述支援プラグイン
+  - deoplete用 dockerfile記述支援プラグイン(いうほど使っていない)
 
 - 'ujihisa/neco-look'
   - deopleteに適応した英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
+  - 現在win環境は未対応(lookが無い)
 
 - 'lervag/vimtex'
   - tex記述用支援プラグイン
@@ -217,7 +257,9 @@ Python3であれば何でも良い訳じゃない...
   - 定義されたスニペットを起動する
   - 'Shougo/neosnippet-snippets'や自前のスニペットファイルがあると良い
   - deoppetなるものもあるらしいがまた今度
+  - 現在,deopleteの補完候補表示時に補完ポップアップの右端に`[ns]`と書いてあるやつを選び,Ctrl+k で展開
 
 - 'Shougo/neosnippet-snippets'
   - 一般的なスニペットファイル
+  - 自作テンプレートの登録とかもすると便利そうだけど,面倒だからやらない
 
