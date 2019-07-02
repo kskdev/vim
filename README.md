@@ -81,11 +81,15 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 
 
 ## Update log
+- 201907/02
+  - ハイライト機能周りを追加(少しだけ)
 - 2019/06/16
   - windows環境でもだいたい動作するように編集
     - win, mac, linux で動くようになったはず
     - fzfはwinだとビルドされなかったのでバイナリを取得する強引な方法で解決
     - win にはlookコマンドが無いのでdeopleteによる英単語補完に非対応(知らないだけ?)
+      - 2019/06/28 追記:一応MinGWを経由で利用出来るが,面倒なので対応しないことにした.
+        (外部ツールになるべく依存しない環境を作りたい(pythonとfzfは利便性を考慮して仕方なく...))
   - neovim(MBP, windows10)にて動作確認.
   - その他，fugitive.vimの導入など微調整
   - lazyロードの問題を早く対応すること.
@@ -149,6 +153,10 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 - 'mbbill/undotree'
   - 変更履歴をツリー形式で表示
   - 現在, Ctrl + u でof/off切り替え
+
+- 'machakann/vim-highlightedyank'
+  - ヤンク(コピー)領域をハイライト表示する
+    - どこがコピーされたかを可視化するのはNoobieに必須
 
 - 'nathanaelkane/vim-indent-guides'
   - インデントを可視化する

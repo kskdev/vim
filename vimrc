@@ -37,6 +37,15 @@ set laststatus=2
 "エディタの編集タイトルを表示しない
 set notitle 
 
+" 分割ペインの背景色
+augroup ChangeBackground
+  autocmd!
+  " 操作中のペインの背景色定義
+  autocmd WinEnter * highlight Normal guibg=default
+  " 非操作のペインの背景色定義
+  autocmd WinEnter * highlight NormalNC guibg='#102020'
+augroup END
+
 ":::::::::::::::::::::::::::::::::::::
 "::::::::::search setting
 " 検索結果のハイライト表示
@@ -83,7 +92,8 @@ set pumheight=12
 inoremap <C-x><C-f> <C-X><C-F><C-P>
 
 " ノーマルモード時だけ ; と : を入れ替える(US配列に打ちやすさを考慮)
-nnoremap ;; :
+" ただし,検索リピートの邪魔になるので現在は無効化
+" nnoremap ;; :
 
 " インサートモード時左右に動けるようにする
 inoremap <C-h> <Left>

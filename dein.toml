@@ -224,6 +224,18 @@ let g:undotree_SetFocusWhenToggle = 1
 '''
 
 
+[[plugins]]  # ヤンク(コピー)領域の可視化
+repo = 'machakann/vim-highlightedyank'
+hook_add = '''
+" ハイライトカラーの設定
+highlight HighlightedyankRegion cterm=reverse gui=reverse
+'''
+hook_source = '''
+" ハイライト表示する時間[ms]
+let g:highlightedyank_highlight_duration = 500
+'''
+
+
 [[plugins]]  # インデントの可視化 
 repo = 'nathanaelkane/vim-indent-guides'
 hook_add = '''
