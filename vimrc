@@ -56,7 +56,7 @@ set smartcase
 " 入力文字数を増やすと候補が絞られる
 set incsearch 
 " Escで検索ハイライトを削除
-nnoremap <ESC> :nohlsearch<CR><ESC>
+nnoremap <ESC> :nohlsearch<CR>
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::indent setting
@@ -120,8 +120,7 @@ function! OffFcitx()
 endfunction
 
 inoremap <ESC> <ESC>:call OffFcitx()<CR>
-inoremap fff <ESC>:call OffFcitx()<CR><ESC>
-inoremap fff <ESC>:call OffFcitx()<CR><ESC>
+inoremap fff <ESC>:call OffFcitx()<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  /$$$$$$$            /$$          

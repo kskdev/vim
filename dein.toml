@@ -3,6 +3,10 @@
 # https://qiita.com/kawaz/items/ee725f6214f91337b42b
 
 
+[[plugins]]  # :help を日本語化
+repo = 'vim-jp/vimdoc-ja'
+
+
 [[plugins]]  # カラースキーマの設定(テーマ一覧:http://vimcolors.com/)
 # my favorite : joshdick/onedark.vim cocopon/iceberg.vim 'morhetz/gruvbox' 'sonph/onehalf'
 repo = 'morhetz/gruvbox'
@@ -261,6 +265,17 @@ nmap j <Plug>(accelerated_jk_gj)
 nmap k <Plug>(accelerated_jk_gk)
 '''
 
+[[plugins]]  # f キージャンプの拡張
+repo = 'rhysd/clever-f.vim'
+hook_source = '''
+" 検索対象が現在の行に無ければ次の行へ移動
+let g:clever_f_across_no_line = 0
+" 小文字検索->大文字&小文字を対象 大文字検索->大文字のみ対象
+let g:clever_f_smart_case = 1
+" 日本語とかの検索に対応(微妙に対応が悪いので無効化)
+let g:clever_f_use_migemo = 0
+'''
+
 
 [[plugins]]  # 特定文字へカーソルジャンプ
 repo = 'easymotion/vim-easymotion'
@@ -346,7 +361,15 @@ nnoremap <C-p> :Files<CR>
 " ステータスラインの非表示化
 autocmd! FileType fzf
 autocmd  FileType fzf set laststatus=0 noshowmode noruler
-  \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+    \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+" :files コマンドでプレビュー表示
+" TODO windowsに対応できていないっぽい
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+" 可能であれば展開済みバッファへ移動
+let g:fzf_buffers_jump = 1
+" 表示領域を画面下部N%以内にする
+let g:fzf_layout = {'down': '~50%'}
 '''
 
 
@@ -379,8 +402,27 @@ nmap ga <Plug>(EasyAlign)
 repo = 'tomtom/tcomment_vim'
 
 
-[[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
-repo = 'nelstrom/vim-visual-star-search'
+# [[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
+# repo = 'nelstrom/vim-visual-star-search'
+
+
+[[plugins]]  # 検索位置を表示(マッチ数等も表示)
+# TODO ビジュアルモードで任意の範囲の検索がしたい
+repo = 'osyo-manga/vim-anzu'
+hook_add = '''
+" ハイライト箇所の横に (n/MatchNum) 形式で表示
+nmap n <Plug>(anzu-n)<Plug>(anzu-mode)
+nmap N <Plug>(anzu-N)<Plug>(anzu-mode)
+
+" カーソル位置のテキストオブジェクトをハイライト
+" nmap * <Plug>(anzu-star-with-echo)
+" nmap # <Plug>(anzu-sharp-with-echo)
+
+" コマンドラインにステータスを表示
+'''
+hook_post_source = '''
+set statusline=%{anzu#search_status()}
+'''
 
 
 [[plugins]]  # カーソルキー動作停止+何か表示される
