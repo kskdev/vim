@@ -1,41 +1,43 @@
 "//		vim setting and tips		//
 "Backspaceで何でも文字を削除できるように設定
-set backspace=start,eol,indent 
+set backspace=start,eol,indent
 " バッファの文字コードの設定
-set encoding=utf-8 
+set encoding=utf-8
 " 設定した候補から自動で文字コードを設定
 set fileencodings=utf-8,iso-2022-jp,cp932,sjis,euc-jp
 "ファイルフォーマットをOSから自動で設定
 set fileformats=unix,dos,mac
 " スワップファイル不要
-set noswapfile  
+set noswapfile
 " バックアップファイル不要
-set nobackup 
+set nobackup
 " 背景の透過処理
 highlight Normal ctermbg=none
+" □ や○ 文字が崩れ問題を解消
+set ambiwidth=double
 
 "::::::::::::::::::::::::::::::::::
 "::::::::::display setting
 "行数を表示
-set number 
-"ステータスラインに行数を表示 
-set ruler 
+set number
+"ステータスラインに行数を表示
+set ruler
 "カーソル業をハイライト
-set cursorline 
+set cursorline
 "対応する括弧をハイライト
-set showmatch 
+set showmatch
 " showmatchのハイライト時間を調整(1 is 0.1sec)
 set matchtime=1
 "入力中のコマンドを表示
-set showcmd 
+set showcmd
 "現在のコマンドモードを表示
-set showmode 
+set showmode
 "N行余裕を持たせてスクロール
-set scrolloff=3 
+set scrolloff=3
 "ステータスラインを常に表示
-set laststatus=2 
+set laststatus=2
 "エディタの編集タイトルを表示しない
-set notitle 
+set notitle
 
 " 分割ペインの背景色
 augroup ChangeBackground
@@ -49,12 +51,12 @@ augroup END
 ":::::::::::::::::::::::::::::::::::::
 "::::::::::search setting
 " 検索結果のハイライト表示
-set hlsearch 
+set hlsearch
 " 小文字入力時,大文字も含めて検索
 set ignorecase
-set smartcase 
+set smartcase
 " 入力文字数を増やすと候補が絞られる
-set incsearch 
+set incsearch
 " Escで検索ハイライトを削除
 nnoremap <ESC> :nohlsearch<CR>
 
@@ -113,7 +115,7 @@ nnoremap <C-w> <C-w><C-w>
 function! OffFcitx()
     if has('unix')
         call system('fcitx-remote -c')
-        echo 'switched [jp] -> [en]'
+        echo 'switched [fcitx jp] -> [fcitx en]'
     else
         echo ''
     endif
@@ -123,9 +125,9 @@ inoremap <ESC> <ESC>:call OffFcitx()<CR>
 inoremap fff <ESC>:call OffFcitx()<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"  /$$$$$$$            /$$          
-"  | $$__  $$          |__/          
-"  | $$  \ $$  /$$$$$$  /$$ /$$$$$$$ 
+"  /$$$$$$$            /$$
+"  | $$__  $$          |__/
+"  | $$  \ $$  /$$$$$$  /$$ /$$$$$$$
 "  | $$  | $$ /$$__  $$| $$| $$__  $$
 "  | $$  | $$| $$$$$$$$| $$| $$  \ $$
 "  | $$  | $$| $$_____/| $$| $$  | $$

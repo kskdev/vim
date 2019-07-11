@@ -193,10 +193,6 @@ let s:p.tabline.right   = [ [ s:base03,  s:base03  ] ]
 let s:p.normal.error    = [ [ s:base03,  s:red     ] ]
 let s:p.normal.warning  = [ [ s:base023, s:yellow  ] ]
 let g:lightline#colorscheme#wombat#palette = lightline#colorscheme#flatten(s:p)
-
-
-" TODO バッファ番号が連続しない理由は以下のURLを参考に
-" https://stackoverflow.com/questions/28394713/vim-what-happened-to-buffer-2
 '''
 
 
@@ -331,20 +327,63 @@ repo = 'tpope/vim-fugitive'
 
 
 [[plugins]]  # 曖昧検索(ファジー検索)が可能なツール. go実装(ctrlpより高速なため採用)
+# ripgrepによる文字列検索に対応(ripgrep:Rust製の高速grepツール)
+# コマンドラインから利用するなら sudo apt-get install ripgrep の方が良い(恐らくvimでしか使わないためバイナリを拾ってる)
+# 何より余計なインストールの手間を省くことが目標
+# Rustを導入しなくても使えるようにバイナリを拾ってくる方針の方が良い? (別にRustの導入は難しくないが...)
 repo = 'junegunn/fzf'
 merged = 0
 hook_post_update = '''
-if has('unix') || has('mac')
+" --- fzfのインストール	---
+if has('mac') || has('unix')
     let g:dein#plugin.build = './install --all'
 elseif has('win64')
     " windowsの場合ビルド方法が分からないため,バイナリを取得(かなり強引)
     let s:fzf_target_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
     if strlen(glob(s:fzf_target_dir . '/fzf.exe')) == 0
-        execute '!wget https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-windows_amd64.zip'
+        " execute '!wget https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-windows_amd64.zip'
+        execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-windows_amd64.zip'
         execute '!unzip fzf-0.18.0-windows_amd64.zip'
-        execute '!mv fzf.exe' s:fzf_target_dir
-        execute '!rm fzf-0.18.0-windows_amd64.zip'
+        execute '!move fzf.exe' s:fzf_target_dir
+        execute '!del *.zip'
     endif
+else
+endif
+
+" --- ripgrep のインストール ---
+" ripgrepのバイナリを強引に取得
+if has('mac')
+    let s:fzf_target_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_target_dir . '/rg')) == 0
+        execute '!wget https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep-11.0.1-x86_64-apple-darwin.tar.gz'
+        execute '!tar -zxvf ripgrep-11.0.1-x86_64-apple-darwin.tar.gz'
+        execute '!mv ./ripgrep*/rg' s:fzf_target_dir
+        execute '!rm -rf ./ripgrep-11.0.1-x86_64-*'
+    endif
+    
+elseif has('unix')
+    let s:fzf_target_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_target_dir . '/rg')) == 0
+        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep-11.0.1-x86_64-unknown-linux-musl.tar.gz'
+        execute '!tar -zxvf ripgrep-11.0.1-x86_64-unknown-linux-musl.tar.gz'
+        execute '!mv ./ripgrep*/rg' s:fzf_target_dir
+        execute '!rm -rf ./ripgrep-11.0.1-x86_64-unknown-linux-musl*'
+    endif
+
+elseif has('win64')
+    " rg.exeのパスをこのスコープ内で追加したい(まだ出来てない)
+    let s:fzf_target_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_target_dir . '/rg.exe')) == 0
+        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep-11.0.1-x86_64-pc-windows-msvc.zip'
+        execute '!unzip ripgrep-11.0.1-x86_64-pc-windows-msvc.zip'
+        execute '!move rg.exe' s:fzf_target_dir
+        execute '!del *.zip'
+        execute '!del *.ps1'
+        " execute 'set runtimepath^=' . s:fzf_target_dir
+        " execute '!set PATH=%PATH%;' . s:fzf_target_dir
+    endif
+    execute 'set runtimepath+=' . '~/.cache/dein/repos/github.com/junegunn/fzf/bin/rg.exe'
+    " set runtimepath='~/.cache/dein/repos/github.com/junegunn/fzf/bin/rg.exe'
 else
 endif
 '''
@@ -354,22 +393,36 @@ endif
 repo = 'junegunn/fzf.vim'
 depends = ['fzf']
 hook_add = '''
-" Ctrl + b で現在開いているバッファの一覧表示及び絞り込み
-nnoremap <C-b> :Buffers<CR>
+" Ctrl + t で現在開いているバッファの一覧表示及び絞り込み
+nnoremap <C-t> :Buffers<CR>
 " Ctrl + p でファイル検索
 nnoremap <C-p> :Files<CR>
+" Ctrl + g でRipgrep(ripgrepがインストールされていないと使えない)
+nnoremap <C-g> :Rg<CR>
+" Ctrl + h で最近展開したファイルを表示&検索
+nnoremap <C-h> :History<CR>
 " ステータスラインの非表示化
 autocmd! FileType fzf
 autocmd  FileType fzf set laststatus=0 noshowmode noruler
     \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
-" :files コマンドでプレビュー表示
-" TODO windowsに対応できていないっぽい
-command! -bang -nargs=? -complete=dir Files
-    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
 " 可能であれば展開済みバッファへ移動
 let g:fzf_buffers_jump = 1
 " 表示領域を画面下部N%以内にする
-let g:fzf_layout = {'down': '~50%'}
+let g:fzf_layout = {'down': '~40%'}
+
+" :Rg コマンドでプレビュー表示
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:~60%')
+  \           : fzf#vim#with_preview('right:45%'),
+  \   <bang>0)
+
+" :Files コマンドでプレビュー表示
+"  TODO windowsに対応できていないっぽい
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 '''
 
 
@@ -417,11 +470,6 @@ nmap N <Plug>(anzu-N)<Plug>(anzu-mode)
 " カーソル位置のテキストオブジェクトをハイライト
 " nmap * <Plug>(anzu-star-with-echo)
 " nmap # <Plug>(anzu-sharp-with-echo)
-
-" コマンドラインにステータスを表示
-'''
-hook_post_source = '''
-set statusline=%{anzu#search_status()}
 '''
 
 
@@ -597,10 +645,10 @@ let g:ale_echo_msg_warning_str = ''
 let g:ale_echo_msg_format = '[%linter%]%severity% %s'
 
 " ### Fixer(コード整形/修正ツール)の設定 ### "
-" TODO 現状，現在利用予定が無いため無効化している
+" 現状，現在利用予定が無いため無効化している
 " 利用するFixerの設定
 let b:ale_fixers = {'python': ['autopep8', 'isort', 'black'],}
-" ファイルをセーブした時のみFixerを実行設定	
+" ファイルをセーブした時のみFixerを実行設定
 let g:ale_fix_on_save = 0
 " 編集時のFixer実行設定
 let g:ale_fix_on_text_changed = 0

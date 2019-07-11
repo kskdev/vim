@@ -5,9 +5,10 @@
 目標:なるべくポータブルで使いやすいエディタを目指す
 
 いつも利用している環境がどんな端末でも一瞬で整ってほしい
+(プラグインを導入する前にあれこれ操作を要求しないで環境構築したい)
 
 ## Target Environment
-- neovim
+- **neovim**
 - vim8
 - vim7 は非同期処理が公式だけでは走らない(vimprocとかがいる)ので見送り(本当は対応したい...)
 
@@ -16,6 +17,7 @@
 vim8も**大体**は使える
 
 ## How to install
+0. python3系が無ければpython3のインストール(出来れば3.6.1+が望ましい)
 1. $ git clone https://github.com/kskdev/vim
 2. $ cd ./vim
 3. $ sh ./install-[win-]neovim.sh
@@ -78,9 +80,19 @@ deoplete などを使おうとする場合,python モジュールの`neovim`が�
 
 pythonのパスを指定する必要があるため,その辺は init.vim (vimrc) にて設定する.
 
-
+インストール中に通信環境が悪いと上手くインストールされないこともある．
 
 ## Update log
+- 2019/07/09
+  -  ripgrepによる文字列検索に対応(in fzf)
+    - ripgrep:Rust製の高速grepツール(fuckin fast)
+    - windowsでまだ上手く動いていない
+    - コマンドラインから利用するなら sudo apt-get install ripgrep の方が良い
+      - apt経由で入れないのはvimでしか使わないため
+      - 何より余計なインストールの手間を省くことが目標
+    - Rustを導入しなくても使えるようにバイナリを拾ってきた
+      - Rustの導入は難しくないが依存関係が発生するのが嫌い
+
 - 2019/07/07
   - 検索周りのプラグインの更新
   - ctagは導入したいけど外部ツールが必要で面倒
@@ -118,7 +130,7 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 - インサートモードからノーマルモードに遷移する時,IMEがonのままならoffにするプラグインがほしい(作りたい)
   - 想像以上にダルそう
 - 意外とCtrlキーを利用するキーマップになってしまった.小指がお亡くなりになる前にキーマップを再検討(無理そう)
-
+- ctagsとの連携をしようか検討中(tagbarというプラグインの動作が重すぎた)
 
 ## Plugins
 
@@ -137,7 +149,6 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 
 - 'itchyny/lightline.vim'
   - vimのステータスバーを拡張するためのプラグイン
-  - 見た目を整えるために独自で関数を定義しているため，若干わかりにくい
   - 現状,冗長な部分があると感じているが対応はまた今度
 
 - 'maximbaz/lightline-ale'
@@ -150,15 +161,17 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
   - ウィンドウ上部のタブ表示の拡張
   - 自分が今どのファイル(バッファ)を開いているかがわかりやすくなる
   - 画面上部のタブ周りと下部のstatusline周りの色の設定を記述した.
+  - TODO バッファ番号が連続しない理由は以下のURLを参考に
+    - " https://stackoverflow.com/questions/28394713/vim-what-happened-to-buffer-2
 
 - 'scrooloose/nerdtree'
   - ファイルツリーを表示したりする
   - 個人的な使い方はツリーを表示するだけ(ファイルを開いたりするのは後述のfzfで行うため)
-  - 現在, Ctrl + n でof/off切り替え
+  - 現在, [ Ctrl + n ] でof/off切り替え
 
 - 'mbbill/undotree'
   - 変更履歴をツリー形式で表示
-  - 現在, Ctrl + u でof/off切り替え
+  - 現在, [ Ctrl + u ] でof/off切り替え
 
 - 'machakann/vim-highlightedyank'
   - ヤンク(コピー)領域をハイライト表示する
@@ -185,7 +198,7 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
   - gitで管理されているファイルについて編集箇所を可視化
   - TODO : 画面左端に表示しているが,ALEと競合している... いつか頑張って直す
   - https://github.com/w0rp/ale/issues/569
-  - 現在, Ctrl+d, Ctrl+f でハンク移動
+  - 現在, [ Ctrl + d ], [ Ctrl + f ] でハンク移動
 
 - 'tpope/vim-fugitive'
   - vim上でgit操作を行うことが可能
@@ -200,6 +213,19 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
   - vim用のプラグインは 'junegunn/fzf.vim' として提供
   - このプラグインはビルド用
     - ビルドと言いつつwinでやるのは面倒だったからwin環境だけfzf.exeをwgetしてしまった...
+  -  ripgrepによる文字列検索に対応 (すごいつよい)
+    - ripgrep:Rust製の高速grepツール
+    - コマンドラインから利用するなら sudo apt-get install ripgrep の方が良い
+      - apt経由で入れないのはvimでしか使わないため
+      - 何より余計なインストールの手間を省くことが目標
+    - Rustを導入しなくても使えるようにバイナリを拾ってきた
+      - Rustの導入は難しくないが依存関係が発生するのが嫌い
+    - 中々マヌケなのでもっとスマートな方法で入れたい
+  - 現在の設定
+    - [ Ctrl + t ] : 展開中のバッファ一覧を表示
+    - [ Ctrl + p ] : カレントディレクトリ以下を検索
+    - [ Ctrl + h ] : 最近展開したファイルを表示
+    - [ Ctrl + g ] : ripgrep を利用した文字列検索
 
 - 'thinca/vim-quickrun'
   - vimを開きながら編集中のファイルを実行 (:Quickrun)
@@ -220,10 +246,12 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 
 - 'tomtom/tcomment_vim'
   - gcc でコメント化/コメント解除
+    - ビジュアルモードで選択中の範囲も適用可能
 
 - 'nelstrom/vim-visual-star-search'
   - ヴィジュアルモードの選択範囲をアスタリスクで検索
   - もちろんノーマルモードからカーソル上の単語を検索も可能
+  - 現在,vim-anzu との関係から競合中
 
 - 'osyo-manga/vim-anzu'
   - 検索位置の表示(マッチ数なども表示)
@@ -232,6 +260,7 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 
 - 'modsound/gips-vim'
   - カーソルキー使用禁止+利用すると何か表示される
+  - 矢印キー絶対許さないマンによる厳しい指導
 
 - 'cespare/vim-toml'
   - tomlファイルに色付けする
@@ -249,6 +278,7 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 - 'w0rp/ale'
   - プログラムの危ない部分やエラーが出る場所をコード上に示してくれる
   - 設定で色々な言語に対応可能(この設定ファイルではpythonのみ)
+    - 外部のリンターを利用するためリンターの指定は必要
   - 割とWarningがキツくて画面が騒がしい... Errorだけでも良いのに...
   - 現在インサートモードで Ctrl+j or Ctrl+k でWarningとErrorの位置に移動する
 
@@ -263,6 +293,7 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 - 'Shougo/deoplete.nvim'
   - 補完プラグイン．単体で使うより追加の専用プラグインと組み合わせることで真価を発揮
   - これが使いたいがためにneovimを導入したと言っても過言ではない
+  - 変数や関数,スニペット呼び出し,パス補完 etc... の補完が出来る
 
 - 'zchee/deoplete-jedi'
   - deoplete用 python補完プラグイン
@@ -282,7 +313,7 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
   - 定義されたスニペットを起動する
   - 'Shougo/neosnippet-snippets'や自前のスニペットファイルがあると良い
   - deoppetなるものもあるらしいがまた今度
-  - 現在,deopleteの補完候補表示時に補完ポップアップの右端に`[ns]`と書いてあるやつを選び,Ctrl+k で展開
+  - 現在,deopleteの補完候補表示時に補完ポップアップの右端に`[ns]`と書いてあるやつを選び,[ Ctrl + k ] で展開
 
 - 'Shougo/neosnippet-snippets'
   - 一般的なスニペットファイル
