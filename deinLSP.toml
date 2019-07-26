@@ -1,0 +1,656 @@
+# プラグインをdeinで管理
+# 参考サイト
+# https://qiita.com/kawaz/items/ee725f6214f91337b42b
+
+
+[[plugins]]  # :help を日本語化
+repo = 'vim-jp/vimdoc-ja'
+
+
+[[plugins]]  # カラースキーマの設定(テーマ一覧:http://vimcolors.com/)
+# my favorite : joshdick/onedark.vim cocopon/iceberg.vim 'morhetz/gruvbox' 'sonph/onehalf'
+repo = 'morhetz/gruvbox'
+hook_add = '''
+set termguicolors  " enable true colors support
+colorscheme gruvbox
+set background=dark
+'''
+
+
+[[plugins]]  # ステータスバーカスタマイズ 
+# 依存関係にあるプラグイン1:'maximbaz/lightline-ale'
+# 依存関係にあるプラグイン2:'mengelbrecht/lightline-bufferline'
+# 依存関係にあるプラグイン3:'w0rp/ale'
+repo = 'itchyny/lightline.vim'
+hook_add = '''
+let g:lightline = {
+            \'colorscheme': 'wombat',
+            \'mode_map': {'c': 'NORMAL'},
+            \'active': {
+            \   'left': [
+            \       ['mode', 'paste'],
+            \       ['fugitive'],
+            \       ['readonly', 'relativepath', 'modified'],
+            \   ],
+            \   'right':[
+            \       ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok'],
+            \       ['filetype', 'fileformat', 'fileencoding'],
+            \       ['lineinfo'],
+            \   ],
+            \},
+            \'component': {
+            \   'linenum': '%L',
+            \   'lineinfo': '%l/%L',
+            \   'relativepath': '%f',
+            \},
+            \'component_function': {
+            \   'modified': 'LightlineModified',
+            \   'readonly': 'LightlineReadonly',
+            \   'fugitive': 'LightlineFugitive',
+            \   'filename': 'LightlineFilename',
+            \   'fileformat': 'LightlineFileformat',
+            \   'filetype': 'LightlineFiletype',
+            \   'fileencoding': 'LightlineFileencoding',
+            \   'mode': 'LightlineMode',
+            \},
+            \'component_expand': {
+            \   'linter_checking': 'lightline#ale#checking',
+            \   'linter_warnings': 'lightline#ale#warnings',
+            \   'linter_errors': 'lightline#ale#errors',
+            \   'linter_ok': 'lightline#ale#ok',
+            \   'buffers': 'lightline#bufferline#buffers',
+            \},
+            \'component_type': {
+            \   'linter_checking': 'right',
+            \   'linter_warnings': 'warning',
+            \   'linter_errors': 'error',
+            \   'linter_ok': 'right',
+            \   'buffers': 'tabsel',
+            \},
+            \'tabline': {
+            \   'left': [['buffers']],
+            \   'right': [['close']],
+            \},
+            \'separator': {
+            \   'left': '',
+            \   'right': '',
+            \},
+            \'subseparator': {
+            \   'left': '|',
+            \   'right': '|',
+            \},
+            \}
+
+" component_function で利用するための関数定義
+
+function! LightlineModified()
+  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! LightlineReadonly()
+  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
+endfunction
+
+function! LightlineFilename()
+  return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \  &ft == 'unite' ? unite#get_status_string() :
+        \  &ft == 'vimshell' ? vimshell#get_status_string() :
+        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+        \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+endfunction
+
+function! LightlineFugitive()
+  if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+    return fugitive#head()
+  else
+    return ''
+  endif
+endfunction
+
+function! LightlineFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! LightlineFiletype()
+  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
+function! LightlineFileencoding()
+  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+endfunction
+
+function! LightlineMode()
+  return winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+'''
+
+
+[[plugins]]  # ALEによるlint結果をステータスラインに表示するためのlightlineの拡張
+repo = 'maximbaz/lightline-ale'
+depends = ['lightline.vim', 'ale']
+hook_source = '''
+" ステータスラインに表示するlintの表示フォーマットの設定
+let g:lightline#ale#indicator_checking='Linting...'
+let g:lightline#ale#indicator_warnings='Warning:'
+let g:lightline#ale#indicator_errors='Error:'
+let g:lightline#ale#indicator_ok='Checked'
+'''
+
+
+[[plugins]]  # ウィンドウ上部のタブを拡張
+repo = 'mengelbrecht/lightline-bufferline'
+depends = ['lightline.vim']
+hook_add = '''
+" タブを常に表示
+set showtabline=2
+'''
+hook_source = '''
+" バッファ名に番号を表示しない
+let g:lightline#bufferline#show_number = 0
+" バッファ名を表示するときにパスを省略型で表示
+let g:lightline#bufferline#shorten_path = 1
+" 名前の付いていないバッファが表示された時の標記方法
+let g:lightline#bufferline#unnamed = '[No Name]'
+" バッファの表示設定(相対パスで表示)
+let g:lightline#bufferline#filename_modifier = '%f'
+
+" 色の変更
+" ref : https://github.com/itchyny/lightline.vim/blob/master/autoload/lightline/colorscheme/wombat.vim
+" Define base color
+let s:base03  = ['#242424', 235]
+let s:base023 = ['#353535', 236]
+let s:base02  = ['#444444', 238]
+let s:base01  = ['#585858', 240]
+let s:base00  = ['#666666', 242]
+let s:base0   = ['#808080', 244]
+let s:base1   = ['#969696', 247]
+let s:base2   = ['#a8a8a8', 248]
+let s:base3   = ['#d0d0d0', 252]
+let s:yellow  = ['#cae682', 180]
+let s:orange  = ['#e5786d', 173]
+let s:red     = ['#e5786d', 203]
+let s:magenta = ['#f2c68a', 216]
+let s:blue    = ['#8ac6f2', 117]
+let s:cyan    = s:blue
+let s:green   = ['#95e454', 119]
+" Assign color
+let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'tabline': {}}
+let s:p.normal.left     = [ [ s:base02,  s:blue    ], [ s:base3,  s:base01  ] ]
+let s:p.normal.right    = [ [ s:base02,  s:base0   ], [ s:base1,  s:base01  ] ]
+let s:p.inactive.right  = [ [ s:base023, s:base01  ], [ s:base00, s:base02  ] ]
+let s:p.inactive.left   = [ [ s:base1,   s:base02  ], [ s:base00, s:base023 ] ]
+let s:p.insert.left     = [ [ s:base02,  s:green   ], [ s:base3,  s:base01  ] ]
+let s:p.replace.left    = [ [ s:base023, s:red     ], [ s:base3,  s:base01  ] ]
+let s:p.visual.left     = [ [ s:base02,  s:magenta ], [ s:base3,  s:base01  ] ]
+let s:p.normal.middle   = [ [ s:base2,   s:base02  ] ]
+let s:p.inactive.middle = [ [ s:base1,   s:base023 ] ]
+let s:p.tabline.left    = [ [ s:base1,   s:base00  ] ]
+let s:p.tabline.left    = [ [ s:base2,   s:base02  ] ]
+let s:p.tabline.tabsel  = [ [ s:base03,  s:blue    ] ]
+let s:p.tabline.middle  = [ [ s:base2,   s:base03  ] ]
+let s:p.tabline.right   = [ [ s:base03,  s:base03  ] ]
+let s:p.normal.error    = [ [ s:base03,  s:red     ] ]
+let s:p.normal.warning  = [ [ s:base023, s:yellow  ] ]
+let g:lightline#colorscheme#wombat#palette = lightline#colorscheme#flatten(s:p)
+'''
+
+
+[[plugins]]  # ディレクトリツリーの表示
+repo = 'scrooloose/nerdtree'
+hook_add = '''
+" Ctrl + n でツリー表示のon/off切り替え
+nnoremap <C-n> :NERDTreeToggle<CR>
+'''
+
+
+[[plugins]]  # 変更履歴をツリー形式で表示
+repo = 'mbbill/undotree'
+hook_add = '''
+" Ctrl + u でツリー表示のon/off切り替え
+nnoremap <C-u> :UndotreeToggle<CR>
+'''
+hook_source = '''
+" ウィンドウのレイアウトを変更(1-4まで)
+let g:undotree_WindowLayout = 1
+" Undotreeのウィンドウの幅
+let g:undotree_SplitWidth = 20
+" タイムスタンプの省略表示の有効化
+let g:undotree_ShortIndicators = 1
+" 変更箇所のハイライト表示
+let g:undotree_HighlightChangedText = 0
+" Undotreeを起動した時,操作領域を移動
+let g:undotree_SetFocusWhenToggle = 1
+'''
+
+
+[[plugins]]  # ヤンク(コピー)領域の可視化
+repo = 'machakann/vim-highlightedyank'
+hook_add = '''
+" ハイライトカラーの設定
+highlight HighlightedyankRegion cterm=reverse gui=reverse
+'''
+hook_source = '''
+" ハイライト表示する時間[ms]
+let g:highlightedyank_highlight_duration = 500
+'''
+
+
+[[plugins]]  # インデントの可視化 
+repo = 'nathanaelkane/vim-indent-guides'
+hook_add = '''
+" 色の変更(詳しい配色 'ctermbg vim'等で検索 ) 配色はカラースキーマに合わせて設定
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=236
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=238
+'''
+hook_source = '''
+" indent guideの有効
+let g:indent_guides_enable_on_vim_startup = 1
+" 自動配色の無効化
+let g:indent_guides_auto_colors = 0
+" ガイドの幅を設定
+let g:indent_guides_guide_size = 1
+'''
+
+
+[[plugins]]  # j,k キーでカーソル移動の高速化
+repo = 'rhysd/accelerated-jk'
+hook_add = '''
+" j,kにキーマッピング
+nmap j <Plug>(accelerated_jk_gj)
+nmap k <Plug>(accelerated_jk_gk)
+'''
+
+[[plugins]]  # f キージャンプの拡張
+repo = 'rhysd/clever-f.vim'
+hook_source = '''
+" 検索対象が現在の行に無ければ次の行へ移動
+let g:clever_f_across_no_line = 0
+" 小文字検索->大文字&小文字を対象 大文字検索->大文字のみ対象
+let g:clever_f_smart_case = 1
+" 日本語とかの検索に対応(微妙に対応が悪いので無効化)
+let g:clever_f_use_migemo = 0
+'''
+
+
+[[plugins]]  # 特定文字へカーソルジャンプ
+repo = 'easymotion/vim-easymotion'
+hook_source = '''
+" デフォルトキーマッピングの無効化
+let g:EasyMotion_do_mapping = 0
+" 小文字入力時,大文字も含めて検索
+let g:EasyMotion_smartcase = 1
+" ジャンプ先のターゲットキーを指定
+let g:EasyMotion_keys = 'ASDFGHJKL'
+" ターゲットキーを大文字で表示
+let g:EasyMotion_use_upper = 1
+'''
+hook_add = '''
+" s キーを入力後,任意の2文字を入力するとeasymotionを起動(分割ウィンドウに対応)
+nmap s <Plug>(easymotion-overwin-f2)
+xmap s <Plug>(easymotion-overwin-f2)
+omap s <Plug>(easymotion-overwin-f2)
+'''
+
+
+[[plugins]]  # git の diffを左端に表示
+repo = 'airblade/vim-gitgutter'
+hook_add = '''
+" タイピング停止から反映されるまでの時間[ms]
+set updatetime=100
+" ハンク(変更点のかたまり)へジャンプ
+nmap <C-f> <Plug>GitGutterNextHunk
+nmap <C-d> <Plug>GitGutterPrevHunk
+" 左端2文字分の空間を常に表示
+set signcolumn=yes
+'''
+hook_source = '''
+" プラグインの有効化
+let g:gitgutter_enabled = 1
+" 行のハイライトを無効化
+let g:gitgutter_highlight_lines = 0
+" 非同期で処理 (非同期処理に対応していない場合機能しない)
+let g:gitgutter_async = 1
+" 記号を表示するカラムの背景色変更しない
+let g:gitgutter_override_sign_column_highlight = 1
+" 各記号の変更
+let g:gitgutter_sign_added='+'
+let g:gitgutter_sign_modified='~'
+let g:gitgutter_sign_removed='-'
+let g:gitgutter_sign_removed_first_line = '^'
+let g:gitgutter_sign_modified_removed = 'w'
+'''
+
+
+[[plugins]]  # vim上でgit操作を可能にする
+repo = 'tpope/vim-fugitive'
+
+
+[[plugins]]  # 曖昧検索(ファジー検索)が可能なツール. go実装(ctrlpより高速なため採用)
+# ripgrepによる文字列検索に対応(ripgrep:Rust製の高速grepツール)
+# コマンドラインから利用するなら sudo apt-get install ripgrep の方が良い(恐らくvimでしか使わないためバイナリを拾ってる)
+# 何より余計なインストールの手間を省くことが目標
+# Rustを導入しなくても使えるようにバイナリを拾ってくる方針の方が良い? (別にRustの導入は難しくないが...)
+repo = 'junegunn/fzf'
+merged = 0
+hook_post_update = '''
+" --- fzfのインストール	---
+if has('mac') || has('unix')
+    let g:dein#plugin.build = './install --all'
+elseif has('win64')
+    " windowsの場合ビルド方法が分からないため,バイナリを取得(かなり強引)
+    let s:fzf_target_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_target_dir . '/fzf.exe')) == 0
+        " execute '!wget https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-windows_amd64.zip'
+        execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-windows_amd64.zip'
+        execute '!unzip fzf-0.18.0-windows_amd64.zip'
+        execute '!move fzf.exe' s:fzf_target_dir
+        execute '!del *.zip'
+    endif
+else
+endif
+
+" --- ripgrep のインストール ---
+" ripgrepのバイナリを強引に取得
+if has('mac')
+    let s:fzf_target_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_target_dir . '/rg')) == 0
+        execute '!wget https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep-11.0.1-x86_64-apple-darwin.tar.gz'
+        execute '!tar -zxvf ripgrep-11.0.1-x86_64-apple-darwin.tar.gz'
+        execute '!mv ./ripgrep*/rg' s:fzf_target_dir
+        execute '!rm -rf ./ripgrep-11.0.1-x86_64-*'
+    endif
+    
+elseif has('unix')
+    let s:fzf_target_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_target_dir . '/rg')) == 0
+        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep-11.0.1-x86_64-unknown-linux-musl.tar.gz'
+        execute '!tar -zxvf ripgrep-11.0.1-x86_64-unknown-linux-musl.tar.gz'
+        execute '!mv ./ripgrep*/rg' s:fzf_target_dir
+        execute '!rm -rf ./ripgrep-11.0.1-x86_64-unknown-linux-musl*'
+    endif
+
+elseif has('win64')
+    " rg.exeのパスをこのスコープ内で追加したい(まだ出来てない)
+    let s:fzf_target_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_target_dir . '/rg.exe')) == 0
+        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep-11.0.1-x86_64-pc-windows-msvc.zip'
+        execute '!unzip ripgrep-11.0.1-x86_64-pc-windows-msvc.zip'
+        execute '!move rg.exe' s:fzf_target_dir
+        execute '!del *.zip'
+        execute '!del *.ps1'
+        " execute 'set runtimepath^=' . s:fzf_target_dir
+        " execute '!set PATH=%PATH%;' . s:fzf_target_dir
+    endif
+    execute 'set runtimepath+=' . '~/.cache/dein/repos/github.com/junegunn/fzf/bin/rg.exe'
+    " set runtimepath='~/.cache/dein/repos/github.com/junegunn/fzf/bin/rg.exe'
+else
+endif
+'''
+
+
+[[plugins]]  # 'junegunn/fzf' のvim用プラグイン
+repo = 'junegunn/fzf.vim'
+depends = ['fzf']
+hook_add = '''
+" Ctrl + t で現在開いているバッファの一覧表示及び絞り込み
+nnoremap <C-t> :Buffers<CR>
+" Ctrl + p でファイル検索
+nnoremap <C-p> :Files<CR>
+" Ctrl + g でRipgrep(ripgrepがインストールされていないと使えない)
+nnoremap <C-g> :Rg<CR>
+" Ctrl + h で最近展開したファイルを表示&検索
+nnoremap <C-h> :History<CR>
+" ステータスラインの非表示化
+autocmd! FileType fzf
+autocmd  FileType fzf set laststatus=0 noshowmode noruler
+    \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+
+" 可能であれば展開済みバッファへ移動
+let g:fzf_buffers_jump = 1
+" 表示領域を画面下部N%以内にする
+let g:fzf_layout = {'down': '~40%'}
+
+" :Rg コマンドでプレビュー表示
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:~60%')
+  \           : fzf#vim#with_preview('right:45%'),
+  \   <bang>0)
+
+" :Files コマンドでプレビュー表示
+"  TODO windowsに対応できていないっぽい
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+'''
+
+
+[[plugins]]  # vimを開きながら編集中のファイルを実行
+# TODO もう少し有効に利用したいところ
+repo = 'thinca/vim-quickrun'
+
+
+[[plugins]]  # 括弧補間
+repo = 'jiangmiao/auto-pairs'
+
+
+[[plugins]]  # テキストを囲う
+repo = 'tpope/vim-surround'
+# visual mode -> S' : 選択範囲を囲む
+# normal mode -> cs': 囲んでいる範囲を置換
+# normal mode -> ds': 囲んでいる範囲を削除
+
+
+[[plugins]]  # 表示を整える
+repo = 'junegunn/vim-easy-align'
+hook_add = '''
+"  ga 入力後,指定の文字を入力して実行 (in visual mode)
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+'''
+
+
+[[plugins]]  # gcc でコメントアウト
+repo = 'tomtom/tcomment_vim'
+
+
+# [[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
+# repo = 'nelstrom/vim-visual-star-search'
+
+
+[[plugins]]  # 検索位置を表示(マッチ数等も表示)
+# TODO ビジュアルモードで任意の範囲の検索がしたい
+repo = 'osyo-manga/vim-anzu'
+hook_add = '''
+" ハイライト箇所の横に (n/MatchNum) 形式で表示
+nmap n <Plug>(anzu-n)<Plug>(anzu-mode)
+nmap N <Plug>(anzu-N)<Plug>(anzu-mode)
+
+" カーソル位置のテキストオブジェクトをハイライト
+" nmap * <Plug>(anzu-star-with-echo)
+" nmap # <Plug>(anzu-sharp-with-echo)
+'''
+
+
+[[plugins]]  # カーソルキー動作停止+何か表示される
+repo = 'modsound/gips-vim'
+hook_add = '''
+" Select english_words, quickref_vim, gundam or tsundere
+'''
+
+
+[[plugins]]  # tomlファイルにシンタックスハイライトを適用
+repo = 'cespare/vim-toml'
+on_ft = ['toml']
+
+
+[[plugins]] # カーソル位置のコンテキストに合わせてftを切り替える
+repo = 'osyo-manga/vim-precious'
+depends = ['context_filetype.vim']
+
+
+[[plugins]] # カーソル位置のコンテキストのftを判定
+repo = 'Shougo/context_filetype.vim'
+
+
+[[plugins]] # 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
+repo = 'osyo-manga/vim-over'
+hook_add = '''
+" Ctrl+s でover.vimの起動 
+nnoremap <C-s> :OverCommandLine <CR>%s//g<Left><Left>
+" ノーマルモード時に sub と入力することでカーソル下の単語をハイライト付きで置換
+nnoremap sub :OverCommandLine<CR>%s/<C-r><C-w>//g<Left><Left>
+" ノーマルモード時に subp と入力することでコピーした文字列をハイライト付きで置換
+nnoremap subp y:OverCommandLine<CR>%s!<C-r>=substitute(@0, '!', '\\!', 'g')<CR>!!gI<Left><Left><Left>
+'''
+
+
+[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
+repo = 'roxma/vim-hug-neovim-rpc'
+if = '!has("nvim")'
+
+
+[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
+repo = 'roxma/nvim-yarp'
+if = '!has("nvim")'
+
+
+[[plugins]]  # オートコンプリートプラグイン
+repo = 'Shougo/deoplete.nvim'
+on_event = 'InsertEnter'
+hook_source = '''
+" ### deopleteの設定 ### "
+" deoplete 有効化
+let g:deoplete#enable_at_startup = 1
+" 補完に掛かる時間を指定(ms)
+let g:deoplete#auto_complete_delay = 0
+" 非同期時から同期に移る時間(ms)
+let g:deoplete#auto_refresh_delay = 10
+" 補完が始まるまでに必要な文字数
+let g:deoplete#auto_complete_start_length = 1
+" キャメルケースに対応(細かいことはよくわからん)
+let g:deoplete#enable_camel_case = 1
+" 大文字小文字を無視して補完する
+let g:deoplete#enable_ignore_case = 1
+" 補完機能が作用するたびに候補表示を再表示するかどうか
+let g:deoplete#enable_refresh_always = 1
+" 補完候補の表示数の最大値を設定
+let g:deoplete#max_list = 10000
+" マルチバイト文字の補完を無効化
+let g:skip_multibyte = 1
+" deopleteの並列処理のスレッド数 (default : 4)
+let g:deoplete#num_processes = 4
+
+" ### キーマッピング ### "
+" TAB で補完(順選択)
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" Shift TAB で補完(逆順選択)
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+'''
+
+
+[[plugins]]  # Python用 補完プラグイン
+repo = 'zchee/deoplete-jedi'
+on_ft = ['python']
+depends = ['Shougo/deoplete.nvim']
+hook_source = '''
+" 利用するインタプリタの指定
+let g:deoplete#sources#jedi#python_path = g:python3_path
+'''
+
+
+[[plugins]]  # docker用 補完プラグイン
+repo = 'zchee/deoplete-docker'
+on_ft = ['Dockerfile']
+depends = ['Shougo/deoplete.nvim']
+
+
+[[plugins]]  # 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
+repo = 'ujihisa/neco-look'
+depends = ['Shougo/deoplete.nvim']
+if = 'has("unix") || has("mac")'  # TODO windowsでlookを使う方法を検討
+
+
+[[plugins]]  # vimコマンド補完用プラグイン
+repo = 'Shougo/neco-vim'
+depends = ['Shougo/deoplete.nvim']
+
+
+[[plugins]]  # tex記述支援プラグイン
+repo = 'lervag/vimtex'
+depends = ['Shougo/deoplete.nvim']
+on_ft = ['tex']
+hook_add = '''
+'''
+
+
+[[plugins]]  # スニペットファイル
+repo = 'Shougo/neosnippet-snippets'
+
+
+[[plugins]]  # スニペット補完の動作定義
+repo = 'Shougo/neosnippet.vim'
+depends = ['neosnippet-snippets', 'Shougo/deoplete.nvim']
+on_ft = ['snippet']
+hook_add = '''
+" 設定はデフォルト設定のまま
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+'''
+
+
+[[plugins]]  # コードチェッカー(linter)
+repo = 'w0rp/ale'
+hook_add = '''
+" エラーと警告の表示色を変更
+autocmd Colorscheme * highlight aleErrorSign term=bold cterm=bold ctermfg=196
+autocmd Colorscheme * highlight aleWarningSign term=bold cterm=bold ctermfg=172
+" ### キーマッピング ### "
+" Ctrl+j で補完(順選択)
+nmap <C-j> <Plug>(ale_next)
+" Ctrl+k で補完(逆順選択)
+nmap <C-k> <Plug>(ale_previous)
+'''
+hook_source = '''
+" ### Linter(Warning Error チェック)の設定 ### "
+" 利用するLinterの指定
+let g:ale_linters = {'python': ['flake8', 'mypy', 'pylint'],'tex':['textlint'],}
+" エラー・警告表示記号をシンボルカラムに常に表示
+let g:ale_sign_column_always = 1
+" 保存時にLinterを実行
+let g:ale_lint_on_save = 1
+" ファイルを開いた時，lint実行
+let g:ale_lint_on_enter = 1
+" 編集時にLinterを実行しない
+let g:ale_lint_on_text_changed = 0
+" 余計な空白の警告表示設定
+let b:ale_warn_about_trailing_whitespace = 0
+" 警告表示時の文字設定
+let g:ale_sign_warning = '!'
+" エラー表示時の文字設定
+let g:ale_sign_error = 'X'
+" Linterを実行するファイルサイズ上限[Byte]
+let g:ale_maximum_file_size = 1000000
+" エラー箇所の文字背景のハイライトを無効化 (Warningまでハイライトされるのは邪魔)
+let g:ale_set_highlights = 0
+" カーソルを行に合わせたときに表示するメッセージのフォーマット設定
+let g:ale_echo_msg_error_str = '[Error]'
+let g:ale_echo_msg_warning_str = ''
+let g:ale_echo_msg_format = '[%linter%]%severity% %s'
+
+" ### Fixer(コード整形/修正ツール)の設定 ### "
+" 現状，現在利用予定が無いため無効化している
+" 利用するFixerの設定
+let b:ale_fixers = {'python': ['autopep8', 'isort', 'black'],}
+" ファイルをセーブした時のみFixerを実行設定
+let g:ale_fix_on_save = 0
+" 編集時のFixer実行設定
+let g:ale_fix_on_text_changed = 0
+'''
+
