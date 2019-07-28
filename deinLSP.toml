@@ -540,7 +540,7 @@ let g:deoplete#max_list = 10000
 " マルチバイト文字の補完を無効化
 let g:skip_multibyte = 1
 " deopleteの並列処理のスレッド数 (default : 4)
-let g:deoplete#num_processes = 4
+let g:deoplete#num_processes = 8
 
 " ### キーマッピング ### "
 " TAB で補完(順選択)
@@ -550,14 +550,14 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 '''
 
 
-[[plugins]]  # Python用 補完プラグイン
-repo = 'zchee/deoplete-jedi'
-on_ft = ['python']
-depends = ['Shougo/deoplete.nvim']
-hook_source = '''
-" 利用するインタプリタの指定
-let g:deoplete#sources#jedi#python_path = g:python3_path
-'''
+# [[plugins]]  # Python用 補完プラグイン
+# repo = 'zchee/deoplete-jedi'
+# on_ft = ['python']
+# depends = ['Shougo/deoplete.nvim']
+# hook_source = '''
+# " 利用するインタプリタの指定
+# let g:deoplete#sources#jedi#python_path = g:python3_path
+# '''
 
 
 [[plugins]]  # docker用 補完プラグイン
@@ -585,11 +585,47 @@ hook_add = '''
 '''
 
 
+[[plugins]]  # vim-lsp deoplete 連携プラグイン
+repo = 'lighttiger2505/deoplete-vim-lsp'
+depends = ['Shougo/deoplete.nvim']
+
+
+[[plugins]]  # Language Server Protocol (LSPのメインプラグイン)
+repo = 'prabirshrestha/vim-lsp'
+depends = ['lighttiger2505/deoplete-vim-lsp']
+hook_add = '''
+" Linterの無効化
+let g:lsp_diagnostics_enabled = 0
+
+" For python
+" 'python-language-server' ライブラリのパスを指定(python3_host_progはvimrcに定義)
+let s:pyls_path = fnamemodify(g:python3_host_prog, ':h') . '/'. 'pyls'
+if executable('pyls')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
+endif
+
+" デバッグ用
+let g:lsp_log_verbose = 0
+let g:lsp_log_file = expand('~/vim-lsp.log')
+
+'''
+
+[[plugins]]  # LSP を非同期で動かすためのプラグイン(よく分かっていない...)
+repo = 'prabirshrestha/async.vim'
+depends = ['prabirshrestha/vim-lsp']
+hook_add = '''
+'''
+
+
 [[plugins]]  # スニペットファイル
 repo = 'Shougo/neosnippet-snippets'
 
 
-[[plugins]]  # スニペット補完の動作定義
+[[plugins]]  # スニペット補完(deopleteと連携)
 repo = 'Shougo/neosnippet.vim'
 depends = ['neosnippet-snippets', 'Shougo/deoplete.nvim']
 on_ft = ['snippet']
