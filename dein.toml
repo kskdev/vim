@@ -456,11 +456,10 @@ repo = 'tomtom/tcomment_vim'
 
 
 # [[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
-# repo = 'nelstrom/vim-visual-star-search'
+repo = 'nelstrom/vim-visual-star-search'
 
 
 [[plugins]]  # 検索位置を表示(マッチ数等も表示)
-# TODO ビジュアルモードで任意の範囲の検索がしたい
 repo = 'osyo-manga/vim-anzu'
 hook_add = '''
 " ハイライト箇所の横に (n/MatchNum) 形式で表示

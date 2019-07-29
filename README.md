@@ -250,13 +250,10 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 
 - 'nelstrom/vim-visual-star-search'
   - ヴィジュアルモードの選択範囲をアスタリスクで検索
-  - もちろんノーマルモードからカーソル上の単語を検索も可能
-  - 現在,vim-anzu との関係から競合中
+  - もちろんノーマルモードからカーソル上のテキストオブジェクトを検索可能
 
 - 'osyo-manga/vim-anzu'
   - 検索位置の表示(マッチ数なども表示)
-  - ビジュアルモードで任意の範囲の検索がしたい
-  - TODO nelstrom/vim-visual-star-search と併用が出来ない...
 
 - 'modsound/gips-vim'
   - カーソルキー使用禁止+利用すると何か表示される
