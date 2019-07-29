@@ -9,18 +9,17 @@
 
 ## Target Environment
 - **neovim**
-- vim8
-- vim7 は非同期処理が公式だけでは走らない(vimprocとかがいる)ので見送り(本当は対応したい...)
+- vim8(頑張ればいけると思うが，非推奨．理由はdeopleteが上手く動作しないから．おそらくpython周りの話)
 
 基本的にneovimでのみ動作を確認している.
 
-vim8も**大体**は使える
+vim8も**大体**は使える．
 
 ## How to install
-0. python3系が無ければpython3のインストール(出来れば3.6.1+が望ましい)
+0. python3系が無ければpython3のインストール(deopleteを動かすために，出来れば3.6.1+が望ましい)
 1. $ git clone https://github.com/kskdev/vim
 2. $ cd ./vim
-3. $ sh ./install-[win-]neovim.sh
+3. $ sh ./install.sh
 4. `nvim`を起動したらプラグインのインストールが開始
 
 (表示が色々とおかしなことになるかもしれないが，端末を開き直せばOK)
@@ -83,10 +82,15 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 インストール中に通信環境が悪いと上手くインストールされないこともある．
 
 ## Update log
-- 2019/07/29
+- 2019/07/29(lsp branch)
+  - pythonプラグインを deoplete-jedi から LSP(deoplete補完) へ以降
+    - MacOSで "from PIL import Image"の後，"Image."と入力したらエラーが発生
+      - Linux ではエラーは発生せず
+      - OSによる問題では無いと考えられるが原因が不明
+    - deoplete-jedi を使うか使用感がまだ何とも言えないため、deoplete-jediの方をコメントアウトしてある
+  - 複数のインストーラファイルをinstall.shに統合(別にシンボリックリンクとか貼って置けば良い話だが...)
   - visual-star-search と vim-anzu の問題が解消
   - vim-repeat を追加
-
 - 2019/07/09
   -  ripgrepによる文字列検索に対応(in fzf)
     - ripgrep:Rust製の高速grepツール(fuckin fast)
@@ -301,6 +305,7 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 
 - 'zchee/deoplete-jedi'
   - deoplete用 python補完プラグイン
+  - LSP と使い分けるか色々検討中...
 
 - 'zchee/deoplete-docker'
   - deoplete用 dockerfile記述支援プラグイン(いうほど使っていない)
@@ -322,4 +327,16 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 - 'Shougo/neosnippet-snippets'
   - 一般的なスニペットファイル
   - 自作テンプレートの登録とかもすると便利そうだけど,面倒だからやらない
+
+- 'lighttiger2505/deoplete-vim-lsp'
+  - deoplete でLSPを利用するためのプラグイン
+
+- 'prabirshrestha/vim-lsp'
+  - vimで Language Server Protocol を利用するためのプラグイン
+  - 現在,pythonで動作を確認(deoplete-jediと使用感を比較する必要があるかも)
+    - `pip install python-Language-server` が必要
+
+- 'prabirshrestha/async.vim'
+  - LSP を非同期で動かすためのプラグイン(よく分かっていない...)
+  - 'prabirshrestha/vim-lsp' に必要らしい(とりあえず入れている感がすごい)
 
