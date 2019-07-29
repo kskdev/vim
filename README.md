@@ -303,6 +303,7 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 
 - 'zchee/deoplete-jedi'
   - deoplete用 python補完プラグイン
+  - LSP と使い分けるか色々検討中...
 
 - 'zchee/deoplete-docker'
   - deoplete用 dockerfile記述支援プラグイン(いうほど使っていない)
@@ -324,4 +325,16 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 - 'Shougo/neosnippet-snippets'
   - 一般的なスニペットファイル
   - 自作テンプレートの登録とかもすると便利そうだけど,面倒だからやらない
+
+- 'lighttiger2505/deoplete-vim-lsp'
+  - deoplete でLSPを利用するためのプラグイン
+
+- 'prabirshrestha/vim-lsp'
+  - vimで Language Server Protocol を利用するためのプラグイン
+  - 現在,pythonで動作を確認(deoplete-jediと使用感を比較する必要があるかも)
+    - `pip install python-Language-server` が必要
+
+- 'prabirshrestha/async.vim'
+  - LSP を非同期で動かすためのプラグイン(よく分かっていない...)
+  - 'prabirshrestha/vim-lsp' に必要らしい(とりあえず入れている感がすごい)
 

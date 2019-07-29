@@ -550,14 +550,14 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 '''
 
 
-[[plugins]]  # Python用 補完プラグイン
-repo = 'zchee/deoplete-jedi'
-on_ft = ['python']
-depends = ['Shougo/deoplete.nvim']
-hook_source = '''
-" 利用するインタプリタの指定
-let g:deoplete#sources#jedi#python_path = g:python3_path
-'''
+# [[plugins]]  # Python用 補完プラグイン
+# repo = 'zchee/deoplete-jedi'
+# on_ft = ['python']
+# depends = ['Shougo/deoplete.nvim']
+# hook_source = '''
+# " 利用するインタプリタの指定
+# let g:deoplete#sources#jedi#python_path = g:python3_path
+# '''
 
 
 [[plugins]]  # docker用 補完プラグイン
@@ -581,6 +581,61 @@ depends = ['Shougo/deoplete.nvim']
 repo = 'lervag/vimtex'
 depends = ['Shougo/deoplete.nvim']
 on_ft = ['tex']
+hook_add = '''
+'''
+
+
+[[plugins]]  # vim-lsp deoplete 連携プラグイン
+repo = 'lighttiger2505/deoplete-vim-lsp'
+depends = ['Shougo/deoplete.nvim']
+
+
+[[plugins]]  # Language Server Protocol (LSPのメインプラグイン)
+repo = 'prabirshrestha/vim-lsp'
+depends = ['lighttiger2505/deoplete-vim-lsp']
+hook_add = '''
+" Linterの無効化(ALEが対応中. LSPの方がALEに比べて高速なため乗り換えを検討)
+let g:lsp_diagnostics_enabled = 0
+
+" For python
+" 'python-language-server' ライブラリのパスを指定(python3_host_progはvimrcに定義)
+let s:pyls_path = fnamemodify(g:python3_host_prog, ':h') . '/'. 'pyls'
+if executable('pyls')
+    au User lsp_setup call lsp#register_server({
+                \ 'name': 'pyls',
+                \ 'cmd': {server_info->['pyls']},
+                \ 'whitelist': ['python'],
+                \ })
+endif
+
+" For C, C++
+if executable('clangd')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'clangd',
+        \ 'cmd': {server_info->['clangd', '-background-index']},
+        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+        \ })
+endif
+
+" For Go
+if executable('gopls')
+    au User lsp_setup call lsp#register_server({
+                \ 'name': 'gopls',
+                \ 'cmd': {server_info->['gopls', '-mode', 'stdio']},
+                \ 'whitelist': ['go'],
+                \ })
+    autocmd BufWritePre *.go LspDocumentFormatSync
+endif
+
+" デバッグ用
+let g:lsp_log_verbose = 0
+let g:lsp_log_file = expand('~/vim-lsp.log')
+
+'''
+
+[[plugins]]  # LSP を非同期で動かすためのプラグイン(よく分かっていない...)
+repo = 'prabirshrestha/async.vim'
+depends = ['prabirshrestha/vim-lsp']
 hook_add = '''
 '''
 
