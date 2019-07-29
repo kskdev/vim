@@ -9,18 +9,17 @@
 
 ## Target Environment
 - **neovim**
-- vim8
-- vim7 は非同期処理が公式だけでは走らない(vimprocとかがいる)ので見送り(本当は対応したい...)
+- vim8(頑張ればいけると思うが，非推奨．理由はdeopleteが上手く動作しないから．おそらくpython周りの話)
 
 基本的にneovimでのみ動作を確認している.
 
-vim8も**大体**は使える
+vim8も**大体**は使える．
 
 ## How to install
-0. python3系が無ければpython3のインストール(出来れば3.6.1+が望ましい)
+0. python3系が無ければpython3のインストール(deopleteを動かすために，出来れば3.6.1+が望ましい)
 1. $ git clone https://github.com/kskdev/vim
 2. $ cd ./vim
-3. $ sh ./install-[win-]neovim.sh
+3. $ sh ./install.sh
 4. `nvim`を起動したらプラグインのインストールが開始
 
 (表示が色々とおかしなことになるかもしれないが，端末を開き直せばOK)
@@ -83,6 +82,13 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 インストール中に通信環境が悪いと上手くインストールされないこともある．
 
 ## Update log
+- 2019/07/29(lsp branch)
+  - pythonプラグインを deoplete-jedi から LSP(deoplete補完) へ以降
+    - MacOSで "from PIL import Image"の後，"Image."と入力したらエラーが発生
+      - Linux ではエラーは発生せず
+      - OSによる問題では無いと考えられるが原因が不明
+    - deoplete-jedi を使うか使用感がまだ何とも言えないため、deoplete-jediの方をコメントアウトしてある
+  - 複数のインストーラファイルをinstall.shに統合(別にシンボリックリンクとか貼って置けば良い話だが...)
 - 2019/07/09
   -  ripgrepによる文字列検索に対応(in fzf)
     - ripgrep:Rust製の高速grepツール(fuckin fast)

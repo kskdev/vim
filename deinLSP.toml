@@ -540,7 +540,7 @@ let g:deoplete#max_list = 10000
 " マルチバイト文字の補完を無効化
 let g:skip_multibyte = 1
 " deopleteの並列処理のスレッド数 (default : 4)
-let g:deoplete#num_processes = 8
+let g:deoplete#num_processes = 4
 
 " ### キーマッピング ### "
 " TAB で補完(順選択)
@@ -594,7 +594,7 @@ depends = ['Shougo/deoplete.nvim']
 repo = 'prabirshrestha/vim-lsp'
 depends = ['lighttiger2505/deoplete-vim-lsp']
 hook_add = '''
-" Linterの無効化
+" Linterの無効化(ALEが対応中. LSPの方がALEに比べて高速なため乗り換えを検討)
 let g:lsp_diagnostics_enabled = 0
 
 " For python
@@ -602,10 +602,29 @@ let g:lsp_diagnostics_enabled = 0
 let s:pyls_path = fnamemodify(g:python3_host_prog, ':h') . '/'. 'pyls'
 if executable('pyls')
     au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
+                \ 'name': 'pyls',
+                \ 'cmd': {server_info->['pyls']},
+                \ 'whitelist': ['python'],
+                \ })
+endif
+
+" For C, C++
+if executable('clangd')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'clangd',
+        \ 'cmd': {server_info->['clangd', '-background-index']},
+        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
         \ })
+endif
+
+" For Go
+if executable('gopls')
+    au User lsp_setup call lsp#register_server({
+                \ 'name': 'gopls',
+                \ 'cmd': {server_info->['gopls', '-mode', 'stdio']},
+                \ 'whitelist': ['go'],
+                \ })
+    autocmd BufWritePre *.go LspDocumentFormatSync
 endif
 
 " デバッグ用
