@@ -83,6 +83,10 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 インストール中に通信環境が悪いと上手くインストールされないこともある．
 
 ## Update log
+- 2019/07/29
+  - visual-star-search と vim-anzu の問題が解消
+  - vim-repeat を追加
+
 - 2019/07/09
   -  ripgrepによる文字列検索に対応(in fzf)
     - ripgrep:Rust製の高速grepツール(fuckin fast)
@@ -236,9 +240,12 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 
 - 'tpope/vim-surround'
   - 括弧やクォーテーションなどを囲む時に大変便利なやつ
-    - visual mode -> S' : 選択範囲を囲む
-    - normal mode -> cs': 囲んでいる範囲を置換
-    - normal mode -> ds': 囲んでいる範囲を削除
+    - visual mode -> S' : 選択範囲を' 'で囲む
+    - normal mode -> cs': 囲み記号を置換
+    - normal mode -> ds': 囲み記号を削除
+
+- 'tpope/vim-repeat'
+  - vim-surround 等の処理をドットコマンドで繰り返し処理が可能
 
 - 'junegunn/vim-easy-align'
   - ga入力後，揃えたい文字列を入力してコードの体裁を整える(綺麗に見えるから好き)

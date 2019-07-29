@@ -435,11 +435,15 @@ repo = 'thinca/vim-quickrun'
 repo = 'jiangmiao/auto-pairs'
 
 
-[[plugins]]  # テキストを囲う
+[[plugins]]  # 記号ペアで範囲を囲んだり置換や削除を行う
 repo = 'tpope/vim-surround'
-# visual mode -> S' : 選択範囲を囲む
-# normal mode -> cs': 囲んでいる範囲を置換
-# normal mode -> ds': 囲んでいる範囲を削除
+# visual mode -> S' : 選択範囲を' 'で囲む
+# normal mode -> cs': 囲み記号を置換
+# normal mode -> ds': 囲み記号を削除
+
+
+[[plugins]]  # vim-surround 等の処理をドットによる繰り返しが適用されるようにする                                                                                                                              
+repo = 'tpope/vim-repeat'
 
 
 [[plugins]]  # 表示を整える
