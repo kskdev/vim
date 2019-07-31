@@ -204,7 +204,10 @@ endif
 " プラグインのロード
 call dein#begin(g:dein_dir)
 call dein#add(s:dein_repo_dir)
-call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
+call dein#add('morhetz/gruvbox')
+call dein#add('joshdick/onedark.vim')
+" call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
+call dein#load_toml(s:toml_dir . '/dein.toml')
 call dein#end()
 
 " プラグインが入っていなければvim起動時に自動でインストール
@@ -216,3 +219,12 @@ filetype on
 filetype plugin on
 filetype indent on
 syntax on
+
+" カラースキーマの設定(vimとneovimで色分け)
+if has('nvim')
+    set termguicolors  " enable true colors support
+    colorscheme gruvbox
+    set background=dark
+else
+    colorscheme onedark
+endif

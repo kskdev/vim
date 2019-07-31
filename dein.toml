@@ -7,20 +7,10 @@
 repo = 'vim-jp/vimdoc-ja'
 
 
-[[plugins]]  # カラースキーマの設定(テーマ一覧:http://vimcolors.com/)
-# my favorite : joshdick/onedark.vim cocopon/iceberg.vim 'morhetz/gruvbox' 'sonph/onehalf'
-repo = 'morhetz/gruvbox'
-hook_add = '''
-set termguicolors  " enable true colors support
-colorscheme gruvbox
-set background=dark
-'''
-
-
 [[plugins]]  # ステータスバーカスタマイズ 
 # 依存関係にあるプラグイン1:'maximbaz/lightline-ale'
 # 依存関係にあるプラグイン2:'mengelbrecht/lightline-bufferline'
-# 依存関係にあるプラグイン3:'w0rp/ale'
+# 依存関係にあるプラグイン3:'w0rp/ale' TODO 多分 LSP に置き換える
 repo = 'itchyny/lightline.vim'
 hook_add = '''
 let g:lightline = {
@@ -459,7 +449,7 @@ nmap ga <Plug>(EasyAlign)
 repo = 'tomtom/tcomment_vim'
 
 
-# [[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
+[[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
 repo = 'nelstrom/vim-visual-star-search'
 
 
@@ -480,6 +470,7 @@ nmap N <Plug>(anzu-N)<Plug>(anzu-mode)
 repo = 'modsound/gips-vim'
 hook_add = '''
 " Select english_words, quickref_vim, gundam or tsundere
+let g:gips_reading_txt = g:dein_dir . '/repos/github.com/modsound/gips-vim/autoload/dict/quickref_vim.txt'
 '''
 
 
@@ -509,108 +500,52 @@ nnoremap subp y:OverCommandLine<CR>%s!<C-r>=substitute(@0, '!', '\\!', 'g')<CR>!
 '''
 
 
-[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
-repo = 'roxma/vim-hug-neovim-rpc'
-if = '!has("nvim")'
-
-
-[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
-repo = 'roxma/nvim-yarp'
-if = '!has("nvim")'
-
-
-[[plugins]]  # オートコンプリートプラグイン
-repo = 'Shougo/deoplete.nvim'
-on_event = 'InsertEnter'
-hook_source = '''
-" ### deopleteの設定 ### "
-" deoplete 有効化
-let g:deoplete#enable_at_startup = 1
-" 補完に掛かる時間を指定(ms)
-let g:deoplete#auto_complete_delay = 0
-" 非同期時から同期に移る時間(ms)
-let g:deoplete#auto_refresh_delay = 10
-" 補完が始まるまでに必要な文字数
-let g:deoplete#auto_complete_start_length = 1
-" キャメルケースに対応(細かいことはよくわからん)
-let g:deoplete#enable_camel_case = 1
-" 大文字小文字を無視して補完する
-let g:deoplete#enable_ignore_case = 1
-" 補完機能が作用するたびに候補表示を再表示するかどうか
-let g:deoplete#enable_refresh_always = 1
-" 補完候補の表示数の最大値を設定
-let g:deoplete#max_list = 10000
-" マルチバイト文字の補完を無効化
-let g:skip_multibyte = 1
-" deopleteの並列処理のスレッド数 (default : 4)
-let g:deoplete#num_processes = 4
-
-" ### キーマッピング ### "
-" TAB で補完(順選択)
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-" Shift TAB で補完(逆順選択)
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-'''
-
-
-# [[plugins]]  # Python用 補完プラグイン
-# repo = 'zchee/deoplete-jedi'
-# on_ft = ['python']
-# depends = ['Shougo/deoplete.nvim']
-# hook_source = '''
-# " 利用するインタプリタの指定
-# let g:deoplete#sources#jedi#python_path = g:python3_path
-# '''
-
-
-[[plugins]]  # docker用 補完プラグイン
-repo = 'zchee/deoplete-docker'
-on_ft = ['Dockerfile']
-depends = ['Shougo/deoplete.nvim']
-
-
-[[plugins]]  # 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
-repo = 'ujihisa/neco-look'
-depends = ['Shougo/deoplete.nvim']
-if = 'has("unix") || has("mac")'  # TODO windowsでlookを使う方法を検討
-
-
-[[plugins]]  # vimコマンド補完用プラグイン
-repo = 'Shougo/neco-vim'
-depends = ['Shougo/deoplete.nvim']
-
-
-[[plugins]]  # tex記述支援プラグイン
-repo = 'lervag/vimtex'
-depends = ['Shougo/deoplete.nvim']
-on_ft = ['tex']
-hook_add = '''
-'''
-
-
-[[plugins]]  # vim-lsp deoplete 連携プラグイン
-repo = 'lighttiger2505/deoplete-vim-lsp'
-depends = ['Shougo/deoplete.nvim']
-
-
-[[plugins]]  # Language Server Protocol (LSPのメインプラグイン)
+[[plugins]]  # Language Server Protocol
 repo = 'prabirshrestha/vim-lsp'
-depends = ['lighttiger2505/deoplete-vim-lsp']
 hook_add = '''
-" Linterの無効化(ALEが対応中. LSPの方がALEに比べて高速なため乗り換えを検討)
-let g:lsp_diagnostics_enabled = 0
+" LSP 有効化
+let g:lsp_auto_enable = 1
+" Lint有効化 TODO lighline.vim と連携してステータスラインにErrorの数等を表示したい. LSPの方がALEに比べて高速なため乗り換えを検討
+let g:lsp_diagnostics_enabled = 1
+" Lint結果をステータスラインに表示
+let g:lsp_diagnostics_echo_cursor = 1
+" Lint結果の詳細を行末に表示
+let g:lsp_virtual_text_enabled = 0
+" floating windowの利用
+let g:lsp_preview_float = 0
 
+" ハイライト表示を無効化
+let g:lsp_highlights_enabled = 0
+" テキストプロパティの有効化
+let g:lsp_textprop_enabled = 0
+" sign と virtual text の色定義 
+autocmd ColorScheme * :hi LspErrorText ctermfg=red guifg=red
+autocmd ColorScheme * :hi LspWarningText ctermfg=yellow guifg=yellow
+autocmd ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray
+autocmd ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan
+
+" 記号表示
+let g:lsp_signs_enabled = 1
+let g:lsp_signs_error = {'text': '✗'}
+let g:lsp_signs_warning = {'text': '⚠'}
+let g:lsp_signs_information = {'text': '❓'}
+let g:lsp_signs_hint = {'text': 'Ⓘ'}
+
+" Ctrl+j で次のエラー箇所へジャンプ
+nnoremap <C-j> :LspNextError<CR>
+" Ctrl+k で前のエラー箇所へジャンプ
+nnoremap <C-k> :LspPreviousError<CR>
+
+" 言語別Server設定
 " For python
-" 'python-language-server' ライブラリのパスを指定(python3_host_progはvimrcに定義)
-let s:pyls_path = fnamemodify(g:python3_host_prog, ':h') . '/'. 'pyls'
 if executable('pyls')
-    au User lsp_setup call lsp#register_server({
-                \ 'name': 'pyls',
-                \ 'cmd': {server_info->['pyls']},
-                \ 'whitelist': ['python'],
-                \ })
+  " pip install python-language-server
+  au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
 endif
-
 " For C, C++
 if executable('clangd')
     au User lsp_setup call lsp#register_server({
@@ -620,26 +555,95 @@ if executable('clangd')
         \ })
 endif
 
-" For Go
-if executable('gopls')
-    au User lsp_setup call lsp#register_server({
-                \ 'name': 'gopls',
-                \ 'cmd': {server_info->['gopls', '-mode', 'stdio']},
-                \ 'whitelist': ['go'],
-                \ })
-    autocmd BufWritePre *.go LspDocumentFormatSync
-endif
-
-" デバッグ用
+" ログやデバッグ用の設定
 let g:lsp_log_verbose = 0
 let g:lsp_log_file = expand('~/vim-lsp.log')
-
 '''
 
-[[plugins]]  # LSP を非同期で動かすためのプラグイン(よく分かっていない...)
+
+[[plugins]]  # 非同期処理用のプラグイン(調べてません)
 repo = 'prabirshrestha/async.vim'
 depends = ['prabirshrestha/vim-lsp']
+
+
+[[plugins]]  # 非同期で補完を行うためのプラグイン(deoplete.nvimみたいなもの?)
+repo = 'prabirshrestha/asyncomplete.vim'
+depends = ['prabirshrestha/vim-lsp']
 hook_add = '''
+" 自動補完候補表示の有効化
+let g:asyncomplete_auto_popup = 1
+" popup表示までのち円時間[ms] (defaulat:30)
+let g:asyncomplete_popup_delay = 10
+
+" TAB で補完(順選択)
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" Shift TAB で補完(逆順選択)
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+" リターンキーで補完ポップアップを非表示
+inoremap <expr><CR> pumvisible() ? asyncomplete#close_popup() : "\<CR>" 
+'''
+
+
+[[plugins]]  # asyncomplete.vim のvim-lsp拡張
+repo = 'prabirshrestha/asyncomplete-lsp.vim'
+depends = ['prabirshrestha/vim-lsp', 'prabirshrestha/asyncomplete.vim']
+
+
+[[plugins]]  # asyncomplete.vim のバッファ補完拡張
+repo = 'prabirshrestha/asyncomplete-buffer.vim'
+depends = ['prabirshrestha/asyncomplete.vim']
+hook_add = '''
+call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'whitelist': ['*'],
+    \ 'blacklist': ['go'],
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ 'config': {
+    \    'max_buffer_size': 5000000,
+    \  },
+    \ }))
+'''
+
+
+[[plugins]]  # asyncomplete.vim のファイル補完拡張
+repo = 'prabirshrestha/asyncomplete-file.vim'
+depends = ['prabirshrestha/asyncomplete.vim']
+hook_add = '''
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'whitelist': ['*'],
+    \ 'priority': 10,
+    \ 'completor': function('asyncomplete#sources#file#completor')
+    \ }))
+'''
+
+
+[[plugins]]  # asyncomplete.vim のvim script補完拡張
+repo = 'prabirshrestha/asyncomplete-necovim.vim'
+depends = ['prabirshrestha/asyncomplete.vim', 'Shougo/neco-syntax']
+hook_add = '''
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+    \ 'name': 'necovim',
+    \ 'whitelist': ['vim'],
+    \ 'completor': function('asyncomplete#sources#necovim#completor'),
+    \ }))
+'''
+
+
+[[plugins]]  # asyncomplete.vim のNeosnippet補完拡張
+repo = 'prabirshrestha/asyncomplete-neosnippet.vim'
+depends = ['prabirshrestha/asyncomplete.vim', 'Shougo/neosnippet-snippets', 'Shougo/neosnippet.vim']
+hook_add = '''
+call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
+    \ 'name': 'neosnippet',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
+    \ }))
+
+" キーマッピング設定
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+xmap <C-k> <Plug>(neosnippet_expand_target)
 '''
 
 
@@ -649,66 +653,16 @@ repo = 'Shougo/neosnippet-snippets'
 
 [[plugins]]  # スニペット補完の動作定義
 repo = 'Shougo/neosnippet.vim'
-depends = ['neosnippet-snippets', 'Shougo/deoplete.nvim']
+depends = ['neosnippet-snippets']
 on_ft = ['snippet']
 hook_add = '''
-" 設定はデフォルト設定のまま
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
 " For conceal markers.
 if has('conceal')
   set conceallevel=2 concealcursor=niv
 endif
 '''
 
+[[plugins]]  # vimコマンド補完(asyncomplete.vim 経由で利用)
+repo = 'Shougo/neco-vim'
 
-[[plugins]]  # コードチェッカー(linter)
-repo = 'w0rp/ale'
-hook_add = '''
-" エラーと警告の表示色を変更
-autocmd Colorscheme * highlight aleErrorSign term=bold cterm=bold ctermfg=196
-autocmd Colorscheme * highlight aleWarningSign term=bold cterm=bold ctermfg=172
-" ### キーマッピング ### "
-" Ctrl+j で補完(順選択)
-nmap <C-j> <Plug>(ale_next)
-" Ctrl+k で補完(逆順選択)
-nmap <C-k> <Plug>(ale_previous)
-'''
-hook_source = '''
-" ### Linter(Warning Error チェック)の設定 ### "
-" 利用するLinterの指定
-let g:ale_linters = {'python': ['flake8', 'mypy', 'pylint'],'tex':['textlint'],}
-" エラー・警告表示記号をシンボルカラムに常に表示
-let g:ale_sign_column_always = 1
-" 保存時にLinterを実行
-let g:ale_lint_on_save = 1
-" ファイルを開いた時，lint実行
-let g:ale_lint_on_enter = 1
-" 編集時にLinterを実行しない
-let g:ale_lint_on_text_changed = 0
-" 余計な空白の警告表示設定
-let b:ale_warn_about_trailing_whitespace = 0
-" 警告表示時の文字設定
-let g:ale_sign_warning = '!'
-" エラー表示時の文字設定
-let g:ale_sign_error = 'X'
-" Linterを実行するファイルサイズ上限[Byte]
-let g:ale_maximum_file_size = 1000000
-" エラー箇所の文字背景のハイライトを無効化 (Warningまでハイライトされるのは邪魔)
-let g:ale_set_highlights = 0
-" カーソルを行に合わせたときに表示するメッセージのフォーマット設定
-let g:ale_echo_msg_error_str = '[Error]'
-let g:ale_echo_msg_warning_str = ''
-let g:ale_echo_msg_format = '[%linter%]%severity% %s'
-
-" ### Fixer(コード整形/修正ツール)の設定 ### "
-" 現状，現在利用予定が無いため無効化している
-" 利用するFixerの設定
-let b:ale_fixers = {'python': ['autopep8', 'isort', 'black'],}
-" ファイルをセーブした時のみFixerを実行設定
-let g:ale_fix_on_save = 0
-" 編集時のFixer実行設定
-let g:ale_fix_on_text_changed = 0
-'''
 

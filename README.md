@@ -9,18 +9,14 @@
 
 ## Target Environment
 - **neovim**
-- vim8(頑張ればいけると思うが，非推奨．理由はdeopleteが上手く動作しないから．おそらくpython周りの話)
-
-基本的にneovimでのみ動作を確認している.
-
-vim8も**大体**は使える．
+- vim8(補完周りが聞くようになったため)
 
 ## How to install
-0. python3系が無ければpython3のインストール(deopleteを動かすために，出来れば3.6.1+が望ましい)
+0. python3系が無ければpython3のインストール
 1. $ git clone https://github.com/kskdev/vim
 2. $ cd ./vim
 3. $ sh ./install.sh
-4. `nvim`を起動したらプラグインのインストールが開始
+4. `nvim` or `vim` を起動したらプラグインのインストールが開始
 
 (表示が色々とおかしなことになるかもしれないが，端末を開き直せばOK)
 
@@ -47,12 +43,6 @@ https://github.com/neovim/neovim/wiki/Installing-Neovim
 <br>
 <br>
 
-vim8でdeopleteやdeniteを有効化する場合はpythonの設定周りで少し手間がかかる．
-
-(deopleteやdeniteはpythonを利用するため)
-
-面倒なのでneovimインストールを推奨．
-
 因みにvim8のインストール方法(Ubuntu)は以下の通り.
 ```
 sudo add-apt-repository ppa:jonathonf/vim
@@ -64,24 +54,33 @@ sudo apt install vim
 <br>
 <br>
 
-##### 注意
-deopleteなどを利用する場合，要求されるPythonのバージョンが3.6.1+だったりする.
-Python3であれば何でも良い訳じゃない...?
+##### Memo
+- LSP + asyncomplete ベースは導入が楽だった
+  - deoplete みたいに python ver3.6.1+ の縛りが無いから??(要確認)
+  - ただし、deopleteで利用してたneco-lookが使えなくて意外と不便になった
+  - 補完のsmart case か　ignore case が無いと個人的にしんどい
 
-deoplete などを使おうとする場合,python モジュールの`neovim`が必要.
-(バックエンドでpython3を使っているため?)
+- deopleteなどを利用する場合，要求されるPythonのバージョンが3.6.1+だったりする.
+  - Python3であれば何でも良い訳じゃない...?
 
-インストールは `pip install neovim` でOK.
+- インサートモードからノーマルモードに遷移する時,IMEがonのままならoffにするプラグインがほしい(作りたい)
+  - 想像以上にダルそう
 
-環境の状況は,`:checkhealth`で状況の確認が可能.(Only neovim)
+- 意外とCtrlキーを利用するキーマップになってしまった.小指がお亡くなりになる前にキーマップを再検討(無理そう)
 
-その後,`:UpdateRemotePlugins`を実行してエラーを吐かなければ恐らく動く.(Only neovim)
-
-pythonのパスを指定する必要があるため,その辺は init.vim (vimrc) にて設定する.
-
-インストール中に通信環境が悪いと上手くインストールされないこともある．
+- ctagsとの連携をしようか検討中(tagbarというプラグインの動作が重すぎた)
+  - 
 
 ## Update log
+- 2019/07/31(lsp branch)
+  - deoplete + vim-lsp から asyncomplete + vim-lsp ベースへ以降
+    - vim8 でも動くようになった！(全てのプラグインが動くかは未確認)
+  - lightline のステータスラインにエラーの数とかが表示出来るようになればおおよそ完成
+  - neco-look と smart case completion の代わりが欲しい
+  - ALE を捨てても大丈夫かもしれない??
+  - winでの動作は未確認
+  - colorscheme をvim8 と neovim で使い分ける
+  - その他軽微な調整
 - 2019/07/29(lsp branch)
   - pythonプラグインを deoplete-jedi から LSP(deoplete補完) へ以降
     - MacOSで "from PIL import Image"の後，"Image."と入力したらエラーが発生
@@ -133,16 +132,10 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 - ALE(Linter)とGitGutter(Diffの表示)が画面左端で競合してる問題を何とかする
   - 出来れば同時に表示したい
 
-## Memo
-- 最近LSPなるものの存在が気になる.
-- インサートモードからノーマルモードに遷移する時,IMEがonのままならoffにするプラグインがほしい(作りたい)
-  - 想像以上にダルそう
-- 意外とCtrlキーを利用するキーマップになってしまった.小指がお亡くなりになる前にキーマップを再検討(無理そう)
-- ctagsとの連携をしようか検討中(tagbarというプラグインの動作が重すぎた)
-
 ## Plugins
 
 面白そうなプラグイン(現在追加したプラグイン)について簡単に触れる
+若干グダグダになってきた...
 
 - 'vim-jp/vimdoc-ja'
   - ヘルプの日本語化
@@ -290,7 +283,12 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
   - 割とWarningがキツくて画面が騒がしい... Errorだけでも良いのに...
   - 現在インサートモードで Ctrl+j or Ctrl+k でWarningとErrorの位置に移動する
 
-#### オートコンプリートプラグイン
+#### オートコンプリートプラグイン(deoplete)
+
+- 'Shougo/deoplete.nvim'
+  - 補完プラグイン．単体で使うより追加の専用プラグインと組み合わせることで真価を発揮
+  - これが使いたいがためにneovimを導入したと言っても過言ではない
+  - 変数や関数,スニペット呼び出し,パス補完 etc... の補完が出来る
 
 - 'roxma/vim-hug-neovim-rpc'
   - deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
@@ -298,21 +296,15 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 - 'roxma/nvim-yarp'
   - deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
 
-- 'Shougo/deoplete.nvim'
-  - 補完プラグイン．単体で使うより追加の専用プラグインと組み合わせることで真価を発揮
-  - これが使いたいがためにneovimを導入したと言っても過言ではない
-  - 変数や関数,スニペット呼び出し,パス補完 etc... の補完が出来る
-
 - 'zchee/deoplete-jedi'
   - deoplete用 python補完プラグイン
-  - LSP と使い分けるか色々検討中...
 
 - 'zchee/deoplete-docker'
   - deoplete用 dockerfile記述支援プラグイン(いうほど使っていない)
 
 - 'ujihisa/neco-look'
   - deopleteに適応した英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
-  - 現在win環境は未対応(lookが無い)
+  - 現在win環境は未対応(look コマンドが無い)
 
 - 'lervag/vimtex'
   - tex記述用支援プラグイン
@@ -330,13 +322,38 @@ pythonのパスを指定する必要があるため,その辺は init.vim (vimrc
 
 - 'lighttiger2505/deoplete-vim-lsp'
   - deoplete でLSPを利用するためのプラグイン
+   - 'prabirshrestha/vim-lsp', 'prabirshrestha/async.vim' を利用した
+
+#### 現在利用中のオートコンプリートプラグイン(asyncomplete + vim-lsp)
+
+- 'prabirshrestha/asyncomplete.vim'
+  - 非同期で補完を行うためのプラグイン(deoplete.nvimみたいなもの)
+  プラグイン単体では威力を発揮しない.複数のsourceを利用することで真価を発揮
 
 - 'prabirshrestha/vim-lsp'
   - vimで Language Server Protocol を利用するためのプラグイン
   - 現在,pythonで動作を確認(deoplete-jediと使用感を比較する必要があるかも)
     - `pip install python-Language-server` が必要
+  - 恐らく他の言語にも容易に対応できると思う
+    - 強い
+  - 競合相手は 'coc.nvim' ?
 
 - 'prabirshrestha/async.vim'
   - LSP を非同期で動かすためのプラグイン(よく分かっていない...)
   - 'prabirshrestha/vim-lsp' に必要らしい(とりあえず入れている感がすごい)
+
+- 'prabirshrestha/asyncomplete-lsp.vim'
+  - asyncomplete.vim のLSP補完拡張
+
+- 'prabirshrestha/asyncomplete-buffer.vim'
+  - asyncomplete.vim のバッファ補完拡張
+
+- 'prabirshrestha/asyncomplete-file.vim'
+  - asyncomplete.vim のファイル補完拡張
+
+- 'prabirshrestha/asyncomplete-necovim.vim'
+  - asyncomplete.vim のvim script補完拡張
+
+- 'prabirshrestha/asyncomplete-neosnippet.vim'
+  - asyncomplete.vim のNeosnippet補完拡張
 
