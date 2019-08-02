@@ -20,10 +20,10 @@ let g:lightline = {
             \   'left': [
             \       ['mode', 'paste'],
             \       ['fugitive'],
-            \       ['readonly', 'relativepath', 'modified'],
+            \       ['readonly', 'relativepath', 'modified', 'vista'],
             \   ],
             \   'right':[
-            \       ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok'],
+            \       ['lsp', 'lsp_warning_num', 'lsp_error_num'],
             \       ['filetype', 'fileformat', 'fileencoding'],
             \       ['lineinfo'],
             \   ],
@@ -42,6 +42,10 @@ let g:lightline = {
             \   'filetype': 'LightlineFiletype',
             \   'fileencoding': 'LightlineFileencoding',
             \   'mode': 'LightlineMode',
+            \   'lsp': 'LspServerStatusForStatusLine',
+            \   'vista': 'NearestMethodOrFunction',
+            \   'lsp_warning_num': 'LspWarningNum',
+            \   'lsp_error_num': 'LspErrorNum',
             \},
             \'component_expand': {
             \   'linter_checking': 'lightline#ale#checking',
@@ -113,8 +117,43 @@ endfunction
 function! LightlineMode()
   return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
-'''
 
+function! LspServerStatusForStatusLine()
+    return split(g:lsp#get_server_status() , ' ')[-1]
+endfunction
+
+" Show current method name in lightline
+" TODO ステータスラインに関数or変数名を明示的にVistaを起動しなくても自動で表示して欲しい
+" そのために g:flg みたいな処理を噛ませている.スマートじゃないから代替案が欲しい
+let g:flg = 0
+function! NearestMethodOrFunction() abort
+    if LspServerStatusForStatusLine() == 'running'
+        let s:method = get(b:, 'vista_nearest_method_or_function', '')
+        let s:return_name = s:method == '' ? '' : '[' . s:method . ']'
+        let g:flg += 1
+    else
+        let s:return_name = 'Starting vista.vim ...'
+    endif
+
+    if g:flg == 5
+        call vista#RunForNearestMethodOrFunction()
+        au VimEnter * call vista#RunForNearestMethodOrFunction()
+    endif
+
+    return s:return_name
+endfunction
+
+function! LspWarningNum()
+    let s:warning_num = lsp#get_buffer_diagnostics_counts()['warning']
+    return s:warning_num == 0 ? '' : 'Warning:' . s:warning_num
+endfunction
+
+function! LspErrorNum()
+    let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
+    return s:error_num == 0 ? '' : 'Error:' . s:error_num
+endfunction
+
+'''
 
 [[plugins]]  # ALEによるlint結果をステータスラインに表示するためのlightlineの拡張
 repo = 'maximbaz/lightline-ale'
@@ -230,8 +269,12 @@ let g:highlightedyank_highlight_duration = 500
 repo = 'nathanaelkane/vim-indent-guides'
 hook_add = '''
 " 色の変更(詳しい配色 'ctermbg vim'等で検索 ) 配色はカラースキーマに合わせて設定
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=236
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=238
+"
+augroup indentguide
+    autocmd!
+    au Colorscheme * :hi IndentGuidesOdd ctermbg=236
+    au Colorscheme * :hi IndentGuidesEven ctermbg=238
+augroup END
 '''
 hook_source = '''
 " indent guideの有効
@@ -345,7 +388,7 @@ endif
 if has('mac')
     let s:fzf_target_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
     if strlen(glob(s:fzf_target_dir . '/rg')) == 0
-        execute '!wget https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep-11.0.1-x86_64-apple-darwin.tar.gz'
+        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep-11.0.1-x86_64-apple-darwin.tar.gz'
         execute '!tar -zxvf ripgrep-11.0.1-x86_64-apple-darwin.tar.gz'
         execute '!mv ./ripgrep*/rg' s:fzf_target_dir
         execute '!rm -rf ./ripgrep-11.0.1-x86_64-*'
@@ -369,8 +412,6 @@ elseif has('win64')
         execute '!move rg.exe' s:fzf_target_dir
         execute '!del *.zip'
         execute '!del *.ps1'
-        " execute 'set runtimepath^=' . s:fzf_target_dir
-        " execute '!set PATH=%PATH%;' . s:fzf_target_dir
     endif
     execute 'set runtimepath+=' . '~/.cache/dein/repos/github.com/junegunn/fzf/bin/rg.exe'
     " set runtimepath='~/.cache/dein/repos/github.com/junegunn/fzf/bin/rg.exe'
@@ -392,9 +433,13 @@ nnoremap <C-g> :Rg<CR>
 " Ctrl + h で最近展開したファイルを表示&検索
 nnoremap <C-h> :History<CR>
 " ステータスラインの非表示化
-autocmd! FileType fzf
-autocmd  FileType fzf set laststatus=0 noshowmode noruler
-    \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+augroup fzf
+    autocmd!
+    autocmd! FileType fzf
+    au  FileType fzf set laststatus=0 noshowmode noruler
+                \| au BufLeave <buffer> set laststatus=2 showmode ruler
+augroup END
+
 
 " 可能であれば展開済みバッファへ移動
 let g:fzf_buffers_jump = 1
@@ -519,41 +564,61 @@ let g:lsp_highlights_enabled = 0
 " テキストプロパティの有効化
 let g:lsp_textprop_enabled = 0
 " sign と virtual text の色定義 
-autocmd ColorScheme * :hi LspErrorText ctermfg=red guifg=red
-autocmd ColorScheme * :hi LspWarningText ctermfg=yellow guifg=yellow
-autocmd ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray
-autocmd ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan
+augroup vimlsp_colors
+    autocmd!
+    au ColorScheme * :hi LspErrorText ctermfg=red guifg=red
+    au ColorScheme * :hi LspWarningText ctermfg=yellow guifg=yellow
+    au ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray
+    au ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan
+augroup END
+
 
 " 記号表示
 let g:lsp_signs_enabled = 1
-let g:lsp_signs_error = {'text': '✗'}
-let g:lsp_signs_warning = {'text': '⚠'}
-let g:lsp_signs_information = {'text': '❓'}
-let g:lsp_signs_hint = {'text': 'Ⓘ'}
+let g:lsp_signs_error = {'text': 'X'}
+let g:lsp_signs_warning = {'text': '!'}
+let g:lsp_signs_information = {'text': 'i'}
+let g:lsp_signs_hint = {'text': '?'}
 
-" Ctrl+j で次のエラー箇所へジャンプ
-nnoremap <C-j> :LspNextError<CR>
-" Ctrl+k で前のエラー箇所へジャンプ
-nnoremap <C-k> :LspPreviousError<CR>
+" LSP コマンドのキーマッピング等
+function! s:configure_lsp() abort
+    " Omni補完の有効化
+    setlocal omnifunc=lsp#complete
+    " Ctrl+j で次のエラー箇所へジャンプ
+    nnoremap <C-j> :LspNextError<CR>
+    " Ctrl+k で前のエラー箇所へジャンプ
+    nnoremap <C-k> :LspPreviousError<CR>
+    " Ctrl+m で定義元へジャンプ
+    nnoremap <C-m> :LspDefinition<CR>
+endfunction
+
 
 " 言語別Server設定
-" For python
-if executable('pyls')
-  " pip install python-language-server
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
-        \ })
-endif
-" For C, C++
-if executable('clangd')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'clangd',
-        \ 'cmd': {server_info->['clangd', '-background-index']},
-        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-        \ })
-endif
+augroup vimlsp_settings
+    autocmd!
+    " タグジャンプやリファレンスチェック等を起動するキーマッピングの定義
+    autocmd FileType * call s:configure_lsp()
+    " For python
+    if executable('pyls')
+        " pip install python-language-server
+        au User lsp_setup call lsp#register_server({
+            \ 'name': 'pyls',
+            \ 'cmd': {server_info->['pyls']},
+            \ 'whitelist': ['python'],
+            \ 'workspace_config': {'pyls': {'plugins': {
+            \   'pycodestyle': {'enabled': v:false},
+            \   'jedi_definition': {'follow_imports': v:true, 'follow_builtin_imports': v:true},}}}
+            \ })
+    endif
+    " For C, C++
+    if executable('clangd')
+        au User lsp_setup call lsp#register_server({
+            \ 'name': 'clangd',
+            \ 'cmd': {server_info->['clangd', '-background-index']},
+            \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+            \ })
+    endif
+augroup END
 
 " ログやデバッグ用の設定
 let g:lsp_log_verbose = 0
@@ -666,3 +731,39 @@ endif
 repo = 'Shougo/neco-vim'
 
 
+[[plugins]]  # LSPのシンボル経由でタグジャンプ等が使えるようになる
+repo = 'liuchengxu/vista.vim'
+depends = ['vim-lsp', 'lightline.vim']
+hook_add = '''
+" fzf の表示領域設定
+let g:vista_fzf_preview = ['right:50%']
+" アイコン表示を無効化
+let g:vista#renderer#enable_icon = 0
+" アイコンの定義
+let g:vista#renderer#icons = {
+            \   "function": "f",
+            \   "variable": "v",
+            \  }
+" Vistaの実行プラグインを指定
+let g:vista_default_executive = 'vim_lsp'
+" Vista の実行プラグインを言語別に指定可能
+let g:vista_executive_for = {
+            \ 'cpp': 'vim_lsp',
+            \ 'python': 'vim_lsp',
+            \ }
+" Ctrl+i でタグジャンプ(fzf経由?)
+nnoremap <C-i> : <C-u>Vista finder vim_lsp<CR>
+
+let g:vista_echo_cursor_strategy = 'floating_win'
+'''
+hook_post_source = '''
+" TODO <silent>利用してステータスラインに警告っぽいのが出るのを防ぐ (セコい)
+" augroup vista
+"     autocmd!
+"     " au BufEnter * "<silent> :Vista vim_lsp"
+"     au VimEnter * <silent> :Vista vim_lsp
+"     " au BufEnter * :Vista vim_lsp
+"     " au VimEnter * :Vista vim_lsp
+"     au VimEnter * call vista#RunForNearestMethodOrFunction()
+" augroup END
+'''

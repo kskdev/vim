@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# For Neovim
+
 if [ "$(uname)" == "Darwin" ]; then
     # MacOS
     TARGET_DIR="${HOME}/.config/nvim"
@@ -9,9 +11,8 @@ if [ "$(uname)" == "Darwin" ]; then
     TARGET_DEIN="${HOME}/.config/nvim/dein.toml"
 
     mkdir -p ${TARGET_DIR}
-    ln ${SOURCE_VIMRC} ${TARGET_VIMRC}
-    ln ${SOURCE_DEIN} ${TARGET_DEIN}
-
+    cp ${SOURCE_VIMRC} ${TARGET_VIMRC}
+    cp ${SOURCE_DEIN} ${TARGET_DEIN}
 
 elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
     # Windows (MinGW series???)
@@ -34,8 +35,8 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     TARGET_DEIN="${HOME}/.config/nvim/dein.toml"
 
     mkdir -p ${TARGET_DIR}
-    ln ${SOURCE_VIMRC} ${TARGET_VIMRC}
-    ln ${SOURCE_DEIN} ${TARGET_DEIN}
+    cp ${SOURCE_VIMRC} ${TARGET_VIMRC}
+    cp ${SOURCE_DEIN} ${TARGET_DEIN}
 
 else
     echo "Unsupported..."

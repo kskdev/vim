@@ -17,8 +17,9 @@
 2. $ cd ./vim
 3. $ sh ./install.sh
 4. `nvim` or `vim` を起動したらプラグインのインストールが開始
+5. EX. もしpython補完を利用するなら `python-language-server` をインストールする必要がある(pip経由でOK)
 
-(表示が色々とおかしなことになるかもしれないが，端末を開き直せばOK)
+また，表示が色々とおかしなことになるかもしれないが，端末を開き直せばOK
 
 基本的にはここで終了.
 
@@ -59,6 +60,7 @@ sudo apt install vim
   - deoplete みたいに python ver3.6.1+ の縛りが無いから??(要確認)
   - ただし、deopleteで利用してたneco-lookが使えなくて意外と不便になった
   - 補完のsmart case か　ignore case が無いと個人的にしんどい
+  - python インタプリタが複数存在するとき、どれを見ている?
 
 - deopleteなどを利用する場合，要求されるPythonのバージョンが3.6.1+だったりする.
   - Python3であれば何でも良い訳じゃない...?
@@ -69,9 +71,15 @@ sudo apt install vim
 - 意外とCtrlキーを利用するキーマップになってしまった.小指がお亡くなりになる前にキーマップを再検討(無理そう)
 
 - ctagsとの連携をしようか検討中(tagbarというプラグインの動作が重すぎた)
-  - 
+  - LSPで対応可能でした(つよい)
 
 ## Update log
+
+- 2019/08/01(lsp branch)
+  - vista.vim の導入によるタグジャンプを実現. ctags がいらないのでつよい
+    - `:Vista` で起動
+  - lightline を拡張してwarningやerrorの数をstatuslineに表示
+    - カーソル位置の関数名等を表示
 - 2019/07/31(lsp branch)
   - deoplete + vim-lsp から asyncomplete + vim-lsp ベースへ以降
     - vim8 でも動くようになった！(全てのプラグインが動くかは未確認)
@@ -276,12 +284,18 @@ sudo apt install vim
   - 置換時に置換元文字列(before)と置換先文字列(after)のプレビューを表示
   - 因みに置換の基本コマンド: %s/before/after/g[c]
 
-- 'w0rp/ale'
+- 'w0rp/ale' (削除した)
   - プログラムの危ない部分やエラーが出る場所をコード上に示してくれる
   - 設定で色々な言語に対応可能(この設定ファイルではpythonのみ)
     - 外部のリンターを利用するためリンターの指定は必要
   - 割とWarningがキツくて画面が騒がしい... Errorだけでも良いのに...
-  - 現在インサートモードで Ctrl+j or Ctrl+k でWarningとErrorの位置に移動する
+  - 現在 'prabirshrestha/vim-lsp' と 'liuchengxu/vista.vim' を利用して対応
+
+- 'liuchengxu/vista.vim' 
+  - タグジャンプ等や定義元へジャンプすることが出来るようになる
+    - vim-lsp の力を借りて実行
+    - さらに解析結果等を lightline に拡張
+      - statusline に関数名や変数名も表示
 
 #### オートコンプリートプラグイン(deoplete)
 
