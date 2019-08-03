@@ -124,24 +124,16 @@ endfunction
 
 " Show current method name in lightline
 " TODO ステータスラインに関数or変数名を明示的にVistaを起動しなくても自動で表示して欲しい
-" そのために g:flg みたいな処理を噛ませている.スマートじゃないから代替案が欲しい
-let g:flg = 0
 function! NearestMethodOrFunction() abort
     if LspServerStatusForStatusLine() == 'running'
         let s:method = get(b:, 'vista_nearest_method_or_function', '')
         let s:return_name = s:method == '' ? '' : '[' . s:method . ']'
-        let g:flg += 1
     else
         let s:return_name = 'Starting vista.vim ...'
     endif
-
-    if g:flg == 5
-        call vista#RunForNearestMethodOrFunction()
-        au VimEnter * call vista#RunForNearestMethodOrFunction()
-    endif
-
     return s:return_name
 endfunction
+au VimEnter * call vista#RunForNearestMethodOrFunction()
 
 function! LspWarningNum()
     let s:warning_num = lsp#get_buffer_diagnostics_counts()['warning']
@@ -557,7 +549,7 @@ let g:lsp_diagnostics_echo_cursor = 1
 " Lint結果の詳細を行末に表示
 let g:lsp_virtual_text_enabled = 0
 " floating windowの利用
-let g:lsp_preview_float = 0
+let g:lsp_preview_float = 1
 
 " ハイライト表示を無効化
 let g:lsp_highlights_enabled = 0
@@ -571,7 +563,6 @@ augroup vimlsp_colors
     au ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray
     au ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan
 augroup END
-
 
 " 記号表示
 let g:lsp_signs_enabled = 1
@@ -591,7 +582,6 @@ function! s:configure_lsp() abort
     " Ctrl+m で定義元へジャンプ
     nnoremap <C-m> :LspDefinition<CR>
 endfunction
-
 
 " 言語別Server設定
 augroup vimlsp_settings
@@ -753,17 +743,5 @@ let g:vista_executive_for = {
             \ }
 " Ctrl+i でタグジャンプ(fzf経由?)
 nnoremap <C-i> : <C-u>Vista finder vim_lsp<CR>
+'''
 
-let g:vista_echo_cursor_strategy = 'floating_win'
-'''
-hook_post_source = '''
-" TODO <silent>利用してステータスラインに警告っぽいのが出るのを防ぐ (セコい)
-" augroup vista
-"     autocmd!
-"     " au BufEnter * "<silent> :Vista vim_lsp"
-"     au VimEnter * <silent> :Vista vim_lsp
-"     " au BufEnter * :Vista vim_lsp
-"     " au VimEnter * :Vista vim_lsp
-"     au VimEnter * call vista#RunForNearestMethodOrFunction()
-" augroup END
-'''
