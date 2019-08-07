@@ -20,10 +20,12 @@ let g:lightline = {
             \   'left': [
             \       ['mode', 'paste'],
             \       ['fugitive'],
-            \       ['readonly', 'relativepath', 'modified', 'vista'],
+            " \       ['readonly', 'relativepath', 'modified', 'vista'],
+            \       ['readonly', 'relativepath', 'modified'],
             \   ],
             \   'right':[
-            \       ['lsp', 'lsp_warning_num', 'lsp_error_num'],
+            \       ['linter_errors', 'linter_warnings', 'linter_ok', 'linter_checking'],
+            " \       ['lsp', 'lsp_warning_num', 'lsp_error_num'],
             \       ['filetype', 'fileformat', 'fileencoding'],
             \       ['lineinfo'],
             \   ],
@@ -118,33 +120,19 @@ function! LightlineMode()
   return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 
-function! LspServerStatusForStatusLine()
-    return split(g:lsp#get_server_status() , ' ')[-1]
-endfunction
-
-" Show current method name in lightline
-" TODO ステータスラインに関数or変数名を明示的にVistaを起動しなくても自動で表示して欲しい
-function! NearestMethodOrFunction() abort
-    if LspServerStatusForStatusLine() == 'running'
-        let s:method = get(b:, 'vista_nearest_method_or_function', '')
-        let s:return_name = s:method == '' ? '' : '[' . s:method . ']'
-    else
-        let s:return_name = 'Starting vista.vim ...'
-    endif
-    return s:return_name
-endfunction
-au VimEnter * call vista#RunForNearestMethodOrFunction()
-
-function! LspWarningNum()
-    let s:warning_num = lsp#get_buffer_diagnostics_counts()['warning']
-    return s:warning_num == 0 ? '' : 'Warning:' . s:warning_num
-endfunction
-
-function! LspErrorNum()
-    let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
-    return s:error_num == 0 ? '' : 'Error:' . s:error_num
-endfunction
-
+" function! LspServerStatusForStatusLine()
+"     return split(g:lsp#get_server_status() , ' ')[-1]
+" endfunction
+"
+" function! LspWarningNum()
+"     let s:warning_num = lsp#get_buffer_diagnostics_counts()['warning']
+"     return s:warning_num == 0 ? '' : 'Warning:' . s:warning_num
+" endfunction
+"
+" function! LspErrorNum()
+"     let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
+"     return s:error_num == 0 ? '' : 'Error:' . s:error_num
+" endfunction
 '''
 
 [[plugins]]  # ALEによるlint結果をステータスラインに表示するためのlightlineの拡張
@@ -261,7 +249,7 @@ let g:highlightedyank_highlight_duration = 500
 repo = 'nathanaelkane/vim-indent-guides'
 hook_add = '''
 " 色の変更(詳しい配色 'ctermbg vim'等で検索 ) 配色はカラースキーマに合わせて設定
-"
+
 augroup indentguide
     autocmd!
     au Colorscheme * :hi IndentGuidesOdd ctermbg=236
@@ -519,10 +507,12 @@ on_ft = ['toml']
 [[plugins]] # カーソル位置のコンテキストに合わせてftを切り替える
 repo = 'osyo-manga/vim-precious'
 depends = ['context_filetype.vim']
+on_ft = ['toml']
 
 
 [[plugins]] # カーソル位置のコンテキストのftを判定
 repo = 'Shougo/context_filetype.vim'
+on_ft = ['toml']
 
 
 [[plugins]] # 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
@@ -537,168 +527,81 @@ nnoremap subp y:OverCommandLine<CR>%s!<C-r>=substitute(@0, '!', '\\!', 'g')<CR>!
 '''
 
 
-[[plugins]]  # Language Server Protocol
-repo = 'prabirshrestha/vim-lsp'
-hook_add = '''
-" LSP 有効化
-let g:lsp_auto_enable = 1
-" Lint有効化 TODO lighline.vim と連携してステータスラインにErrorの数等を表示したい. LSPの方がALEに比べて高速なため乗り換えを検討
-let g:lsp_diagnostics_enabled = 1
-" Lint結果をステータスラインに表示
-let g:lsp_diagnostics_echo_cursor = 1
-" Lint結果の詳細を行末に表示
-let g:lsp_virtual_text_enabled = 0
-" floating windowの利用
-let g:lsp_preview_float = 1
-
-" ハイライト表示を無効化
-let g:lsp_highlights_enabled = 0
-" テキストプロパティの有効化
-let g:lsp_textprop_enabled = 0
-" sign と virtual text の色定義 
-augroup vimlsp_colors
-    autocmd!
-    au ColorScheme * :hi LspErrorText ctermfg=red guifg=red
-    au ColorScheme * :hi LspWarningText ctermfg=yellow guifg=yellow
-    au ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray
-    au ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan
-augroup END
-
-" 記号表示
-let g:lsp_signs_enabled = 1
-let g:lsp_signs_error = {'text': 'X'}
-let g:lsp_signs_warning = {'text': '!'}
-let g:lsp_signs_information = {'text': 'i'}
-let g:lsp_signs_hint = {'text': '?'}
-
-" LSP コマンドのキーマッピング等
-function! s:configure_lsp() abort
-    " Omni補完の有効化
-    setlocal omnifunc=lsp#complete
-    " Ctrl+j で次のエラー箇所へジャンプ
-    nnoremap <C-j> :LspNextError<CR>
-    " Ctrl+k で前のエラー箇所へジャンプ
-    nnoremap <C-k> :LspPreviousError<CR>
-    " Ctrl+m で定義元へジャンプ
-    nnoremap <C-m> :LspDefinition<CR>
-endfunction
-
-" 言語別Server設定
-augroup vimlsp_settings
-    autocmd!
-    " タグジャンプやリファレンスチェック等を起動するキーマッピングの定義
-    autocmd FileType * call s:configure_lsp()
-    " For python
-    if executable('pyls')
-        " pip install python-language-server
-        au User lsp_setup call lsp#register_server({
-            \ 'name': 'pyls',
-            \ 'cmd': {server_info->['pyls']},
-            \ 'whitelist': ['python'],
-            \ 'workspace_config': {'pyls': {'plugins': {
-            \   'pycodestyle': {'enabled': v:false},
-            \   'jedi_definition': {'follow_imports': v:true, 'follow_builtin_imports': v:true},}}}
-            \ })
-    endif
-    " For C, C++
-    if executable('clangd')
-        au User lsp_setup call lsp#register_server({
-            \ 'name': 'clangd',
-            \ 'cmd': {server_info->['clangd', '-background-index']},
-            \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-            \ })
-    endif
-augroup END
-
-" ログやデバッグ用の設定
-let g:lsp_log_verbose = 0
-let g:lsp_log_file = expand('~/vim-lsp.log')
-'''
+[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
+repo = 'roxma/vim-hug-neovim-rpc'
+if = '!has("nvim")'
 
 
-[[plugins]]  # 非同期処理用のプラグイン(調べてません)
-repo = 'prabirshrestha/async.vim'
-depends = ['prabirshrestha/vim-lsp']
+[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
+repo = 'roxma/nvim-yarp'
+if = '!has("nvim")'
 
 
-[[plugins]]  # 非同期で補完を行うためのプラグイン(deoplete.nvimみたいなもの?)
-repo = 'prabirshrestha/asyncomplete.vim'
-depends = ['prabirshrestha/vim-lsp']
-hook_add = '''
-" 自動補完候補表示の有効化
-let g:asyncomplete_auto_popup = 1
-" popup表示までのち円時間[ms] (defaulat:30)
-let g:asyncomplete_popup_delay = 10
-
+[[plugins]]  # オートコンプリートプラグイン
+repo = 'Shougo/deoplete.nvim'
+# on_event = 'InsertEnter'
+hook_source = '''
+" ### deopleteの設定 ### "
+" deoplete 有効化
+let g:deoplete#enable_at_startup = 1
+" 補完に掛かる時間を指定(ms)
+let g:deoplete#auto_complete_delay = 0
+" 非同期時から同期に移る時間(ms)
+let g:deoplete#auto_refresh_delay = 10
+" 補完が始まるまでに必要な文字数
+let g:deoplete#auto_complete_start_length = 1
+" キャメルケースに対応(細かいことはよくわからん)
+let g:deoplete#enable_camel_case = 1
+" 大文字小文字を無視して補完する
+let g:deoplete#enable_ignore_case = 1
+" 補完機能が作用するたびに候補表示を再表示するかどうか
+let g:deoplete#enable_refresh_always = 1
+" 補完候補の表示数の最大値を設定
+let g:deoplete#max_list = 10000
+" マルチバイト文字の補完を無効化
+let g:skip_multibyte = 1
+" deopleteの並列処理のスレッド数 (default : 4)
+let g:deoplete#num_processes = 4
+" ### キーマッピング ### "
 " TAB で補完(順選択)
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 " Shift TAB で補完(逆順選択)
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-" リターンキーで補完ポップアップを非表示
-inoremap <expr><CR> pumvisible() ? asyncomplete#close_popup() : "\<CR>" 
 '''
 
 
-[[plugins]]  # asyncomplete.vim のvim-lsp拡張
-repo = 'prabirshrestha/asyncomplete-lsp.vim'
-depends = ['prabirshrestha/vim-lsp', 'prabirshrestha/asyncomplete.vim']
-
-
-[[plugins]]  # asyncomplete.vim のバッファ補完拡張
-repo = 'prabirshrestha/asyncomplete-buffer.vim'
-depends = ['prabirshrestha/asyncomplete.vim']
-hook_add = '''
-call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-    \ 'name': 'buffer',
-    \ 'whitelist': ['*'],
-    \ 'blacklist': ['go'],
-    \ 'completor': function('asyncomplete#sources#buffer#completor'),
-    \ 'config': {
-    \    'max_buffer_size': 5000000,
-    \  },
-    \ }))
+[[plugins]]  # Python用 補完プラグイン
+repo = 'zchee/deoplete-jedi'
+on_ft = ['python']
+depends = ['Shougo/deoplete.nvim']
+hook_source = '''
+" 利用するインタプリタの指定
+let g:deoplete#sources#jedi#python_path = g:python3_path
 '''
 
 
-[[plugins]]  # asyncomplete.vim のファイル補完拡張
-repo = 'prabirshrestha/asyncomplete-file.vim'
-depends = ['prabirshrestha/asyncomplete.vim']
+[[plugins]]  # docker用 補完プラグイン
+repo = 'zchee/deoplete-docker'
+on_ft = ['Dockerfile']
+depends = ['Shougo/deoplete.nvim']
+
+
+[[plugins]]  # 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
+repo = 'ujihisa/neco-look'
+depends = ['Shougo/deoplete.nvim']
+if = 'has("unix") || has("mac")'  # TODO windowsでlookを使う方法を検討
+
+
+[[plugins]]  # vimコマンド補完用プラグイン
+repo = 'Shougo/neco-vim'
+depends = ['Shougo/deoplete.nvim']
+
+
+[[plugins]]  # tex記述支援プラグイン
+repo = 'lervag/vimtex'
+depends = ['Shougo/deoplete.nvim']
+on_ft = ['tex']
 hook_add = '''
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-    \ 'name': 'file',
-    \ 'whitelist': ['*'],
-    \ 'priority': 10,
-    \ 'completor': function('asyncomplete#sources#file#completor')
-    \ }))
-'''
-
-
-[[plugins]]  # asyncomplete.vim のvim script補完拡張
-repo = 'prabirshrestha/asyncomplete-necovim.vim'
-depends = ['prabirshrestha/asyncomplete.vim', 'Shougo/neco-syntax']
-hook_add = '''
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
-    \ 'name': 'necovim',
-    \ 'whitelist': ['vim'],
-    \ 'completor': function('asyncomplete#sources#necovim#completor'),
-    \ }))
-'''
-
-
-[[plugins]]  # asyncomplete.vim のNeosnippet補完拡張
-repo = 'prabirshrestha/asyncomplete-neosnippet.vim'
-depends = ['prabirshrestha/asyncomplete.vim', 'Shougo/neosnippet-snippets', 'Shougo/neosnippet.vim']
-hook_add = '''
-call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
-    \ 'name': 'neosnippet',
-    \ 'whitelist': ['*'],
-    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
-    \ }))
-
-" キーマッピング設定
-imap <C-k> <Plug>(neosnippet_expand_or_jump)
-smap <C-k> <Plug>(neosnippet_expand_or_jump)
-xmap <C-k> <Plug>(neosnippet_expand_target)
 '''
 
 
@@ -708,40 +611,177 @@ repo = 'Shougo/neosnippet-snippets'
 
 [[plugins]]  # スニペット補完の動作定義
 repo = 'Shougo/neosnippet.vim'
-depends = ['neosnippet-snippets']
+depends = ['neosnippet-snippets', 'Shougo/deoplete.nvim']
 on_ft = ['snippet']
 hook_add = '''
+" 設定はデフォルト設定のまま
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
 " For conceal markers.
 if has('conceal')
   set conceallevel=2 concealcursor=niv
 endif
 '''
 
-[[plugins]]  # vimコマンド補完(asyncomplete.vim 経由で利用)
-repo = 'Shougo/neco-vim'
+
+# [[plugins]]  # Language Server Protocol
+# repo = 'prabirshrestha/vim-lsp'
+# hook_add = '''
+# " LSP 有効化
+# let g:lsp_auto_enable = 1
+# " Lint有効化 TODO lighline.vim と連携してステータスラインにErrorの数等を表示したい. LSPの方がALEに比べて高速なため乗り換えを検討
+# let g:lsp_diagnostics_enabled = 1
+# " Lint結果をステータスラインに表示
+# let g:lsp_diagnostics_echo_cursor = 1
+# " Lint結果の詳細を行末に表示
+# let g:lsp_virtual_text_enabled = 0
+# " floating windowの利用
+# let g:lsp_preview_float = 1
+#
+# " ハイライト表示を無効化
+# let g:lsp_highlights_enabled = 0
+# " テキストプロパティの有効化
+# let g:lsp_textprop_enabled = 0
+# " sign と virtual text の色定義 
+# augroup vimlsp_colors
+#     autocmd!
+#     au ColorScheme * :hi LspErrorText ctermfg=red guifg=red
+#     au ColorScheme * :hi LspWarningText ctermfg=yellow guifg=yellow
+#     au ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray
+#     au ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan
+# augroup END
+#
+# " 記号表示
+# let g:lsp_signs_enabled = 1
+# let g:lsp_signs_error = {'text': 'X'}
+# let g:lsp_signs_warning = {'text': '!'}
+# let g:lsp_signs_information = {'text': 'i'}
+# let g:lsp_signs_hint = {'text': '?'}
+#
+# " LSP コマンドのキーマッピング等
+# function! s:configure_lsp() abort
+#     " Omni補完の有効化
+#     setlocal omnifunc=lsp#complete
+#     " Ctrl+j で次のエラー箇所へジャンプ
+#     nnoremap <C-j> :LspNextError<CR>
+#     " Ctrl+k で前のエラー箇所へジャンプ
+#     nnoremap <C-k> :LspPreviousError<CR>
+#     " Ctrl+m で定義元へジャンプ
+#     nnoremap <C-m> :LspDefinition<CR>
+# endfunction
+#
+# " 言語別Server設定
+# augroup vimlsp_settings
+#     autocmd!
+#     " タグジャンプやリファレンスチェック等を起動するキーマッピングの定義
+#     autocmd FileType * call s:configure_lsp()
+#     " For python
+#     if executable('pyls')
+#         " pip install python-language-server
+#         au User lsp_setup call lsp#register_server({
+#             \ 'name': 'pyls',
+#             \ 'cmd': {server_info->['pyls']},
+#             \ 'whitelist': ['python'],
+#             \ 'workspace_config': {'pyls': {'plugins': {
+#             \   'pycodestyle': {'enabled': v:false},
+#             \   'jedi_definition': {'follow_imports': v:true, 'follow_builtin_imports': v:true},}}}
+#             \ })
+#     endif
+#     " For C, C++
+#     if executable('clangd')
+#         au User lsp_setup call lsp#register_server({
+#             \ 'name': 'clangd',
+#             \ 'cmd': {server_info->['clangd', '-background-index']},
+#             \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+#             \ })
+#     endif
+# augroup END
+#
+# " ログやデバッグ用の設定
+# let g:lsp_log_verbose = 0
+# let g:lsp_log_file = expand('~/vim-lsp.log')
+# '''
 
 
-[[plugins]]  # LSPのシンボル経由でタグジャンプ等が使えるようになる
-repo = 'liuchengxu/vista.vim'
-depends = ['vim-lsp', 'lightline.vim']
+# [[plugins]]  # 非同期処理用のプラグイン(調べてません)
+# repo = 'prabirshrestha/async.vim'
+# depends = ['prabirshrestha/vim-lsp']
+
+
+# [[plugins]]  # deoplete連携用
+# repo = 'lighttiger2505/deoplete-vim-lsp'
+# depends = ['prabirshrestha/vim-lsp',  'prabirshrestha/async.vim', 'Shougo/deoplete.nvim']
+
+
+
+# [[plugins]]  # LSPのシンボル経由でタグジャンプ等が使えるようになる
+# repo = 'liuchengxu/vista.vim'
+# depends = ['vim-lsp', 'lightline.vim']
+# hook_add = '''
+# " fzf の表示領域設定
+# let g:vista_fzf_preview = ['right:50%']
+# " アイコン表示を無効化
+# let g:vista#renderer#enable_icon = 0
+# " アイコンの定義
+# let g:vista#renderer#icons = {
+#             \   "function": "f",
+#             \   "variable": "v",
+#             \  }
+# " Vistaの実行プラグインを指定
+# let g:vista_default_executive = 'vim_lsp'
+# " Vista の実行プラグインを言語別に指定可能
+# let g:vista_executive_for = {
+#             \ 'cpp': 'vim_lsp',
+#             \ 'python': 'vim_lsp',
+#             \ }
+# " Ctrl+i でタグジャンプ(fzf経由?)
+# nnoremap <C-i> : <C-u>Vista finder vim_lsp<CR>
+# '''
+
+[[plugins]]  # コードチェッカー(linter)
+repo = 'w0rp/ale'
 hook_add = '''
-" fzf の表示領域設定
-let g:vista_fzf_preview = ['right:50%']
-" アイコン表示を無効化
-let g:vista#renderer#enable_icon = 0
-" アイコンの定義
-let g:vista#renderer#icons = {
-            \   "function": "f",
-            \   "variable": "v",
-            \  }
-" Vistaの実行プラグインを指定
-let g:vista_default_executive = 'vim_lsp'
-" Vista の実行プラグインを言語別に指定可能
-let g:vista_executive_for = {
-            \ 'cpp': 'vim_lsp',
-            \ 'python': 'vim_lsp',
-            \ }
-" Ctrl+i でタグジャンプ(fzf経由?)
-nnoremap <C-i> : <C-u>Vista finder vim_lsp<CR>
+" Ctrl+j で補完(順選択)
+nmap <C-j> <Plug>(ale_next)
+" Ctrl+k で補完(逆順選択)
+nmap <C-k> <Plug>(ale_previous)
+'''
+hook_source = '''
+" ### Linter(Warning Error チェック)の設定 ### "
+" 利用するLinterの指定
+let g:ale_linters = {'python': ['flake8', 'mypy', 'pylint'],'tex':['textlint'],}
+" エラー・警告表示記号をシンボルカラムに常に表示
+let g:ale_sign_column_always = 1
+" 保存時にLinterを実行
+let g:ale_lint_on_save = 1
+" ファイルを開いた時，lint実行
+let g:ale_lint_on_enter = 1
+" 編集中にLinterを実行
+let g:ale_lint_on_text_changed = 1
+" インサートモードから抜けた時Linterを実行
+let g:ale_lint_on_insert_leave = 1
+" 余計な空白の警告表示設定
+let g:ale_warn_about_trailing_whitespace = 1
+" 警告表示時の文字設定
+let g:ale_sign_warning = '!'
+" エラー表示時の文字設定
+let g:ale_sign_error = 'X'
+" Linterを実行するファイルサイズ上限[Byte]
+let g:ale_maximum_file_size = 1000000
+" エラー箇所の文字背景のハイライトを無効化 (Warningまでハイライトされるのは邪魔)
+let g:ale_set_highlights = 0
+" カーソルを行に合わせたときに表示するメッセージのフォーマット設定
+let g:ale_echo_msg_error_str = '[Error]'
+let g:ale_echo_msg_warning_str = '[Warning]'
+let g:ale_echo_msg_format = '[%linter%]%severity% %s'
+" ### Fixer(コード整形/修正ツール)の設定 ### "
+" 現状，現在利用予定が無いため無効化している
+" 利用するFixerの設定
+let b:ale_fixers = {'python': ['autopep8', 'isort', 'black'],}
+" ファイルをセーブした時のみFixerを実行設定
+let g:ale_fix_on_save = 0
+" 編集時のFixer実行設定
+let g:ale_fix_on_text_changed = 0
 '''
 
