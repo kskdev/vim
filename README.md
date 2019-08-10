@@ -9,26 +9,45 @@
 
 ## Target Environment
 - **neovim**
-- vim8(補完周りが聞くようになったため)
+- vim8(動かないことは無いと思うが，自分の環境では動作の確認が出来ない)
 
 ## How to install
-0. python3系が無ければpython3のインストール
-1. $ git clone https://github.com/kskdev/vim
-2. $ cd ./vim
-3. $ sh ./install.sh
-4. `nvim` or `vim` を起動したらプラグインのインストールが開始
-5. EX. もしpython補完を利用するなら `python-language-server` をインストールする必要がある(pip経由でOK)
+あらかじめ，python3系 の環境は用意しておく必要があることに注意．
 
+python3 環境が整っている場合，以下を実行することでインストール
+``` bash
+git clone https://github.com/kskdev/vim && cd ./vim && bash ./install.sh && nvim
+```
+`nvim` or `vim` を起動したらプラグインのインストールが開始．
 また，表示が色々とおかしなことになるかもしれないが，端末を開き直せばOK
+
+もしpython補完を利用するなら以下をインストールする必要がある．
+- `neovim`
+- `python-language-server`
+
+インストールは `pip` や `conda` 等と使うと良い．
+
+e.g.<br>
+
+*pip*
+
+``` bash
+pip3 install --user neovim python-language-server
+```
+*anaconda(miniconda)*
+
+``` bash
+conda install -c conda-forge neovim python-language-server 
+```
 
 基本的にはここで終了.
 
 neovimがない場合の,インストール方法は以下の通り．
 #### Ubuntu
 ```
-add-apt-repository ppa:neovim-ppa/unstable
-apt-get update
-apt-get install -y neovim
+sudo add-apt-repository ppa:neovim-ppa/unstable
+sudo apt-get update
+sudo apt-get install -y neovim
 ```
 #### Mac
 ```
@@ -50,12 +69,15 @@ sudo add-apt-repository ppa:jonathonf/vim
 sudo apt update
 sudo apt install vim
 ```
-
-<br>
 <br>
 <br>
 
-##### Memo
+## Memo
+- deoplete + LSP はlanguage-server がrunning 状態に遷移してから入力を始めないと言語の補完が上手く行かない
+  - neosnippet も一度 Ctrl+k などで起動させないと動かなかった
+- neco-look がlook コマンドに依存し，Windows環境で使いづらい(MinGWとかいるらしい)
+  - deoplete-dictionary とかで補完したい(そのために './words' とか用意した)
+
 - LSP + asyncomplete ベースは導入が楽だった
   - deoplete みたいに python ver3.6.1+ の縛りが無いから??(要確認)
   - ただし、deopleteで利用してたneco-lookが使えなくて意外と不便になった
@@ -71,10 +93,30 @@ sudo apt install vim
 - 意外とCtrlキーを利用するキーマップになってしまった.小指がお亡くなりになる前にキーマップを再検討(無理そう)
 
 - ctagsとの連携をしようか検討中(tagbarというプラグインの動作が重すぎた)
-  - LSPで対応可能でした(つよい)
+  - LSP + vista.vim で対応
 
 ## Update log
-
+- 2019/08/09(deolsp branch)
+  - deoplete + vim-lsp で補完する方針に戻る
+    - 理由 deoplete は補完テキストの途中が抜けても補完してくれる(asyncompleteでは出来なかった．知らないだけ?)
+      - e.g. *foobar* を補完したい時， *fb* と打てば候補に出てくる (asyncompleteでは不可能)
+      - キーボード入力すら面倒な人間にとって大変重要な要素
+    - ただし たまに変な挙動する(07/29 に書いた PIL のやつ)
+    - 静的解析(LSP)からのLintや定義ジャンプ， neosnippet が補完は asyncomplete, deoplete どちらでも出来る
+    - vista も使える
+    - language server の状態が *running* になってから入力をしないとLSP補完が効かない(要検証)
+  - 'mbbill/undotree' を削除
+    - 思った以上に使わなかった
+  - 'vim-surround' と 'vim-repeat' の代わりに'vim-sandwich' を導入
+    - 前者との違いは textobj を操作出来るようになった
+    - `sa`: 追加  `sd`: 削除  `sr`:置換
+    - それに伴い，'easymotion/vim-easymotion' のトリガを `s` から `ss` へ変更
+  - 'junegunn/fzf' のインストールがどんな環境でもインストール出来るようにしたい
+    - 一部環境でインストール出来なかった
+  - 'reireias/vim-cheatsheet' を導入
+    - vimコマンドのチートシートを作成中
+    - `:Cheat` で起動
+      - float window にも対応．しかし，利用する端末ごとに環境が違うため，float window 利用の設定を無効化
 - 2019/08/01(lsp branch)
   - vista.vim の導入によるタグジャンプを実現. ctags がいらないのでつよい
     - `:Vista` で起動
@@ -142,7 +184,7 @@ sudo apt install vim
 
 ## Plugins
 
-面白そうなプラグイン(現在追加したプラグイン)について簡単に触れる
+面白そうなプラグインについて簡単に触れる<br>
 若干グダグダになってきた...
 
 - 'vim-jp/vimdoc-ja'
@@ -154,7 +196,10 @@ sudo apt install vim
 - 'morhetz/gruvbox'
   - カラースキーマ(エディタの見た目を変更するためのプラグイン)
   - http://vimcolors.com/ この辺りで探したりすると良いかも?
-  - 個人的なおすすめ : 'joshdick/onedark.vim' 'cocopon/iceberg.vim' 'morhetz/gruvbox'
+  - 個人的なおすすめ
+    - 'joshdick/onedark.vim'
+    - 'cocopon/iceberg.vim'
+    - 'morhetz/gruvbox'
 
 - 'itchyny/lightline.vim'
   - vimのステータスバーを拡張するためのプラグイン
@@ -165,6 +210,7 @@ sudo apt install vim
   - lightlineとaleに依存
   - aleの表示をカスタマイズさせたかった
   - 別にプラグインでなくても良いような...?
+  - ale から vim-lsp に乗り換えたため，現在は使っていない
 
 - 'mengelbrecht/lightline-bufferline'
   - ウィンドウ上部のタブ表示の拡張
@@ -181,6 +227,7 @@ sudo apt install vim
 - 'mbbill/undotree'
   - 変更履歴をツリー形式で表示
   - 現在, [ Ctrl + u ] でof/off切り替え
+  - 便利だったが，意外と使わなかったため，削除した
 
 - 'machakann/vim-highlightedyank'
   - ヤンク(コピー)領域をハイライト表示する
@@ -248,9 +295,17 @@ sudo apt install vim
     - visual mode -> S' : 選択範囲を' 'で囲む
     - normal mode -> cs': 囲み記号を置換
     - normal mode -> ds': 囲み記号を削除
+  - 現在は使っていない
 
 - 'tpope/vim-repeat'
   - vim-surround 等の処理をドットコマンドで繰り返し処理が可能
+  - 現在は使っていない
+
+- 'machakann/vim-sandwich'
+  - 記号ペアで範囲を囲んだり置換や削除を行う
+  - 'tpope/vim-surround', 'tpope/vim-repeat' の機能を兼ね備えたプラグイン
+    - このプラグイン1つで代用可能
+    - 個人的にこのプラグインの方が直感的にわかりやすい
 
 - 'junegunn/vim-easy-align'
   - ga入力後，揃えたい文字列を入力してコードの体裁を整える(綺麗に見えるから好き)
@@ -284,20 +339,25 @@ sudo apt install vim
   - 置換時に置換元文字列(before)と置換先文字列(after)のプレビューを表示
   - 因みに置換の基本コマンド: %s/before/after/g[c]
 
-- 'w0rp/ale' (削除した)
+- 'reireias/vim-cheatsheet'
+  - 作成したファイルを `:Cheat` で呼び出し，チートシート確認出来る
+  - ファイルタイプごとの作成も可能
+  - float window にも対応．(使っていないが)
+
+- 'w0rp/ale'
   - プログラムの危ない部分やエラーが出る場所をコード上に示してくれる
   - 設定で色々な言語に対応可能(この設定ファイルではpythonのみ)
     - 外部のリンターを利用するためリンターの指定は必要
   - 割とWarningがキツくて画面が騒がしい... Errorだけでも良いのに...
-  - 現在 'prabirshrestha/vim-lsp' と 'liuchengxu/vista.vim' を利用して対応
+  - 現在 'prabirshrestha/vim-lsp' と 'liuchengxu/vista.vim' を利用しているため，使っていない
 
 - 'liuchengxu/vista.vim' 
   - タグジャンプ等や定義元へジャンプすることが出来るようになる
     - vim-lsp の力を借りて実行
-    - さらに解析結果等を lightline に拡張
-      - statusline に関数名や変数名も表示
+    - fzf と連携し，定義やシンボルの検索も可能
 
-#### オートコンプリートプラグイン(deoplete)
+
+#### 現在利用中のオートコンプリートプラグイン(deoplete + vim-lsp)
 
 - 'Shougo/deoplete.nvim'
   - 補完プラグイン．単体で使うより追加の専用プラグインと組み合わせることで真価を発揮
@@ -334,11 +394,31 @@ sudo apt install vim
   - 一般的なスニペットファイル
   - 自作テンプレートの登録とかもすると便利そうだけど,面倒だからやらない
 
+- 'prabirshrestha/vim-lsp'
+  - vimで Language Server Protocol を利用するためのプラグイン
+  - 現在,pythonで動作を確認(deoplete-jediと使用感を比較する必要があるかも)
+    - `pip install python-Language-server` が必要
+   - 定義ジャンプとか色々出来る
+
+- 'prabirshrestha/async.vim'
+  - LSP を非同期で動かすためのプラグイン?(よく分かっていない...)
+  - 'prabirshrestha/vim-lsp' に必要らしい(とりあえず入れている感がすごい)
+  - 詳しく調べておりません
+
 - 'lighttiger2505/deoplete-vim-lsp'
   - deoplete でLSPを利用するためのプラグイン
    - 'prabirshrestha/vim-lsp', 'prabirshrestha/async.vim' を利用した
+  - 詳しく調べておりません
 
-#### 現在利用中のオートコンプリートプラグイン(asyncomplete + vim-lsp)
+- 'thomasfaingnaert/vim-lsp-snippets'
+  - vim-lsp でスニペット補完を利用するためのプラグイン
+  - 詳しく調べておりません
+
+repo = 'thomasfaingnaert/vim-lsp-neosnippet'
+  - vim-lsp で neosnippet を利用するためのプラグイン
+  - 詳しく調べておりません
+
+#### オートコンプリートプラグイン(asyncomplete + vim-lsp)
 
 - 'prabirshrestha/asyncomplete.vim'
   - 非同期で補完を行うためのプラグイン(deoplete.nvimみたいなもの)

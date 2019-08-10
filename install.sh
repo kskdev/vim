@@ -13,6 +13,8 @@ if [ "$(uname)" == "Darwin" ]; then
     mkdir -p ${TARGET_DIR}
     cp ${SOURCE_VIMRC} ${TARGET_VIMRC}
     cp ${SOURCE_DEIN} ${TARGET_DEIN}
+    # cp "./web2" ${TARGET_DIR}"/words"
+    cp "./cheatsheet.md" ${TARGET_DIR}"/cheatsheet.md"
 
 elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
     # Windows (MinGW series???)
@@ -25,6 +27,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
     mkdir -p ${TARGET_DIR}
     cp ${SOURCE_VIMRC} ${TARGET_VIMRC}
     cp ${SOURCE_DEIN} ${TARGET_DEIN}
+    cp "./cheatsheet.md" ${TARGET_DIR}"/cheatsheet.md"
 
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     # Linux
@@ -37,7 +40,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     mkdir -p ${TARGET_DIR}
     cp ${SOURCE_VIMRC} ${TARGET_VIMRC}
     cp ${SOURCE_DEIN} ${TARGET_DEIN}
-
+    cp "./cheatsheet.md" ${TARGET_DIR}"/cheatsheet.md"
 else
     echo "Unsupported..."
 fi
