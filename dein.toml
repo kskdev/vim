@@ -5,68 +5,221 @@
 repo = 'vim-jp/vimdoc-ja'
 
 
-[[plugins]]  # ステータスバーカスタマイズ 
+[[plugins]]  # ステータスライン(& タブライン)カスタマイズ 
 repo = 'itchyny/lightline.vim'
 hook_add = '''
-let g:lightline = {
-            \'colorscheme': 'wombat',
-            \'mode_map': {'c': 'NORMAL'},
-            \'active': {
-            \   'left': [
-            \       ['mode', 'paste'],
-            \       ['fugitive'],
-            \       ['readonly', 'relativepath', 'modified'],
-            \   ],
-            \   'right':[
-            \       ['lsp', 'lsp_warning_num', 'lsp_error_num'],
-            \       ['filetype', 'fileformat', 'fileencoding'],
-            \       ['lineinfo'],
-            \   ],
-            \},
-            \'component': {
-            \   'linenum': '%L',
-            \   'lineinfo': '%l/%L',
-            \   'relativepath': '%f',
-            \},
-            \'component_function': {
-            \   'modified': 'LightlineModified',
-            \   'readonly': 'LightlineReadonly',
-            \   'fugitive': 'LightlineFugitive',
-            \   'filename': 'LightlineFilename',
-            \   'fileformat': 'LightlineFileformat',
-            \   'filetype': 'LightlineFiletype',
-            \   'fileencoding': 'LightlineFileencoding',
-            \   'mode': 'LightlineMode',
-            \   'lsp': 'LspServerStatusForStatusLine',
-            \   'lsp_warning_num': 'LspWarningNum',
-            \   'lsp_error_num': 'LspErrorNum',
-            \},
-            \'component_expand': {
-            \   'buffers': 'lightline#bufferline#buffers',
-            \},
-            \'component_type': {
-            \   'linter_checking': 'right',
-            \   'linter_warnings': 'warning',
-            \   'linter_errors': 'error',
-            \   'linter_ok': 'right',
-            \   'buffers': 'tabsel',
-            \},
-            \'tabline': {
-            \   'left': [['buffers']],
-            \   'right': [['close']],
-            \},
-            \'separator': {
-            \   'left': '',
-            \   'right': '',
-            \},
-            \'subseparator': {
-            \   'left': '|',
-            \   'right': '|',
-            \},
-            \}
+" タブを常に表示
+set showtabline=2
 
-" component_function で利用するための関数定義
+" ----------------------------------------
+"  lightline フォーマット設定
+" ----------------------------------------
+" 初期化
+command! -bar LightLineUpdate call lightline#init()| call lightline#colorscheme()| call lightline#update()
 
+" lightline 設定
+let g:lightline = {'separator': {'left': '','right': ''}, 'subseparator': {'left': '|','right': '|'}, 'mode_map': {'c': 'NORMAL'},}
+
+" lightline.componet 定義
+let g:lightline.component           = {}
+let g:lightline.component.dir       = '%.35(%{expand("%:h:s?\\S$?\\0/?")}%)'
+let g:lightline.component.winbufnum = '%n%{repeat(",", winnr())}%<'
+let g:lightline.component.rows      = '%L'
+let g:lightline.component.cd        = '%.35(%{fnamemodify(getcwd(), ":~")}%)'
+let g:lightline.component.tabopts   = '%{&et?"et":""}%{&ts}:%{&sw}:%{&sts},%{&tw}'
+let g:lightline.component.lineinfo  = '%l/%L'
+
+" lightline.componet_function 定義
+let g:lightline.component_function                = {}
+let g:lightline.component_function.fugitive       = 'StlFugitive'
+let g:lightline.component_function.cfi            = 'StlCurrentFuncInfo'
+let g:lightline.component_function.currentfuncrow = 'StlCurrentFuncRow'
+let g:lightline.component_function.modified       = 'LightlineModified'
+let g:lightline.component_function.readonly       = 'LightlineReadonly'
+let g:lightline.component_function.fugitive       = 'LightlineFugitive'
+let g:lightline.component_function.filename       = 'LightlineFilename'
+let g:lightline.component_function.fileformat     = 'LightlineFileformat'
+let g:lightline.component_function.filetype       = 'LightlineFiletype'
+let g:lightline.component_function.fileencoding   = 'LightlineFileencoding'
+let g:lightline.component_function.mode           = 'LightlineMode'
+let g:lightline.component_function.lspwarning     = 'LspWarningNum'
+let g:lightline.component_function.lsperror       = 'LspErrorNum'
+let g:lightline.component_function.lsp            = 'LspServerStatusForStatusLine'
+
+" lightline.component_expand 定義
+let g:lightline.component_expand            = {}
+let g:lightline.component_expand.buffers    = 'lightline#bufferline#buffers'
+" let g:lightline.component_expand.lspwarning = 'LspWarningNum'
+" let g:lightline.component_expand.lsperror   = 'LspErrorNum'
+" let g:lightline.component_expand.lsp        = 'LspServerStatusForStatusLine'
+
+" lightline.component_type 定義
+let g:lightline.component_type            = {}
+let g:lightline.component_type.buffers    = 'tabsel'
+let g:lightline.component_type.lspwarning = 'warning'
+let g:lightline.component_type.lsperror   = 'error'
+let g:lightline.component_type.lsp        = 'lspstatus'
+
+" ステータスラインの表示フォーマット定義
+let g:lightline.active         = {}
+let g:lightline.active.left    = [['mode', 'paste'], ['fugitive'], ['filename', 'readonly']]
+let g:lightline.active.right   = [['lsperror'], ['lspwarning'], ['lsp'], ['lineinfo']]
+let g:lightline.inactive       = {}
+let g:lightline.inactive.left  = [['mode', 'paste'], ['fugitive'], ['filename', 'readonly']]
+let g:lightline.inactive.right = [['lineinfo']]
+
+" タブラインの表示フォーマット定義
+let g:lightline.tabline = {}
+let g:lightline.tabline = {'left': [ ['buffers'] ], 'right': [ ['fileformat'], ['fileencoding'], ['filetype'], ['cd'] ]}
+
+" ----------------------------------------
+" カラースキーマ設定
+" ----------------------------------------
+let g:lightline.colorscheme = 'mypalette'
+" let s:p = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'tabline': {}, 'warning': {}, 'error': {}}
+let s:p = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'tabline': {}}
+
+" 色定義 ( [d]ark, [n]ormal, [l]ight ) 参考 : https://www.materialui.co/colors
+let s:blk_d = ['#212121', 233]
+let s:blk_n = ['#424242', 237]
+let s:blk_l = ['#616161', 241]
+
+let s:gry_d = ['#757575', 242]
+let s:gry_n = ['#9E9E9E', 246]
+let s:gry_l = ['#BDBDBD', 248]
+
+let s:wht_d = ['#90A4AE', 249]
+let s:wht_n = ['#EEEEEE', 252]
+let s:wht_l = ['#FAFAFA', 255]
+
+let s:red_d = ['#e53935', 124]
+let s:red_n = ['#ef5350',   9]
+let s:red_l = ['#ef9a9a',   1]
+
+let s:grn_d = ['#00796B',  28]
+let s:grn_n = ['#26A69A',   2]
+let s:grn_l = ['#80CBC4',  10]
+
+let s:blu_d = ['#1976D2',  20]
+let s:blu_n = ['#2196F3',   4]
+let s:blu_l = ['#64B5F6',  31]
+
+let s:org_d = ['#FF6F00', 166]
+let s:org_n = ['#FF9800', 172]
+let s:org_l = ['#FFCC80', 179]
+
+" リスト要素 : 
+" [{文字色},{背景色},{カラーターミナルの文字色},{カラーターミナルの背景色},{文字装飾(省略可)}]
+
+" ステータスライン基本色
+let s:STL_BASECOLOR = [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]]
+let s:p.inactive.middle = [s:STL_BASECOLOR]
+
+" ステータスライン強調色(反対色)
+let s:STL_ATTRIBUTECOLOR = [s:blk_d[0], s:wht_n[0], s:blk_d[1], s:wht_d[1]]
+
+" ステータスライン左側(Mode Fugitive Filename None None)
+let s:p.inactive.left = [
+            \ [s:wht_n[0], s:blk_d[0], s:wht_n[1], s:blk_d[1]],
+            \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
+            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+            \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
+            \ ]
+
+" ステータスライン右側(LSPError LSPWarning LSPStatus LineNum None)
+let s:p.inactive.right = [
+            \ [s:wht_l[0], s:blk_d[0], s:wht_l[1], s:blk_d[1]],
+            \ [s:wht_l[0], s:blk_n[0], s:wht_l[1], s:blk_n[1]],
+            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+            \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
+            \ [s:wht_n[0], s:gry_n[0], s:wht_n[1], s:gry_n[1]],
+            \ ]
+            " \ [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]],
+            " \ [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]],
+            " \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]],
+            " \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_n[1]],
+            " \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
+            " \ ]
+
+" ノーマルモード中央
+let s:p.normal.middle = s:p.inactive.middle
+
+" ノーマルモード左側
+let s:p.normal.left = deepcopy(s:p.inactive.left)
+
+" ノーマルモード右側
+let s:p.normal.right = deepcopy(s:p.inactive.right)
+
+" エラー時の色定義 (上手く動かない...)
+" let s:p.normal.error = [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]]
+" let s:p.normal.warning = [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]]
+let s:p.error = [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]]
+let s:p.warning = [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]]
+" let g:lightline#colorscheme#error = [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]]
+" let g:lightline#colorscheme#warning = [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]]
+
+" インサートモード(中央)
+let s:p.insert.middle = [s:STL_BASECOLOR]
+
+" インサートモード(左側)
+let s:p.insert.left = [
+            \ [s:wht_n[0], s:blu_n[0], s:wht_n[1], s:blu_n[1]],
+            \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
+            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+            \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
+            \ ]
+
+" インサートモード(右側)
+let s:p.insert.right = [
+            \ [s:wht_l[0], s:blk_d[0], s:wht_l[1], s:blk_d[1]],
+            \ [s:wht_l[0], s:blk_n[0], s:wht_l[1], s:blk_n[1]],
+            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+            \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
+            \ [s:wht_n[0], s:gry_n[0], s:wht_n[1], s:gry_n[1]],
+            \ ]
+            " \ [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]],
+            " \ [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]],
+            " \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]],
+            " \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_n[1]],
+            " \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
+            " \ ]
+
+" ヴィジュアルモード中央
+let s:p.visual.middle = [[s:wht_l[0], s:org_d[0], s:wht_l[1], s:org_d[1]]]
+
+" ヴィジュアルモード左側
+let s:p.visual.left = deepcopy(s:p.insert.left)
+let s:p.visual.left[0] = s:p.visual.middle[0]
+
+" ヴィジュアルモード右側
+let s:p.visual.right = deepcopy(s:p.insert.right)
+let s:p.visual.right[0] = s:p.visual.middle[0]
+
+" タブライン中央
+let s:p.tabline.middle = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
+
+" タブライン左側
+let s:p.tabline.left = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
+
+" タブラインカレントバッファ
+let s:p.tabline.tabsel = [[s:org_n[0], s:blk_d[0], s:org_n[1], s:blk_d[1]]]
+
+" タブライン右側
+let s:p.tabline.right = [
+            \ [s:wht_n[0], s:blk_d[0], s:wht_n[1], s:blk_d[1]],
+            \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
+            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+            \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
+            \ ]
+
+let g:lightline#colorscheme#mypalette#palette = s:p
+unlet s:p s:STL_BASECOLOR s:STL_ATTRIBUTECOLOR
+" let g:lightline#colorscheme#wombat#palette = lightline#colorscheme#flatten(s:p)
+
+
+" ----------------------------------------
+" component 用関数定義
+" ----------------------------------------
 function! LightlineModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
@@ -114,13 +267,21 @@ endfunction
 
 function! LspWarningNum()
     let s:warning_num = lsp#get_buffer_diagnostics_counts()['warning']
-    return s:warning_num == 0 ? '' : 'W:' . s:warning_num
+    return s:warning_num == 0 ? '' : 'Warning:' . s:warning_num
 endfunction
 
 function! LspErrorNum()
     let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
-    return s:error_num == 0 ? '' : 'E:' . s:error_num
+    return s:error_num == 0 ? '' : 'Error:' . s:error_num
 endfunction
+
+augroup lightline#LSP
+  autocmd!
+  autocmd User FileChangedShellPost call lightline#update()
+"  autocmd User ALELintPost call lightline#update()
+"  autocmd User ALEFixPost call lightline#update()
+augroup END
+
 '''
 
 
@@ -128,10 +289,6 @@ endfunction
 repo = 'mengelbrecht/lightline-bufferline'
 depends = ['lightline.vim']
 hook_add = '''
-" タブを常に表示
-set showtabline=2
-'''
-hook_source = '''
 " バッファ名に番号を表示しない
 let g:lightline#bufferline#show_number = 0
 " バッファ名を表示するときにパスを省略型で表示
@@ -140,45 +297,6 @@ let g:lightline#bufferline#shorten_path = 1
 let g:lightline#bufferline#unnamed = '[No Name]'
 " バッファの表示設定(相対パスで表示)
 let g:lightline#bufferline#filename_modifier = '%f'
-
-" 色の変更
-" ref : https://github.com/itchyny/lightline.vim/blob/master/autoload/lightline/colorscheme/wombat.vim
-" 色の定義
-let s:base03  = ['#242424', 235]
-let s:base023 = ['#353535', 236]
-let s:base02  = ['#444444', 238]
-let s:base01  = ['#585858', 240]
-let s:base00  = ['#666666', 242]
-let s:base0   = ['#808080', 244]
-let s:base1   = ['#969696', 247]
-let s:base2   = ['#a8a8a8', 248]
-let s:base3   = ['#d0d0d0', 252]
-let s:yellow  = ['#cae682', 180]
-let s:orange  = ['#e5786d', 173]
-let s:red     = ['#e5786d', 203]
-let s:magenta = ['#f2c68a', 216]
-let s:blue    = ['#8ac6f2', 117]
-let s:cyan    = s:blue
-let s:green   = ['#95e454', 119]
-" Assign color
-let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'tabline': {}}
-let s:p.normal.left     = [ [ s:base02,  s:blue    ], [ s:base3,  s:base01  ] ]
-let s:p.normal.right    = [ [ s:base02,  s:base0   ], [ s:base1,  s:base01  ] ]
-let s:p.inactive.right  = [ [ s:base023, s:base01  ], [ s:base00, s:base02  ] ]
-let s:p.inactive.left   = [ [ s:base1,   s:base02  ], [ s:base00, s:base023 ] ]
-let s:p.insert.left     = [ [ s:base02,  s:green   ], [ s:base3,  s:base01  ] ]
-let s:p.replace.left    = [ [ s:base023, s:red     ], [ s:base3,  s:base01  ] ]
-let s:p.visual.left     = [ [ s:base02,  s:magenta ], [ s:base3,  s:base01  ] ]
-let s:p.normal.middle   = [ [ s:base2,   s:base02  ] ]
-let s:p.inactive.middle = [ [ s:base1,   s:base023 ] ]
-let s:p.tabline.left    = [ [ s:base1,   s:base00  ] ]
-let s:p.tabline.left    = [ [ s:base2,   s:base02  ] ]
-let s:p.tabline.tabsel  = [ [ s:base03,  s:blue    ] ]
-let s:p.tabline.middle  = [ [ s:base2,   s:base03  ] ]
-let s:p.tabline.right   = [ [ s:base03,  s:base03  ] ]
-let s:p.normal.error    = [ [ s:base03,  s:red     ] ]
-let s:p.normal.warning  = [ [ s:base023, s:yellow  ] ]
-let g:lightline#colorscheme#wombat#palette = lightline#colorscheme#flatten(s:p)
 '''
 
 
@@ -209,8 +327,7 @@ augroup indentguide
     au Colorscheme * :hi IndentGuidesOdd ctermbg=236
     au Colorscheme * :hi IndentGuidesEven ctermbg=238
 augroup END
-'''
-hook_source = '''
+
 " indent guideの有効
 let g:indent_guides_enable_on_vim_startup = 1
 " 自動配色の無効化
@@ -609,6 +726,8 @@ hook_source = '''
 let g:lsp_auto_enable = 1
 " Lint有効化
 let g:lsp_diagnostics_enabled = 1
+" Lint結果を記号表示
+let g:lsp_signs_enabled = 1
 " Lintの詳細をステータスラインに表示
 let g:lsp_diagnostics_echo_cursor = 1
 " Lintの詳細を行末に表示
@@ -619,8 +738,7 @@ let g:lsp_preview_float = 0
 let g:lsp_highlights_enabled = 0
 " テキストプロパティの有効化
 let g:lsp_textprop_enabled = 0
-" 記号表示
-let g:lsp_signs_enabled = 1
+" 左端記号の表示設定
 let g:lsp_signs_error = {'text': 'X'}
 let g:lsp_signs_warning = {'text': '!'}
 let g:lsp_signs_information = {'text': 'i'}
