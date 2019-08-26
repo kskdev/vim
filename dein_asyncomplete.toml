@@ -632,89 +632,6 @@ let g:cheatsheet#float_window_height_ratio = 0.4
 '''
 
 
-
-[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
-repo = 'roxma/vim-hug-neovim-rpc'
-if = '!has("nvim")'
-
-
-[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
-repo = 'roxma/nvim-yarp'
-if = '!has("nvim")'
-
-
-[[plugins]]  # オートコンプリートプラグイン
-# TODO LSPの設定をしてから neosnippet がポップアップに出てこない...
-repo = 'Shougo/deoplete.nvim'
-hook_source = '''
-" deoplete 有効化
-let g:deoplete#enable_at_startup = 1
-" 補完に掛かる時間を指定(ms)
-let g:deoplete#auto_complete_delay = 0
-" 非同期時から同期に移る時間(ms)
-let g:deoplete#auto_refresh_delay = 10
-" 補完が始まるまでに必要な文字数
-let g:deoplete#auto_complete_start_length = 1
-" キャメルケースに対応(細かいことはよくわからん)
-let g:deoplete#enable_camel_case = 1
-" 大文字小文字を無視して補完
-let g:deoplete#enable_ignore_case = 1
-" 補完機能が作用するたびに候補表示を再表示
-let g:deoplete#enable_refresh_always = 1
-" 補完候補の表示数の最大値を設定
-let g:deoplete#max_list = 10000
-" マルチバイト文字の補完を無効化
-let g:skip_multibyte = 1
-" deopleteの並列処理のスレッド数 (default : 4)
-let g:deoplete#num_processes = 4
-
-" TAB で補完(順選択)
-inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-" Shift TAB で補完(逆順選択)
-inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-" 補完候補選択中に Ctrl+k でスニペットを展開
-imap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : ""
-smap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : ""
-'''
-
-
-# [[plugins]]  # Python用 補完プラグイン
-# repo = 'zchee/deoplete-jedi'
-# on_ft = ['python']
-# depends = ['Shougo/deoplete.nvim']
-# hook_source = '''
-# " 利用するインタプリタの指定
-# let g:deoplete#sources#jedi#python_path = g:python3_path
-# '''
-
-
-[[plugins]]  # docker用 補完プラグイン
-repo = 'zchee/deoplete-docker'
-on_ft = ['Dockerfile']
-depends = ['Shougo/deoplete.nvim']
-
-
-[[plugins]]  # 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
-# 自前の辞書を利用する場合 'deoplete-plugins/deoplete-dictionary' を利用すべし?
-repo = 'ujihisa/neco-look'
-depends = ['Shougo/deoplete.nvim']
-if = 'has("unix") || has("mac")'  # TODO windowsでlookを使う方法を検討
-
-
-[[plugins]]  # vimコマンド補完用プラグイン
-repo = 'Shougo/neco-vim'
-on_ft = ['vim']
-depends = ['Shougo/deoplete.nvim']
-
-
-[[plugins]]  # tex記述支援プラグイン
-repo = 'lervag/vimtex'
-depends = ['Shougo/deoplete.nvim']
-on_ft = ['tex']
-hook_add = '''
-'''
-
-
 [[plugins]]  # 非同期処理用のプラグイン(調べてません)
 repo = 'prabirshrestha/async.vim'
 
@@ -784,9 +701,93 @@ endif
 '''
 
 
-[[plugins]]  # deoplete連携用
-repo = 'lighttiger2505/deoplete-vim-lsp'
-depends = ['prabirshrestha/vim-lsp',  'prabirshrestha/async.vim']
+[[plugins]]  # vim-lspでスニペット補完
+repo = 'thomasfaingnaert/vim-lsp-snippets'
+depends = ['vim-lsp']
+
+
+[[plugins]]  # vim-lspでneosnippet補完
+repo = 'thomasfaingnaert/vim-lsp-neosnippet'
+depends = ['vim-lsp']
+
+
+[[plugins]]  # 非同期で補完を行うためのプラグイン(deoplete.nvimみたいなもの?)
+repo = 'prabirshrestha/asyncomplete.vim'
+depends = ['prabirshrestha/vim-lsp']
+hook_add = '''
+" 自動補完候補表示の有効化
+let g:asyncomplete_auto_popup = 1
+" popup表示までのち円時間[ms] (defaulat:30)
+let g:asyncomplete_popup_delay = 10
+" TAB で補完(順選択)
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" Shift TAB で補完(逆順選択)
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+" リターンキーで補完ポップアップを閉じる
+inoremap <expr><CR> pumvisible() ? asyncomplete#close_popup(): "\<CR>" 
+'''
+
+
+[[plugins]]  # asyncomplete.vim のvim-lsp拡張
+repo = 'prabirshrestha/asyncomplete-lsp.vim'
+depends = ['prabirshrestha/vim-lsp', 'prabirshrestha/asyncomplete.vim']
+
+
+[[plugins]]  # asyncomplete.vim のバッファ補完拡張
+repo = 'prabirshrestha/asyncomplete-buffer.vim'
+depends = ['prabirshrestha/asyncomplete.vim']
+hook_add = '''
+call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'whitelist': ['*'],
+    \ 'blacklist': ['go'],
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ 'config': {
+    \    'max_buffer_size': 5000000,
+    \  },
+    \ }))
+'''
+
+
+[[plugins]]  # asyncomplete.vim のファイル補完拡張
+repo = 'prabirshrestha/asyncomplete-file.vim'
+depends = ['prabirshrestha/asyncomplete.vim']
+hook_add = '''
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'whitelist': ['*'],
+    \ 'priority': 10,
+    \ 'completor': function('asyncomplete#sources#file#completor')
+    \ }))
+'''
+
+
+[[plugins]]  # asyncomplete.vim のvim script補完拡張
+repo = 'prabirshrestha/asyncomplete-necovim.vim'
+depends = ['prabirshrestha/asyncomplete.vim', 'Shougo/neco-syntax']
+hook_add = '''
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+    \ 'name': 'necovim',
+    \ 'whitelist': ['vim'],
+    \ 'completor': function('asyncomplete#sources#necovim#completor'),
+    \ }))
+'''
+
+
+[[plugins]]  # asyncomplete.vim のNeosnippet補完拡張
+repo = 'prabirshrestha/asyncomplete-neosnippet.vim'
+depends = ['prabirshrestha/asyncomplete.vim', 'Shougo/neosnippet-snippets', 'Shougo/neosnippet.vim']
+hook_add = '''
+call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
+    \ 'name': 'neosnippet',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
+    \ }))
+" キーマッピング設定
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+xmap <C-k> <Plug>(neosnippet_expand_target)
+'''
 
 
 [[plugins]]  # スニペットファイル
@@ -811,14 +812,9 @@ endif
 '''
 
 
-[[plugins]]  # vim-lspでスニペット補完
-repo = 'thomasfaingnaert/vim-lsp-snippets'
-depends = ['vim-lsp']
-
-
-[[plugins]]  # vim-lspでneosnippet補完
-repo = 'thomasfaingnaert/vim-lsp-neosnippet'
-depends = ['vim-lsp']
+[[plugins]]  # vimコマンド補完用プラグイン
+repo = 'Shougo/neco-vim'
+on_ft = ['vim']
 
 
 [[plugins]]  # LSP経由でタグジャンプ等が使えるようになる

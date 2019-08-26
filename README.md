@@ -96,6 +96,13 @@ sudo apt install vim
   - LSP + vista.vim で対応
 
 ## Update log
+- 2019/08/26(twotype branch)
+  - インストール時, 補完プラグインを deopleteベース or asyncomplete ベースにするかを選択するように変更
+    - 理由: 補完は deoplete の方が好み(主に曖昧検索みたいなことが出来るから)だが. 要求してくる環境や手順がちょっと面倒
+      - asyncomplete はバージョン指定無しのpython3さえあれば動くため導入が楽
+      - そのため, deoplete でインストールに失敗したら asyncomplete で再挑戦
+    - 様々な環境で動かしたいが, deoplete の要求基準を満たさないサーバでの作業を強いられたりする.最低でも補完が欲しい人間にとって死活問題
+
 - 2019/08/09(deolsp branch)
   - deoplete + vim-lsp で補完する方針に戻る
     - 理由 deoplete は補完テキストの途中が抜けても補完してくれる(asyncompleteでは出来なかった．知らないだけ?)

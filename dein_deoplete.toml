@@ -1,0 +1,842 @@
+# プラグインをdeinで管理
+
+
+[[plugins]]  # :help を日本語化
+repo = 'vim-jp/vimdoc-ja'
+
+
+[[plugins]]  # ステータスライン(& タブライン)カスタマイズ 
+repo = 'itchyny/lightline.vim'
+hook_add = '''
+" タブを常に表示
+set showtabline=2
+
+" ----------------------------------------
+"  lightline フォーマット設定
+" ----------------------------------------
+" 初期化
+command! -bar LightLineUpdate call lightline#init()| call lightline#colorscheme()| call lightline#update()
+
+" lightline 設定
+let g:lightline = {'separator': {'left': '', 'right': ''}, 'subseparator': {'left': '','right': ''}, 'mode_map': {'c': 'NORMAL'},}
+
+" lightline.componet 定義
+let g:lightline.component           = {}
+let g:lightline.component.dir       = '%.35(%{expand("%:h:s?\\S$?\\0/?")}%)'
+let g:lightline.component.winbufnum = '%n%{repeat(",", winnr())}%<'
+let g:lightline.component.rows      = '%L'
+let g:lightline.component.cd        = '%.35(%{fnamemodify(getcwd(), ":~")}%)'
+let g:lightline.component.tabopts   = '%{&et?"et":""}%{&ts}:%{&sw}:%{&sts},%{&tw}'
+let g:lightline.component.lineinfo  = '%l/%L'
+
+" lightline.componet_function 定義
+let g:lightline.component_function                = {}
+let g:lightline.component_function.fugitive       = 'StlFugitive'
+let g:lightline.component_function.cfi            = 'StlCurrentFuncInfo'
+let g:lightline.component_function.currentfuncrow = 'StlCurrentFuncRow'
+let g:lightline.component_function.modified       = 'LightlineModified'
+let g:lightline.component_function.readonly       = 'LightlineReadonly'
+let g:lightline.component_function.fugitive       = 'LightlineFugitive'
+let g:lightline.component_function.filename       = 'LightlineFilename'
+let g:lightline.component_function.fileformat     = 'LightlineFileformat'
+let g:lightline.component_function.filetype       = 'LightlineFiletype'
+let g:lightline.component_function.fileencoding   = 'LightlineFileencoding'
+let g:lightline.component_function.mode           = 'LightlineMode'
+let g:lightline.component_function.lspwarning     = 'LspWarningNum'
+let g:lightline.component_function.lsperror       = 'LspErrorNum'
+let g:lightline.component_function.lsp            = 'LspServerStatusForStatusLine'
+
+" lightline.component_expand 定義
+let g:lightline.component_expand            = {}
+let g:lightline.component_expand.buffers    = 'lightline#bufferline#buffers'
+" let g:lightline.component_expand.lspwarning = 'LspWarningNum'
+" let g:lightline.component_expand.lsperror   = 'LspErrorNum'
+" let g:lightline.component_expand.lsp        = 'LspServerStatusForStatusLine'
+
+" lightline.component_type 定義
+let g:lightline.component_type            = {}
+let g:lightline.component_type.buffers    = 'tabsel'
+let g:lightline.component_type.lspwarning = 'warning'
+let g:lightline.component_type.lsperror   = 'error'
+let g:lightline.component_type.lsp        = 'lspstatus'
+
+" ステータスラインの表示フォーマット定義
+let g:lightline.active         = {}
+let g:lightline.active.left    = [['mode', 'paste'], ['fugitive'], ['filename', 'readonly']]
+let g:lightline.active.right   = [['lsperror'], ['lspwarning'], ['lsp'], ['lineinfo']]
+let g:lightline.inactive       = {}
+let g:lightline.inactive.left  = [['mode', 'paste'], ['fugitive'], ['filename', 'readonly']]
+let g:lightline.inactive.right = [['lineinfo']]
+
+" タブラインの表示フォーマット定義
+let g:lightline.tabline = {}
+let g:lightline.tabline = {'left': [ ['buffers'] ], 'right': [ ['fileformat'], ['fileencoding'], ['filetype'], ['cd'] ]}
+
+" ----------------------------------------
+" カラースキーマ設定
+" ----------------------------------------
+let g:lightline.colorscheme = 'mypalette'
+" let s:p = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'tabline': {}, 'warning': {}, 'error': {}}
+let s:p = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'tabline': {}}
+
+" 色定義 ( [d]ark, [n]ormal, [l]ight ) 参考 : https://www.materialui.co/colors
+let s:blk_d = ['#212121', 233]
+let s:blk_n = ['#424242', 237]
+let s:blk_l = ['#616161', 241]
+
+let s:gry_d = ['#757575', 242]
+let s:gry_n = ['#9E9E9E', 246]
+let s:gry_l = ['#BDBDBD', 248]
+
+let s:wht_d = ['#90A4AE', 249]
+let s:wht_n = ['#EEEEEE', 252]
+let s:wht_l = ['#FAFAFA', 255]
+
+let s:red_d = ['#e53935', 124]
+let s:red_n = ['#ef5350',   9]
+let s:red_l = ['#ef9a9a',   1]
+
+let s:grn_d = ['#00796B',  28]
+let s:grn_n = ['#26A69A',   2]
+let s:grn_l = ['#80CBC4',  10]
+
+let s:blu_d = ['#1976D2',  20]
+let s:blu_n = ['#2196F3',   4]
+let s:blu_l = ['#64B5F6',  31]
+
+let s:org_d = ['#FF6F00', 166]
+let s:org_n = ['#FF9800', 172]
+let s:org_l = ['#FFCC80', 179]
+
+" リスト要素 : 
+" [{文字色},{背景色},{カラーターミナルの文字色},{カラーターミナルの背景色},{文字装飾(省略可)}]
+
+" ステータスライン基本色
+let s:STL_BASECOLOR = [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]]
+let s:p.inactive.middle = [s:STL_BASECOLOR]
+
+" ステータスライン強調色(反対色)
+let s:STL_ATTRIBUTECOLOR = [s:blk_d[0], s:wht_n[0], s:blk_d[1], s:wht_d[1]]
+
+" ステータスライン左側(Mode Fugitive Filename None None)
+let s:p.inactive.left = [
+            \ [s:wht_n[0], s:blk_d[0], s:wht_n[1], s:blk_d[1]],
+            \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
+            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+            \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
+            \ ]
+
+" ステータスライン右側(LSPError LSPWarning LSPStatus LineNum None)
+let s:p.inactive.right = [
+            \ [s:wht_l[0], s:blk_d[0], s:wht_l[1], s:blk_d[1]],
+            \ [s:wht_l[0], s:blk_n[0], s:wht_l[1], s:blk_n[1]],
+            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+            \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
+            \ [s:wht_n[0], s:gry_n[0], s:wht_n[1], s:gry_n[1]],
+            \ ]
+            " \ [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]],
+            " \ [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]],
+            " \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]],
+            " \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_n[1]],
+            " \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
+            " \ ]
+
+" ノーマルモード中央
+let s:p.normal.middle = s:p.inactive.middle
+
+" ノーマルモード左側
+let s:p.normal.left = deepcopy(s:p.inactive.left)
+
+" ノーマルモード右側
+let s:p.normal.right = deepcopy(s:p.inactive.right)
+
+" エラー時の色定義 (上手く動かない...)
+" let s:p.normal.error = [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]]
+" let s:p.normal.warning = [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]]
+let s:p.error = [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]]
+let s:p.warning = [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]]
+" let g:lightline#colorscheme#error = [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]]
+" let g:lightline#colorscheme#warning = [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]]
+
+" インサートモード(中央)
+let s:p.insert.middle = [s:STL_BASECOLOR]
+
+" インサートモード(左側)
+let s:p.insert.left = [
+            \ [s:wht_n[0], s:blu_n[0], s:wht_n[1], s:blu_n[1]],
+            \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
+            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+            \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
+            \ ]
+
+" インサートモード(右側)
+let s:p.insert.right = [
+            \ [s:wht_l[0], s:blk_d[0], s:wht_l[1], s:blk_d[1]],
+            \ [s:wht_l[0], s:blk_n[0], s:wht_l[1], s:blk_n[1]],
+            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+            \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
+            \ [s:wht_n[0], s:gry_n[0], s:wht_n[1], s:gry_n[1]],
+            \ ]
+            " \ [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]],
+            " \ [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]],
+            " \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]],
+            " \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_n[1]],
+            " \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
+            " \ ]
+
+" ヴィジュアルモード中央
+let s:p.visual.middle = [[s:wht_l[0], s:org_d[0], s:wht_l[1], s:org_d[1]]]
+
+" ヴィジュアルモード左側
+let s:p.visual.left = deepcopy(s:p.insert.left)
+let s:p.visual.left[0] = s:p.visual.middle[0]
+
+" ヴィジュアルモード右側
+let s:p.visual.right = deepcopy(s:p.insert.right)
+let s:p.visual.right[0] = s:p.visual.middle[0]
+
+" タブライン中央
+let s:p.tabline.middle = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
+
+" タブライン左側
+let s:p.tabline.left = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
+
+" タブラインカレントバッファ
+let s:p.tabline.tabsel = [[s:org_n[0], s:blk_d[0], s:org_n[1], s:blk_d[1]]]
+
+" タブライン右側
+let s:p.tabline.right = [
+            \ [s:wht_n[0], s:blk_d[0], s:wht_n[1], s:blk_d[1]],
+            \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
+            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+            \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
+            \ ]
+
+let g:lightline#colorscheme#mypalette#palette = s:p
+unlet s:p s:STL_BASECOLOR s:STL_ATTRIBUTECOLOR
+" let g:lightline#colorscheme#wombat#palette = lightline#colorscheme#flatten(s:p)
+
+
+" ----------------------------------------
+" component 用関数定義
+" ----------------------------------------
+function! LightlineModified()
+  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! LightlineReadonly()
+  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
+endfunction
+
+function! LightlineFilename()
+  return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \  &ft == 'unite' ? unite#get_status_string() :
+        \  &ft == 'vimshell' ? vimshell#get_status_string() :
+        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+        \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+endfunction
+
+function! LightlineFugitive()
+  if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+    return fugitive#head()
+  else
+    return ''
+  endif
+endfunction
+
+function! LightlineFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! LightlineFiletype()
+  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
+function! LightlineFileencoding()
+  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+endfunction
+
+function! LightlineMode()
+  return winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
+function! LspServerStatusForStatusLine()
+    return split(g:lsp#get_server_status() , ': ')[-1]
+endfunction
+
+function! LspWarningNum()
+    let s:warning_num = lsp#get_buffer_diagnostics_counts()['warning']
+    return s:warning_num == 0 ? '' : 'Warning:' . s:warning_num
+endfunction
+
+function! LspErrorNum()
+    let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
+    return s:error_num == 0 ? '' : 'Error:' . s:error_num
+endfunction
+
+augroup lightline#LSP
+  autocmd!
+  autocmd User FileChangedShellPost call lightline#update()
+augroup END
+
+'''
+
+
+[[plugins]]  # ウィンドウ上部のタブを拡張
+repo = 'mengelbrecht/lightline-bufferline'
+depends = ['lightline.vim']
+hook_add = '''
+" バッファ名に番号を表示しない
+let g:lightline#bufferline#show_number = 0
+" バッファ名を表示するときにパスを省略型で表示
+let g:lightline#bufferline#shorten_path = 1
+" 名前の付いていないバッファが表示された時の標記方法
+let g:lightline#bufferline#unnamed = '[No Name]'
+" バッファの表示設定(相対パスで表示)
+let g:lightline#bufferline#filename_modifier = '%f'
+'''
+
+
+[[plugins]]  # ディレクトリツリーの表示
+repo = 'scrooloose/nerdtree'
+hook_add = '''
+" Ctrl + n でツリー表示のon/off切り替え
+nnoremap <C-n> :NERDTreeToggle<CR>
+'''
+
+
+[[plugins]]  # ヤンク(コピー)領域の可視化
+repo = 'machakann/vim-highlightedyank'
+hook_add = '''
+" ハイライトカラーの設定
+highlight HighlightedyankRegion cterm=reverse gui=reverse
+" ハイライト表示する時間[ms]
+let g:highlightedyank_highlight_duration = 500
+'''
+
+
+[[plugins]]  # インデントの可視化 
+repo = 'nathanaelkane/vim-indent-guides'
+hook_add = '''
+" 色の変更(詳しい配色 'ctermbg vim'等で検索 ) 配色はカラースキーマに合わせて設定
+augroup indentguide
+    autocmd!
+    au Colorscheme * :hi IndentGuidesOdd ctermbg=236
+    au Colorscheme * :hi IndentGuidesEven ctermbg=238
+augroup END
+
+" indent guideの有効
+let g:indent_guides_enable_on_vim_startup = 1
+" 自動配色の無効化
+let g:indent_guides_auto_colors = 0
+" ガイドの幅を設定
+let g:indent_guides_guide_size = 1
+'''
+
+
+[[plugins]]  # j,k キーでカーソル移動の高速化
+repo = 'rhysd/accelerated-jk'
+hook_add = '''
+" j,kにキーマッピング
+nmap j <Plug>(accelerated_jk_gj)
+nmap k <Plug>(accelerated_jk_gk)
+'''
+
+[[plugins]]  # f キージャンプの拡張
+repo = 'rhysd/clever-f.vim'
+hook_source = '''
+" 検索対象が現在の行に無ければ次の行へ移動
+let g:clever_f_across_no_line = 0
+" 小文字検索->大文字&小文字を対象 大文字検索->大文字のみ対象
+let g:clever_f_smart_case = 1
+" 日本語とかの検索に対応(微妙に対応が悪いので無効化)
+let g:clever_f_use_migemo = 0
+'''
+
+
+[[plugins]]  # 特定文字へカーソルジャンプ
+repo = 'easymotion/vim-easymotion'
+hook_source = '''
+" デフォルトキーマッピングの無効化
+let g:EasyMotion_do_mapping = 0
+" 小文字入力時,大文字も含めて検索
+let g:EasyMotion_smartcase = 1
+" ジャンプ先のターゲットキーを指定
+let g:EasyMotion_keys = 'ASDFGHJKL'
+" ターゲットキーを大文字で表示
+let g:EasyMotion_use_upper = 1
+'''
+hook_add = '''
+" ss キーを入力後,任意の2文字を入力するとeasymotionを起動(分割ウィンドウに対応)
+nmap ss <Plug>(easymotion-overwin-f2)
+xmap ss <Plug>(easymotion-overwin-f2)
+omap ss <Plug>(easymotion-overwin-f2)
+'''
+
+
+[[plugins]]  # git の diffを左端に表示
+repo = 'airblade/vim-gitgutter'
+hook_add = '''
+" タイピング停止から反映されるまでの時間[ms]
+set updatetime=100
+" ハンク(変更点のかたまり)へジャンプ
+nmap <C-f> <Plug>GitGutterNextHunk
+nmap <C-d> <Plug>GitGutterPrevHunk
+" 左端2文字分の空間を常に表示
+set signcolumn=yes
+'''
+hook_source = '''
+" プラグインの有効化
+let g:gitgutter_enabled = 1
+" 行のハイライトを無効化
+let g:gitgutter_highlight_lines = 0
+" 非同期で処理 (非同期処理に対応していない場合機能しない)
+let g:gitgutter_async = 1
+" 記号を表示するカラムの背景色変更しない
+let g:gitgutter_override_sign_column_highlight = 1
+" 各記号の変更
+let g:gitgutter_sign_added='+'
+let g:gitgutter_sign_modified='~'
+let g:gitgutter_sign_removed='-'
+let g:gitgutter_sign_removed_first_line = '^'
+let g:gitgutter_sign_modified_removed = 'w'
+'''
+
+
+[[plugins]]  # vim上でgit操作を可能にする
+repo = 'tpope/vim-fugitive'
+
+
+[[plugins]]  # 曖昧検索(ファジー検索)が可能なツール. go実装(ctrlpより高速なため採用)
+# TODO この辺のゴリゴリゴリ押し処理をなんとかしたい
+# ripgrepによる文字列検索に対応(ripgrep:Rust製の高速grepツール)
+# コマンドラインから利用するなら sudo apt-get install ripgrep の方が良い(恐らくvimでしか使わないためバイナリを拾ってる)
+# 何より余計なインストールの手間を省くことが目標
+# Rustを導入しなくても使えるようにバイナリを拾ってくる方針の方が良い? (別にRustの導入は難しくないが...)
+# https://leico.github.io/TechnicalNote/VimR/VimR-dein-toml ここ参照
+repo = 'junegunn/fzf'
+merged = 0
+hook_post_update = '''
+" --- fzfのインストール	---
+" バイナリファイルのディレクトリ
+let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+if has('mac')
+    try
+        let g:dein#plugin.build = './insta --all'
+        throw "Error messege: Cannot install fzf..."
+    catch /error/  " エラーメッセージにマッチする正規表現
+    catch          " 空の場合は必ずマッチする
+        " ... 例外処理 ...
+        " let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+        if strlen(glob(s:fzf_bin_dir . '/fzf.exe')) == 0
+            execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-darwin_amd64.tgz'
+            execute '!tar -zxvf fzf-0.18.0-darwin_amd64.tgz'
+            execute '!mv fzf' s:fzf_bin_dir
+            execute '!rm -rf *.tgz'
+        endif
+    endtry
+    " aaaaaaaaaa
+elseif has('unix')
+    try
+        let g:dein#plugin.build = './install --all'
+        throw "Error messege: Cannot install fzf..."
+    catch /error/  " エラーメッセージにマッチする正規表現
+    catch          " 空の場合は必ずマッチする
+        " ... 例外処理 ...
+        " let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+        if strlen(glob(s:fzf_bin_dir . '/fzf.exe')) == 0
+            execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-linux_amd64.tgz'
+            execute '!tar -zxvf fzf-0.18.0-linux_amd64.tgz'
+            execute '!mv fzf' s:fzf_bin_dir
+            execute '!rm -rf *.tgz'
+        endif
+    endtry
+elseif has('win64')
+    " windowsの場合ビルド方法が分からないため,バイナリを取得(かなり強引)
+    " let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_bin_dir . '/fzf.exe')) == 0
+        execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-windows_amd64.zip'
+        execute '!unzip fzf-0.18.0-windows_amd64.zip'
+        execute '!move fzf.exe' s:fzf_bin_dir
+        execute '!del *.zip'
+    endif
+else
+endif
+
+" --- ripgrep のインストール ---
+" ripgrepのバイナリを強引に取得
+if has('mac')
+    " let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_bin_dir . '/rg')) == 0
+        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep-11.0.2-x86_64-apple-darwin.tar.gz'
+        execute '!tar -zxvf ripgrep-11.0.2-x86_64-apple-darwin.tar.gz'
+        execute '!mv ./ripgrep*/rg' s:fzf_bin_dir
+        execute '!rm -rf ./ripgrep-11.0.2-x86_64-*'
+    endif
+    
+elseif has('unix')
+    let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_bin_dir . '/rg')) == 0
+        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep-11.0.2-x86_64-unknown-linux-musl.tar.gz'
+        execute '!tar -zxvf ripgrep-11.0.2-x86_64-unknown-linux-musl.tar.gz'
+        execute '!mv ./ripgrep*/rg' s:fzf_bin_dir
+        execute '!rm -rf ./ripgrep-11.0.2-x86_64-unknown-linux-musl*'
+    endif
+
+elseif has('win64')
+    " rg.exeのパスをこのスコープ内で追加したい(まだ出来てない)
+    " let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+    if strlen(glob(s:fzf_bin_dir . '/rg.exe')) == 0
+        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep-11.0.2-x86_64-pc-windows-gnu.zip'
+        execute '!unzip ripgrep-11.0.2-x86_64-pc-windows-gnu.zip'
+        execute '!move rg.exe' s:fzf_bin_dir
+        execute '!del *.zip'
+        execute '!del *.ps1'
+    endif
+else
+endif
+'''
+
+
+[[plugins]]  # 'junegunn/fzf' のvim用プラグイン
+repo = 'junegunn/fzf.vim'
+depends = ['fzf']
+hook_add = '''
+" Ctrl + t で現在開いているバッファの一覧表示及び絞り込み
+nnoremap <C-t> :Buffers<CR>
+" Ctrl + p でファイル検索
+nnoremap <C-p> :Files<CR>
+" Ctrl + g でRipgrep(ripgrepがインストールされていないと使えない)
+nnoremap <C-g> :Rg<CR>
+" Ctrl + h で最近展開したファイルを表示&検索
+nnoremap <C-h> :History<CR>
+" ステータスラインの非表示化
+augroup fzf
+    autocmd!
+    autocmd! FileType fzf
+    au  FileType fzf set laststatus=0 noshowmode noruler
+                \| au BufLeave <buffer> set laststatus=2 showmode ruler
+augroup END
+
+
+" 可能であれば展開済みバッファへ移動
+let g:fzf_buffers_jump = 1
+" 表示領域を画面下部N%以内にする
+let g:fzf_layout = {'down': '~40%'}
+
+" :Rg コマンドでプレビュー表示 (TODO windowsに対応できていない?)
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:~60%')
+  \           : fzf#vim#with_preview('right:45%'),
+  \   <bang>0)
+
+" :Files コマンドでプレビュー表示
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+'''
+
+
+[[plugins]]  # vimを開きながら編集中のファイルを実行
+# TODO もう少し有効に利用したいところ
+repo = 'thinca/vim-quickrun'
+
+
+[[plugins]]  # 括弧補間
+repo = 'jiangmiao/auto-pairs'
+
+
+[[plugins]]  # 記号ペアで範囲を囲んだり置換や削除を行う
+repo = 'machakann/vim-sandwich'
+
+
+[[plugins]]  # 表示を整える
+repo = 'junegunn/vim-easy-align'
+hook_add = '''
+" ga 入力後,指定の文字を入力して実行 (in visual mode)
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+'''
+
+
+[[plugins]]  # gcc でコメントアウト
+repo = 'tomtom/tcomment_vim'
+
+
+[[plugins]]  # ヴィジュアルモードの選択範囲を「*」で検索
+repo = 'nelstrom/vim-visual-star-search'
+
+
+[[plugins]]  # 検索位置を表示(マッチ数等も表示)
+repo = 'osyo-manga/vim-anzu'
+hook_add = '''
+" ハイライト箇所の横に (n/MatchNum) 形式で表示
+nmap n <Plug>(anzu-n)<Plug>(anzu-mode)
+nmap N <Plug>(anzu-N)<Plug>(anzu-mode)
+
+" カーソル位置のテキストオブジェクトをハイライト
+" nmap * <Plug>(anzu-star-with-echo)
+" nmap # <Plug>(anzu-sharp-with-echo)
+'''
+
+
+[[plugins]]  # カーソルキー動作停止+何か表示される
+repo = 'modsound/gips-vim'
+hook_add = '''
+" Select english_words, quickref_vim, gundam or tsundere
+let g:gips_reading_txt = g:dein_dir . '/repos/github.com/modsound/gips-vim/autoload/dict/quickref_vim.txt'
+'''
+
+
+[[plugins]]  # tomlファイルにシンタックスハイライトを適用
+repo = 'cespare/vim-toml'
+on_ft = ['toml']
+
+
+[[plugins]] # カーソル位置のコンテキストに合わせてftを切り替える
+repo = 'osyo-manga/vim-precious'
+depends = ['context_filetype.vim']
+on_ft = ['toml']
+
+
+[[plugins]] # カーソル位置のコンテキストのftを判定
+repo = 'Shougo/context_filetype.vim'
+on_ft = ['toml']
+
+
+[[plugins]] # 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
+repo = 'osyo-manga/vim-over'
+hook_add = '''
+" Ctrl+s でover.vimの起動 
+nnoremap <C-s> :OverCommandLine <CR>%s//g<Left><Left>
+" ノーマルモード時に sub と入力することでカーソル下の単語をハイライト付きで置換
+nnoremap sub :OverCommandLine<CR>%s/<C-r><C-w>//g<Left><Left>
+" ノーマルモード時に subp と入力することでコピーした文字列をハイライト付きで置換
+nnoremap subp y:OverCommandLine<CR>%s!<C-r>=substitute(@0, '!', '\\!', 'g')<CR>!!gI<Left><Left><Left>
+'''
+
+
+[[plugins]] # 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
+repo = 'reireias/vim-cheatsheet'
+hook_add = '''
+" :Cheat でvimのチートファイルを開く
+let g:cheatsheet#cheat_file = g:dein_dir . '/cheatsheet.md'
+" float windowを利用する場合の設定
+let g:cheatsheet#float_window = 0
+let g:cheatsheet#float_window_width_ratio = 0.9
+let g:cheatsheet#float_window_height_ratio = 0.4
+'''
+
+
+
+[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
+repo = 'roxma/vim-hug-neovim-rpc'
+if = '!has("nvim")'
+
+
+[[plugins]]  # deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
+repo = 'roxma/nvim-yarp'
+if = '!has("nvim")'
+
+
+[[plugins]]  # オートコンプリートプラグイン
+# TODO LSPの設定をしてから neosnippet がポップアップに出てこない...
+repo = 'Shougo/deoplete.nvim'
+hook_source = '''
+" deoplete 有効化
+let g:deoplete#enable_at_startup = 1
+" 補完に掛かる時間を指定(ms)
+let g:deoplete#auto_complete_delay = 0
+" 非同期時から同期に移る時間(ms)
+let g:deoplete#auto_refresh_delay = 10
+" 補完が始まるまでに必要な文字数
+let g:deoplete#auto_complete_start_length = 1
+" キャメルケースに対応(細かいことはよくわからん)
+let g:deoplete#enable_camel_case = 1
+" 大文字小文字を無視して補完
+let g:deoplete#enable_ignore_case = 1
+" 補完機能が作用するたびに候補表示を再表示
+let g:deoplete#enable_refresh_always = 1
+" 補完候補の表示数の最大値を設定
+let g:deoplete#max_list = 10000
+" マルチバイト文字の補完を無効化
+let g:skip_multibyte = 1
+" deopleteの並列処理のスレッド数 (default : 4)
+let g:deoplete#num_processes = 4
+
+" TAB で補完(順選択)
+inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" Shift TAB で補完(逆順選択)
+inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+" 補完候補選択中に Ctrl+k でスニペットを展開
+imap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : ""
+smap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : ""
+'''
+
+
+# [[plugins]]  # Python用 補完プラグイン
+# repo = 'zchee/deoplete-jedi'
+# on_ft = ['python']
+# depends = ['Shougo/deoplete.nvim']
+# hook_source = '''
+# " 利用するインタプリタの指定
+# let g:deoplete#sources#jedi#python_path = g:python3_path
+# '''
+
+
+[[plugins]]  # docker用 補完プラグイン
+repo = 'zchee/deoplete-docker'
+on_ft = ['Dockerfile']
+depends = ['Shougo/deoplete.nvim']
+
+
+[[plugins]]  # 英単語補完プラグイン (lookコマンドとその辞書の導入が必須)
+# 自前の辞書を利用する場合 'deoplete-plugins/deoplete-dictionary' を利用すべし?
+repo = 'ujihisa/neco-look'
+depends = ['Shougo/deoplete.nvim']
+if = 'has("unix") || has("mac")'  # TODO windowsでlookを使う方法を検討
+
+
+[[plugins]]  # vimコマンド補完用プラグイン
+repo = 'Shougo/neco-vim'
+on_ft = ['vim']
+depends = ['Shougo/deoplete.nvim']
+
+
+[[plugins]]  # tex記述支援プラグイン
+repo = 'lervag/vimtex'
+depends = ['Shougo/deoplete.nvim']
+on_ft = ['tex']
+hook_add = '''
+'''
+
+
+[[plugins]]  # 非同期処理用のプラグイン(調べてません)
+repo = 'prabirshrestha/async.vim'
+
+
+[[plugins]]  # Language Server Protocol
+repo = 'prabirshrestha/vim-lsp'
+hook_source = '''
+" LSP 有効化
+let g:lsp_auto_enable = 1
+" Lint有効化
+let g:lsp_diagnostics_enabled = 1
+" Lint結果を記号表示
+let g:lsp_signs_enabled = 1
+" Lintの詳細をステータスラインに表示
+let g:lsp_diagnostics_echo_cursor = 1
+" Lintの詳細を行末に表示
+let g:lsp_virtual_text_enabled = 0
+" floating windowの利用
+let g:lsp_preview_float = 0
+" ハイライト表示を無効化
+let g:lsp_highlights_enabled = 0
+" テキストプロパティの有効化
+let g:lsp_textprop_enabled = 0
+" 左端記号の表示設定
+let g:lsp_signs_error = {'text': 'X'}
+let g:lsp_signs_warning = {'text': '!'}
+let g:lsp_signs_information = {'text': 'i'}
+let g:lsp_signs_hint = {'text': '?'}
+" ログやデバッグ用の設定
+let g:lsp_log_verbose = 0
+let g:lsp_log_file = expand('~/vim-lsp.log')
+'''
+hook_add = '''
+" sign と virtual text の色定義 
+augroup vimlsp_colors
+    autocmd!
+    au ColorScheme * :hi LspErrorText ctermfg=red guifg=red
+    au ColorScheme * :hi LspWarningText ctermfg=yellow guifg=yellow
+    au ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray
+    au ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan
+augroup END
+
+" Omni 補完の有効化
+setlocal omnifunc=lsp#complete
+" Ctrl+j で次のエラー箇所へジャンプ
+noremap <C-j> :LspNextError<CR>
+" Ctrl+k で前のエラー箇所へジャンプ
+noremap <C-k> :LspPreviousError<CR>
+" Ctrl+m で定義元へジャンプ(Enterでも対応しているらしい)
+nnoremap <C-m> :LspDefinition<CR>
+
+" Python補完設定
+if executable('pyls')
+    " pyls のパスを指定 (.vimrc(init.vim)に記述)
+    let s:pyls_path = fnamemodify(g:python3_host_prog, ':h') . '/'. 'pyls'
+    " required : 'python-language-server' via pip(conda) command
+    au User lsp_setup call lsp#register_server({
+                \ 'name': 'pyls',
+                \ 'cmd': {server_info->['pyls']},
+                \ 'whitelist': ['python'],
+                \ 'config': {'snippets': 1},
+                \ 'workspace_config': {'pyls': {'plugins': {
+                \   'pycodestyle': {'enabled': v:false},
+                \   'jedi_definition': {'follow_imports': v:true, 'follow_builtin_imports': v:true},}}},
+                \ })
+endif
+'''
+
+
+[[plugins]]  # deoplete連携用
+repo = 'lighttiger2505/deoplete-vim-lsp'
+depends = ['prabirshrestha/vim-lsp',  'prabirshrestha/async.vim']
+
+
+[[plugins]]  # スニペットファイル
+repo = 'Shougo/neosnippet-snippets'
+
+
+[[plugins]]  # スニペット補完の動作定義
+repo = 'Shougo/neosnippet.vim'
+depends = ['neosnippet-snippets']
+on_ft = ['snippet']
+hook_source = '''
+" snipMate との互換を有効化
+let g:neosnippet#enable_snipmate_compatibility = 1
+let g:neosnippet#enable_completed_snippet = 1
+let g:neosnippet#expand_word_boundary = 1
+'''
+hook_add = '''
+" For conceal markers.
+if has('conceal')
+    set conceallevel=2 concealcursor=niv
+endif
+'''
+
+
+[[plugins]]  # vim-lspでスニペット補完
+repo = 'thomasfaingnaert/vim-lsp-snippets'
+depends = ['vim-lsp']
+
+
+[[plugins]]  # vim-lspでneosnippet補完
+repo = 'thomasfaingnaert/vim-lsp-neosnippet'
+depends = ['vim-lsp']
+
+
+[[plugins]]  # LSP経由でタグジャンプ等が使えるようになる
+repo = 'liuchengxu/vista.vim'
+hook_add = '''
+" fzf の表示領域設定
+let g:vista_fzf_preview = ['right:50%']
+" アイコン表示を無効化
+let g:vista#renderer#enable_icon = 0
+" アイコンの定義
+let g:vista#renderer#icons = {"function": "f", "variable": "v"}
+" Vistaの実行プラグインを指定
+let g:vista_default_executive = 'vim_lsp'
+" Vista の実行プラグインを言語別に指定可能
+let g:vista_executive_for = {
+            \ 'cpp': 'vim_lsp',
+            \ 'python': 'vim_lsp',
+            \ }
+" Ctrl+i でタグジャンプ(fzf経由?)
+nnoremap <C-i> : <C-u>Vista finder vim_lsp<CR>
+'''
+
+
