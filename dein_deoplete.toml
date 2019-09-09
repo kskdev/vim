@@ -709,22 +709,38 @@ let g:vista_executive_for = {
 
 [[plugins]]
 repo = 'Shougo/denite.nvim'
+# TODO grep 処理が気に入らない
+# e.g. 'deoplete.nvim' という文字列に対して，
+# 'deplenvm' と入力したら補完されていて欲しい
+# とにかく適当な補完をしたい
+# 目標はfzfとほぼ同じUI/キーマッピング/コマンド操作数
 hook_add = '''
-" ripgrep が利用可能な場合の設定
+
+call denite#custom#source('file/rec', 'matchers', ['matcher_fuzzy'])
+call denite#custom#source('grep', 'args', ['','','!'])
+call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
+
+" grep処理のオプション設定
 if executable('rg')
-  call denite#custom#var('file/rec', 'command',
-    \ ['rg', '--files', '--hidden', '--glob', '!.git'])
+    " ripgrep が利用可能な場合の設定
+    call denite#custom#var('file/rec', 'command', ['rg', '--files', '--hidden', '--glob', '!.git'])
+elseif executable('ag')
+    " ag が利用可能な場合の設定
+    call denite#custom#var('file/rec', 'command', ['ag', '--follow', '--nogroup', '--hidden', '-g', '.', '--ignore', '.git'])
 else
-" ag が利用可能な場合の設定
-  " call denite#custom#var('file/rec', 'command',
-  "   \ ['ag', '--follow', '--nocolor', '--nogroup', '--hidden', '-g', '.', '--ignore', '.git'])
 endif
 
-" Ctrl + p でファイル展開
-nnoremap <C-p> :Denite file/rec<CR>
+" オプションの説明  TODO いつか READMEに記述する
+" -auto-action=preview -ignorecase -vertical-preview
 
-" Ctrl + t でバッファ展開
-nnoremap <C-t> :Denite buffer<CR>
+" Ctrl + p でファイルサーチ展開
+nnoremap <C-p> :Denite file/rec -auto-action=preview -auto-resize -ignorecase -vertical-preview<CR>
+" nnoremap <C-p> :Denite file/rec -auto-resize -ignorecase<CR>
+" Ctrl + t でバッファサーチ展開
+nnoremap <C-t> :Denite buffer -auto-action=preview -ignorecase -vertical-preview<CR>
+" Ctrl + g でgrepサーチ
+" nnoremap <C-g> :Denite grep -auto-action=preview -ignorecase -immediately -vertical-preview<CR>
+nnoremap <C-g> :Denite grep -auto-action=preview -ignorecase -vertical-preview<CR>
 
 " denite ウィンドウ内限定のキーマップ
 autocmd FileType denite cal s:denite_my_settings()
@@ -733,20 +749,16 @@ function! s:denite_my_settings() abort
 " キーマッピングの例
 nnoremap <silent><buffer> j <Nop>
 nnoremap <silent><buffer> k <Nop>
-
 " カーソルの上下移動
 nnoremap <silent><buffer> <C-j> j
 nnoremap <silent><buffer> <C-k> k
-
 " 絞り込み用ウィンドウ起動のキーマップ
 nnoremap <silent><buffer><expr> i denite#do_map('open_filter_buffer')
 nnoremap <silent><buffer><expr> a denite#do_map('open_filter_buffer')
-
 " 選択ラインのバッファへの展開キーマッピング
 nnoremap <silent><buffer><expr> <CR> denite#do_map('do_action', 'open')
 nnoremap <silent><buffer><expr> <C-v> denite#do_map('do_action', 'vsplit')
-nnoremap <silent><buffer><expr> <C-h> denite#do_map('do_action', 'split')
-
+nnoremap <silent><buffer><expr> <C-s> denite#do_map('do_action', 'split')
 " denite ウィンドウ終了キーマッピング
 nnoremap <silent><buffer><expr> q denite#do_map('quit')
 nnoremap <silent><buffer><expr> jj denite#do_map('quit')
@@ -755,11 +767,13 @@ nnoremap <silent><buffer><expr> <C-c> denite#do_map('quit')
 endfunction
 
 " denite フィルタリングウィンドウ内限定のキーマップ
+" TODO いちいちモード選択しないでリアルタイムgrepしたい(理想はfzf.vimの操作)
 autocmd FileType denite-filter call s:denite_filter_my_settings()
 " 以下の関数にキーマップを定義
 function! s:denite_filter_my_settings() abort
     imap <silent><buffer> <C-j> <CR>
     inoremap <silent><buffer><expr> <C-c> denite#do_map('quit')
     nnoremap <silent><buffer><expr> <C-c> denite#do_map('quit')
+    inoremap <silent><buffer><expr> <ESC> denite#do_map('quit')
 endfunction
 '''
