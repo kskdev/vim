@@ -1,0 +1,228 @@
+
+# :help を日本語化
+[[plugins]]
+repo = 'vim-jp/vimdoc-ja'
+
+
+# ディレクトリツリーの表示
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+hook_add = '''
+" Ctrl + n でツリー表示のon/off切り替え
+nnoremap <C-n> :NERDTreeToggle<CR>
+'''
+
+
+# ヤンク(コピー)領域の可視化
+[[plugins]]
+repo = 'machakann/vim-highlightedyank'
+hook_add = '''
+" ハイライトカラーの設定
+highlight HighlightedyankRegion cterm=reverse gui=reverse
+" ハイライト表示する時間[ms]
+let g:highlightedyank_highlight_duration = 500
+'''
+
+
+# インデントの可視化 
+[[plugins]]
+repo = 'nathanaelkane/vim-indent-guides'
+hook_add = '''
+" 色の変更(詳しい配色 'ctermbg vim'等で検索 ) 配色はカラースキーマに合わせて設定
+augroup indentguide
+    autocmd!
+    au Colorscheme * :hi IndentGuidesOdd ctermbg=236
+    au Colorscheme * :hi IndentGuidesEven ctermbg=238
+augroup END
+
+" indent guideの有効
+let g:indent_guides_enable_on_vim_startup = 1
+" 自動配色の無効化
+let g:indent_guides_auto_colors = 0
+" ガイドの幅を設定
+let g:indent_guides_guide_size = 1
+'''
+
+
+# j,k キーでカーソル移動の高速化
+[[plugins]]
+repo = 'rhysd/accelerated-jk'
+hook_add = '''
+" j,kにキーマッピング
+nmap j <Plug>(accelerated_jk_gj)
+nmap k <Plug>(accelerated_jk_gk)
+'''
+
+
+# f キージャンプの拡張
+[[plugins]]
+repo = 'rhysd/clever-f.vim'
+hook_add = '''
+" 検索対象が現在の行に無ければ次の行へ移動
+let g:clever_f_across_no_line = 0
+" 小文字検索->大文字&小文字を対象 大文字検索->大文字のみ対象
+let g:clever_f_smart_case = 1
+" 日本語とかの検索に対応(微妙に対応が悪いので無効化)
+let g:clever_f_use_migemo = 0
+'''
+
+
+# 特定文字へカーソルジャンプ
+[[plugins]]
+repo = 'easymotion/vim-easymotion'
+hook_add = '''
+" デフォルトキーマッピングの無効化
+let g:EasyMotion_do_mapping = 0
+" 小文字入力時,大文字も含めて検索
+let g:EasyMotion_smartcase = 1
+" ジャンプ先のターゲットキーを指定
+let g:EasyMotion_keys = 'ASDFGHJKL'
+" ターゲットキーを大文字で表示
+let g:EasyMotion_use_upper = 1
+
+" キーマッピング
+" ss キーを入力後,任意の2文字を入力するとeasymotionを起動(分割ウィンドウに対応)
+nmap ss <Plug>(easymotion-overwin-f2)
+xmap ss <Plug>(easymotion-overwin-f2)
+omap ss <Plug>(easymotion-overwin-f2)
+'''
+
+
+# git の diffを左端に表示
+[[plugins]]
+repo = 'airblade/vim-gitgutter'
+hook_add = '''
+" タイピング停止から反映されるまでの時間[ms]
+set updatetime=100
+" ハンク(変更点のかたまり)へジャンプ
+nmap <C-f> <Plug>GitGutterNextHunk
+nmap <C-d> <Plug>GitGutterPrevHunk
+" 左端2文字分の空間を常に表示
+set signcolumn=yes
+
+" プラグインの有効化
+let g:gitgutter_enabled = 1
+" 行のハイライトを無効化
+let g:gitgutter_highlight_lines = 0
+" 非同期で処理 (非同期処理に対応していない場合機能しない)
+let g:gitgutter_async = 1
+" 記号を表示するカラムの背景色変更しない
+let g:gitgutter_override_sign_column_highlight = 1
+" 各記号の変更
+let g:gitgutter_sign_added='+'
+let g:gitgutter_sign_modified='~'
+let g:gitgutter_sign_removed='-'
+let g:gitgutter_sign_removed_first_line = '^'
+let g:gitgutter_sign_modified_removed = 'w'
+'''
+
+
+# vim上でgit操作を可能にする
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+
+
+# vimを開きながら編集中のファイルを実行
+[[plugins]]
+# TODO もう少し有効に利用したいところ
+repo = 'thinca/vim-quickrun'
+
+
+# 括弧やクォーテーションなどを補間
+[[plugins]]
+repo = 'jiangmiao/auto-pairs'
+
+
+# 記号ペアで範囲を囲んだり置換や削除を行う
+[[plugins]]
+repo = 'machakann/vim-sandwich'
+
+
+# 表示を整える
+[[plugins]]
+repo = 'junegunn/vim-easy-align'
+hook_add = '''
+" ga 入力後,指定の文字を入力して実行 (in visual mode)
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+'''
+
+
+# gcc でコメントアウト
+[[plugins]]
+repo = 'tomtom/tcomment_vim'
+
+
+# ヴィジュアルモードの選択範囲を「*」で検索
+[[plugins]]
+repo = 'nelstrom/vim-visual-star-search'
+
+
+# 検索位置を表示(マッチ数等も表示)
+[[plugins]]
+repo = 'osyo-manga/vim-anzu'
+hook_add = '''
+" ハイライト箇所の横に (n/MatchNum) 形式で表示
+nmap n <Plug>(anzu-n)<Plug>(anzu-mode)
+nmap N <Plug>(anzu-N)<Plug>(anzu-mode)
+
+" カーソル位置のテキストオブジェクトをハイライト
+" nmap * <Plug>(anzu-star-with-echo)
+" nmap # <Plug>(anzu-sharp-with-echo)
+'''
+
+
+# カーソルキー動作停止+何か表示される
+[[plugins]]
+repo = 'modsound/gips-vim'
+hook_add = '''
+" Select english_words, quickref_vim, gundam or tsundere
+let g:gips_reading_txt = g:dein_dir . '/repos/github.com/modsound/gips-vim/autoload/dict/quickref_vim.txt'
+'''
+
+
+# tomlファイルにシンタックスハイライトを適用
+[[plugins]]
+repo = 'cespare/vim-toml'
+on_ft = ['toml']
+
+
+# カーソル位置のコンテキストに合わせてftを切り替える
+[[plugins]]
+repo = 'osyo-manga/vim-precious'
+depends = ['context_filetype.vim']
+on_ft = ['toml']
+
+
+# カーソル位置のコンテキストのftを判定
+[[plugins]]
+repo = 'Shougo/context_filetype.vim'
+on_ft = ['toml']
+
+
+# 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
+[[plugins]]
+repo = 'osyo-manga/vim-over'
+hook_add = '''
+" Ctrl+s でover.vimの起動 
+nnoremap <C-s> :OverCommandLine <CR>%s//g<Left><Left>
+" ノーマルモード時に sub と入力することでカーソル下の単語をハイライト付きで置換
+nnoremap sub :OverCommandLine<CR>%s/<C-r><C-w>//g<Left><Left>
+" ノーマルモード時に subp と入力することでコピーした文字列をハイライト付きで置換
+nnoremap subp y:OverCommandLine<CR>%s!<C-r>=substitute(@0, '!', '\\!', 'g')<CR>!!gI<Left><Left><Left>
+'''
+
+
+# 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
+[[plugins]]
+repo = 'reireias/vim-cheatsheet'
+hook_add = '''
+" :Cheat でvimのチートファイルを開く
+let g:cheatsheet#cheat_file = g:dein_dir . '/cheatsheet.md'
+" float windowを利用する場合の設定
+let g:cheatsheet#float_window = 0
+let g:cheatsheet#float_window_width_ratio = 0.9
+let g:cheatsheet#float_window_height_ratio = 0.4
+'''
+
+

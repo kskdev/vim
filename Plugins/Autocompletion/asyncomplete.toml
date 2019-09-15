@@ -1,0 +1,90 @@
+
+
+# 非同期で補完を行うためのプラグイン(deoplete.nvimみたいなもの?)
+[[plugins]]
+repo = 'prabirshrestha/asyncomplete.vim'
+hook_add = '''
+" 自動補完候補表示の有効化
+let g:asyncomplete_auto_popup = 1
+" popup表示までのち円時間[ms] (defaulat:30)
+let g:asyncomplete_popup_delay = 10
+" TAB で補完(順選択)
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" Shift TAB で補完(逆順選択)
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+" リターンキーで補完ポップアップを閉じる
+inoremap <expr><CR> pumvisible() ? asyncomplete#close_popup(): "\<CR>" 
+'''
+
+
+# asyncomplete.vim のvim-lsp拡張
+[[plugins]]
+repo = 'prabirshrestha/asyncomplete-lsp.vim'
+depends = ['vim-lsp', 'asyncomplete.vim']
+
+
+# asyncomplete.vim のバッファ補完拡張
+[[plugins]]
+repo = 'prabirshrestha/asyncomplete-buffer.vim'
+depends = ['asyncomplete.vim']
+hook_add = '''
+call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'whitelist': ['*'],
+    \ 'priority': 50,
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ 'config': {
+    \    'max_buffer_size': 5000000,
+    \  },
+    \ }))
+'''
+
+# asyncomplete.vim のファイル補完拡張
+[[plugins]]
+repo = 'prabirshrestha/asyncomplete-file.vim'
+depends = ['asyncomplete.vim']
+hook_add = '''
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'whitelist': ['*'],
+    \ 'priority': 70,
+    \ 'completor': function('asyncomplete#sources#file#completor')
+    \ }))
+'''
+
+
+# vimコマンド補完用プラグイン
+[[plugins]]
+repo = 'Shougo/neco-vim'
+on_ft = ['vim']
+
+
+# asyncomplete.vim のvim script補完拡張
+[[plugins]]
+repo = 'prabirshrestha/asyncomplete-necovim.vim'
+hook_add = '''
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+    \ 'name': 'necovim',
+    \ 'whitelist': ['vim'],
+    \ 'priority': 90,
+    \ 'completor': function('asyncomplete#sources#necovim#completor'),
+    \ }))
+'''
+
+
+# asyncomplete.vim のNeosnippet補完拡張
+[[plugins]]
+repo = 'prabirshrestha/asyncomplete-neosnippet.vim'
+depends = ['asyncomplete.vim', 'neosnippet-snippets', 'neosnippet.vim']
+hook_add = '''
+call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
+    \ 'name': 'neosnippet',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
+    \ }))
+" キーマッピング設定
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+xmap <C-k> <Plug>(neosnippet_expand_target)
+'''
+

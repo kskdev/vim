@@ -1,0 +1,108 @@
+
+
+# 非同期処理用のプラグイン(調べてません)
+[[plugins]]
+repo = 'prabirshrestha/async.vim'
+
+
+# Language Server Protocol
+[[plugins]]
+repo = 'prabirshrestha/vim-lsp'
+hook_source = '''
+" LSP 有効化
+let g:lsp_auto_enable = 1
+" Lint有効化
+let g:lsp_diagnostics_enabled = 1
+" Lint結果を記号表示
+let g:lsp_signs_enabled = 1
+" Lintの詳細をステータスラインに表示
+let g:lsp_diagnostics_echo_cursor = 1
+" Lintの詳細を行末に表示
+let g:lsp_virtual_text_enabled = 0
+" floating windowの利用
+let g:lsp_preview_float = 0
+" ハイライト表示を無効化
+let g:lsp_highlights_enabled = 0
+" テキストプロパティの有効化
+let g:lsp_textprop_enabled = 0
+" 左端記号の表示設定
+let g:lsp_signs_error = {'text': 'X'}
+let g:lsp_signs_warning = {'text': '!'}
+let g:lsp_signs_information = {'text': 'i'}
+let g:lsp_signs_hint = {'text': '?'}
+" ログやデバッグ用の設定
+let g:lsp_log_verbose = 0
+let g:lsp_log_file = expand('~/vim-lsp.log')
+'''
+hook_add = '''
+" sign と virtual text の色定義 
+augroup vimlsp_colors
+    autocmd!
+    au ColorScheme * :hi LspErrorText ctermfg=red guifg=red
+    au ColorScheme * :hi LspWarningText ctermfg=yellow guifg=yellow
+    au ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray
+    au ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan
+augroup END
+
+" Omni 補完の有効化
+setlocal omnifunc=lsp#complete
+" Ctrl+j で次のエラー箇所へジャンプ
+noremap <C-j> :LspNextError<CR>
+" Ctrl+k で前のエラー箇所へジャンプ
+noremap <C-k> :LspPreviousError<CR>
+" Ctrl+m で定義元へジャンプ(Enterでも対応しているらしい)
+nnoremap <C-m> :LspDefinition<CR>
+
+" Python補完設定
+if executable('pyls')
+    " pyls のパスを指定 (.vimrc(init.vim)に記述)
+    let s:pyls_path = fnamemodify(g:python3_host_prog, ':h') . '/'. 'pyls'
+    " required : 'python-language-server' via pip(conda) command
+    au User lsp_setup call lsp#register_server({
+                \ 'name': 'pyls',
+                \ 'cmd': {server_info->['pyls']},
+                \ 'whitelist': ['python'],
+                \ 'config': {'snippets': 0},
+                \ 'workspace_config': {'pyls': {'plugins': {
+                \   'pycodestyle': {'enabled': v:false},
+                \   'jedi_definition': {'follow_imports': v:true, 'follow_builtin_imports': v:true},}}},
+                \ })
+endif
+'''
+
+
+[[plugins]]  # deoplete連携用
+repo = 'lighttiger2505/deoplete-vim-lsp'
+depends = ['prabirshrestha/vim-lsp',  'prabirshrestha/async.vim']
+
+
+# vim-lspでスニペット補完
+# [[plugins]]
+# repo = 'thomasfaingnaert/vim-lsp-snippets'
+# depends = ['vim-lsp']
+
+
+# vim-lspでneosnippet補完
+# [[plugins]]
+# repo = 'thomasfaingnaert/vim-lsp-neosnippet'
+# depends = ['vim-lsp']
+
+
+# LSP経由でタグジャンプ等が使えるようになる
+# [[plugins]]
+# repo = 'liuchengxu/vista.vim'
+# depends = ['vim-lsp']
+# hook_add = '''
+# " fzf の表示領域設定
+# let g:vista_fzf_preview = ['right:50%']
+# " アイコン表示を無効化
+# let g:vista#renderer#enable_icon = 0
+# " アイコンの定義
+# let g:vista#renderer#icons = {"function":"f", "variable":"v"}
+# " Vistaの実行プラグインを指定
+# let g:vista_default_executive = 'vim_lsp'
+# " Vista の実行プラグインを言語別に指定可能
+# let g:vista_executive_for = {'python':'vim_lsp'}
+# '''
+
+

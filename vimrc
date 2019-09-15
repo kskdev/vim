@@ -81,8 +81,6 @@ set wildignorecase
 set wildmode=list,full
 " 補完候補が1つでもポップアップを表示
 set completeopt=menuone
-" スラッシュを入力した時，ファイルパス補完が自動発動 (deopleteに任せるので不要)
-" imap <expr> / pumvisible() ? "\<C-E>/\<C-X>\<C-F>\<C-P>" : "/\<C-X>\<C-F>\<C-P>"
 
 " 補完候補のポップアップ数
 set pumheight=12
@@ -206,8 +204,13 @@ call dein#begin(g:dein_dir)
 call dein#add(s:dein_repo_dir)
 call dein#add('morhetz/gruvbox')
 call dein#add('joshdick/onedark.vim')
-" call dein#load_toml(s:toml_dir . '/dein.toml', {'lazy': 0})
-call dein#load_toml(s:toml_dir . '/dein.toml')
+call dein#load_toml(s:toml_dir . '/Plugins/UIexpantion/statusline.toml')
+call dein#load_toml(s:toml_dir . '/Plugins/utils.toml')
+call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/deoplete.toml') " asyncomoplete.toml と選択
+call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/lsp.toml')
+call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/others.toml')
+call dein#load_toml(s:toml_dir . '/Plugins/Filer/fzf.toml')  " denite.toml と選択
+" call dein#load_toml(s:toml_dir . '/Plugins/Filer/denite.toml')  " denite.toml と選択
 call dein#end()
 
 " プラグインが入っていなければvim起動時に自動でインストール

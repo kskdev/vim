@@ -1,0 +1,43 @@
+
+# スニペットファイル
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+
+
+# スニペット補完の動作定義
+[[plugins]]
+repo = 'Shougo/neosnippet.vim'
+depends = ['neosnippet-snippets']
+on_ft = ['snippet']
+hook_add = '''
+" snipMate との互換を有効化
+let g:neosnippet#enable_snipmate_compatibility = 1
+let g:neosnippet#enable_completed_snippet = 1
+let g:neosnippet#expand_word_boundary = 1
+
+" For conceal markers.
+if has('conceal')
+    set conceallevel=2 concealcursor=niv
+endif
+'''
+
+
+# 関数に関する情報を表示
+[[plugins]]
+repo = 'Shougo/echodoc.vim'
+hook_add = '''
+let g:echodoc#enable_at_startup = 1
+" let g:echodoc#enable_force_overwrite = 1
+set noshowmode
+'''
+
+
+# tex記述支援プラグイン
+# [[plugins]]
+# repo = 'lervag/vimtex'
+# depends = ['Shougo/deoplete.nvim']
+# on_ft = ['tex']
+# hook_add = '''
+# '''
+
+
