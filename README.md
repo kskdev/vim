@@ -96,6 +96,11 @@ sudo apt install vim
   - LSP + vista.vim で対応
 
 ## Update log
+- 2019/09/17(treemanage branch)
+ - ブランチの役割関係無く defx を導入した
+   - とんでもなく使いやすいファイラープラグイン(可能性の塊)
+   - 設定周りがまだ甘いので今後調整
+   - nerdtree ともお別れかもしれない...
 - 2019/09/16(treemanage branch)
   - プラグイン(.toml)のファイル構成を複数に分割
     - deoplete は動作確認済み．asyncomplete は動くがエラーが発生．

@@ -1,3 +1,11 @@
+#TODO list -------------------------------------------------------
+#
+# 'Shougo/defx.nvim'
+# - nerdtree 見たいに画面左側に置いておきたい(Toggle操作出来ると神)
+# - nerdtree はdefxがインストール出来ない場合に置いておく(設計思想が違いすぎるので不便だが無いよりマシ)
+# - ターミナル上で何回も 'bash install.sh && vi' みたいなことをやっていると何故か起動エラーが起こるようになる
+#   - もちろん初回インストール時は正しく動く
+
 
 # :help を日本語化
 [[plugins]]
@@ -5,11 +13,59 @@ repo = 'vim-jp/vimdoc-ja'
 
 
 # ディレクトリツリーの表示
+# [[plugins]]
+# repo = 'scrooloose/nerdtree'
+# hook_add = '''
+# " Ctrl + n でツリー表示のon/off切り替え
+# nnoremap <C-n> :NERDTreeToggle<CR>
+# '''
+
+
+# ディレクトリツリーの表示
 [[plugins]]
-repo = 'scrooloose/nerdtree'
+repo ='Shougo/defx.nvim'
+on_cmd = 'Defx'
 hook_add = '''
-" Ctrl + n でツリー表示のon/off切り替え
-nnoremap <C-n> :NERDTreeToggle<CR>
+" defx起動キーマップ
+nnoremap <silent> <C-n> :<C-u>Defx -listed -resume -buffer-name=tab`tabpagenr()`<CR>
+
+" defxウィンドウ内専用キーマップ
+autocmd FileType defx call s:defx_my_settings()
+function! s:defx_my_settings() abort
+    " ファイル展開
+    nnoremap <silent><buffer><expr> <CR> defx#do_action('open')
+    " 終了
+    nnoremap <silent><buffer><expr> q defx#do_action('quit')
+    nnoremap <silent><buffer><expr> <ESC> defx#do_action('quit')
+    " カーソル行のファイルパス名をyank
+    nnoremap <silent><buffer><expr> yy defx#do_action('yank_path')
+    " カーソル行のファイルをコピー / 貼り付け (yankと別物?)
+    nnoremap <silent><buffer><expr> c defx#do_action('copy')
+    nnoremap <silent><buffer><expr> p defx#do_action('paste')
+
+    nnoremap <silent><buffer><expr> m defx#do_action('move')
+    nnoremap <silent><buffer><expr> E defx#do_action('open', 'vsplit')
+    nnoremap <silent><buffer><expr> P defx#do_action('open', 'pedit')
+    nnoremap <silent><buffer><expr> K defx#do_action('new_directory')
+    nnoremap <silent><buffer><expr> N defx#do_action('new_file')
+    nnoremap <silent><buffer><expr> d defx#do_action('remove')
+    nnoremap <silent><buffer><expr> r defx#do_action('rename')
+    nnoremap <silent><buffer><expr> x defx#do_action('execute_system')
+    nnoremap <silent><buffer><expr> . defx#do_action('toggle_ignored_files')
+    nnoremap <silent><buffer><expr> h defx#do_action('cd', ['..'])
+    nnoremap <silent><buffer><expr> ~ defx#do_action('cd')
+    nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select') . 'j'
+    nnoremap <silent><buffer><expr> * defx#do_action('toggle_select_all')
+    " カーソルの上下移動を循環
+    nnoremap <silent><buffer><expr> j line('.') == line('$') ? 'gg' : 'j'
+    nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
+    " 良く分からん
+    nnoremap <silent><buffer><expr> <C-l> defx#do_action('redraw')
+    " ステータスラインにフルパスを表示
+    nnoremap <silent><buffer><expr> <C-g> defx#do_action('print')
+
+    nnoremap <silent><buffer><expr> cd defx#do_action('change_vim_cwd')
+endfunction
 '''
 
 
