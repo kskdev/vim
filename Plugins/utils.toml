@@ -95,8 +95,8 @@ hook_add = '''
 " タイピング停止から反映されるまでの時間[ms]
 set updatetime=100
 " ハンク(変更点のかたまり)へジャンプ
-nmap <C-f> <Plug>GitGutterNextHunk
-nmap <C-d> <Plug>GitGutterPrevHunk
+nmap <C-f> <Plug>(GitGutterNextHunk)
+nmap <C-d> <Plug>(GitGutterPrevHunk)
 " 左端2文字分の空間を常に表示
 set signcolumn=yes
 

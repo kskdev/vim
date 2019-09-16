@@ -80,46 +80,8 @@ on_ft = ['vim']
 depends = ['deoplete.nvim']
 
 
-# [[plugins]]  # スニペットファイル
-# repo = 'Shougo/neosnippet-snippets'
+[[plugins]]  # deoplete連携用
+repo = 'lighttiger2505/deoplete-vim-lsp'
+depends = ['vim-lsp',  'async.vim']
 
 
-# [[plugins]]  # スニペット補完の動作定義
-# repo = 'Shougo/neosnippet.vim'
-# depends = ['neosnippet-snippets']
-# on_ft = ['snippet']
-# hook_source = '''
-# " snipMate との互換を有効化
-# let g:neosnippet#enable_snipmate_compatibility = 1
-# let g:neosnippet#enable_completed_snippet = 1
-# let g:neosnippet#expand_word_boundary = 1
-# '''
-# hook_add = '''
-# " For conceal markers.
-# if has('conceal')
-#     set conceallevel=2 concealcursor=niv
-# endif
-# '''
-
-
-# [[plugins]]  # vim-lspでスニペット補完
-# repo = 'thomasfaingnaert/vim-lsp-snippets'
-# depends = ['vim-lsp']
-
-
-# [[plugins]]  # vim-lspでneosnippet補完
-# repo = 'thomasfaingnaert/vim-lsp-neosnippet'
-# depends = ['vim-lsp']
-
-
-
-
-
-# 関数表示強化
-# [[plugins]]
-# repo = 'Shougo/echodoc.vim'
-# depends = ['deoplete.nvim']
-# hook_add = '''
-# " set cmdheight=2
-# let g:echodoc_enable_at_startup = 1
-# '''

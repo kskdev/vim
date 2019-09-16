@@ -96,6 +96,12 @@ sudo apt install vim
   - LSP + vista.vim で対応
 
 ## Update log
+- 2019/09/16(treemanage branch)
+  - プラグイン(.toml)のファイル構成を複数に分割
+    - deoplete は動作確認済み．asyncomplete は動くがエラーが発生．
+  - その他プラグインの設定の追加/変更
+    - 追加 : echodoc.vim (関数の引数を画面に表示)
+    - 変更 : lightline の色とかその程度の小さい変更がいろいろ
 - 2019/08/26(twotype branch)
   - インストール時, 補完プラグインを deopleteベース or asyncomplete ベースにするかを選択するように変更
     - 理由: 補完は deoplete の方が好み(主に曖昧検索みたいなことが出来るから)だが. 要求してくる環境や手順がちょっと面倒

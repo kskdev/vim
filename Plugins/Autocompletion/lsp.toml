@@ -71,38 +71,21 @@ endif
 '''
 
 
-[[plugins]]  # deoplete連携用
-repo = 'lighttiger2505/deoplete-vim-lsp'
-depends = ['prabirshrestha/vim-lsp',  'prabirshrestha/async.vim']
-
-
-# vim-lspでスニペット補完
-# [[plugins]]
-# repo = 'thomasfaingnaert/vim-lsp-snippets'
-# depends = ['vim-lsp']
-
-
-# vim-lspでneosnippet補完
-# [[plugins]]
-# repo = 'thomasfaingnaert/vim-lsp-neosnippet'
-# depends = ['vim-lsp']
-
-
 # LSP経由でタグジャンプ等が使えるようになる
-# [[plugins]]
-# repo = 'liuchengxu/vista.vim'
-# depends = ['vim-lsp']
-# hook_add = '''
-# " fzf の表示領域設定
-# let g:vista_fzf_preview = ['right:50%']
-# " アイコン表示を無効化
-# let g:vista#renderer#enable_icon = 0
-# " アイコンの定義
-# let g:vista#renderer#icons = {"function":"f", "variable":"v"}
-# " Vistaの実行プラグインを指定
-# let g:vista_default_executive = 'vim_lsp'
-# " Vista の実行プラグインを言語別に指定可能
-# let g:vista_executive_for = {'python':'vim_lsp'}
-# '''
+[[plugins]]
+repo = 'liuchengxu/vista.vim'
+depends = ['vim-lsp']
+hook_add = '''
+" fzf の表示領域設定
+let g:vista_fzf_preview = ['right:50%']
+" アイコン表示を無効化
+let g:vista#renderer#enable_icon = 0
+" アイコンの定義
+let g:vista#renderer#icons = {"function":"f", "variable":"v"}
+" Vistaの実行プラグインを指定
+let g:vista_default_executive = 'vim_lsp'
+" Vista の実行プラグインを言語別に指定可能
+let g:vista_executive_for = {'python':'vim_lsp'}
+'''
 
 

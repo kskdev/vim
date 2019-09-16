@@ -53,9 +53,11 @@ let g:lightline.component_type.lsperror   = 'error'
 let g:lightline.component_type.lsp        = 'lspstatus'
 
 " ステータスラインの表示フォーマット定義
+" 動的表示用
 let g:lightline.active         = {}
 let g:lightline.active.left    = [['mode', 'paste'], ['fugitive'], ['filename', 'readonly']]
 let g:lightline.active.right   = [['lsperror'], ['lspwarning'], ['lsp'], ['lineinfo']]
+" 静的表示用
 let g:lightline.inactive       = {}
 let g:lightline.inactive.left  = [['mode', 'paste'], ['fugitive'], ['filename', 'readonly']]
 let g:lightline.inactive.right = [['lineinfo']]
@@ -68,7 +70,6 @@ let g:lightline.tabline = {'left': [ ['buffers'] ], 'right': [ ['fileformat'], [
 " カラースキーマ設定
 " ----------------------------------------
 let g:lightline.colorscheme = 'mypalette'
-" let s:p = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'tabline': {}, 'warning': {}, 'error': {}}
 let s:p = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'tabline': {}}
 
 " 色定義 ( [d]ark, [n]ormal, [l]ight ) 参考 : https://www.materialui.co/colors
@@ -112,7 +113,7 @@ let s:STL_ATTRIBUTECOLOR = [s:blk_d[0], s:wht_n[0], s:blk_d[1], s:wht_d[1]]
 
 " ステータスライン左側(Mode Fugitive Filename None None)
 let s:p.inactive.left = [
-            \ [s:wht_n[0], s:blk_d[0], s:wht_n[1], s:blk_d[1]],
+            \ [s:wht_n[0], s:grn_d[0], s:wht_n[1], s:grn_d[1]],
             \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
             \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
             \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
@@ -136,13 +137,9 @@ let s:p.normal.left = deepcopy(s:p.inactive.left)
 " ノーマルモード右側
 let s:p.normal.right = deepcopy(s:p.inactive.right)
 
-" エラー時の色定義 (上手く動かない...)
-" let s:p.normal.error = [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]]
-" let s:p.normal.warning = [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]]
+" TODO エラー時の色定義 上手く動かない...
 let s:p.error = [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]]
 let s:p.warning = [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]]
-" let g:lightline#colorscheme#error = [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]]
-" let g:lightline#colorscheme#warning = [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]]
 
 " インサートモード(中央)
 let s:p.insert.middle = [s:STL_BASECOLOR]
@@ -165,15 +162,14 @@ let s:p.insert.right = [
             \ ]
 
 " ヴィジュアルモード中央
-let s:p.visual.middle = [[s:wht_l[0], s:org_d[0], s:wht_l[1], s:org_d[1]]]
+let s:p.visual.middle = [[s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]]]
 
 " ヴィジュアルモード左側
 let s:p.visual.left = deepcopy(s:p.insert.left)
-let s:p.visual.left[0] = s:p.visual.middle[0]
+let s:p.visual.left[0] = [s:wht_l[0], s:org_d[0], s:wht_l[1], s:org_d[1]]
 
 " ヴィジュアルモード右側
 let s:p.visual.right = deepcopy(s:p.insert.right)
-let s:p.visual.right[0] = s:p.visual.middle[0]
 
 " タブライン中央
 let s:p.tabline.middle = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
