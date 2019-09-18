@@ -27,7 +27,13 @@ repo ='Shougo/defx.nvim'
 on_cmd = 'Defx'
 hook_add = '''
 " defx起動キーマップ
-nnoremap <silent> <C-n> :<C-u>Defx -listed -resume -buffer-name=tab`tabpagenr()`<CR>
+" nnoremap <silent> <C-n> :<C-u>Defx -listed -resume -buffer-name=tab`tabpagenr()`<CR>
+" オプション引数
+" -split : defx起動時，ウィンドウを分割 vertical horizontal floating あたりがおすすめ
+" -winwidth : 文字通りdefxのウィンドウ幅を指定
+" -direction : ウィンドウの展開位置を指定 topleft or botright を指定
+" nnoremap <silent> <C-n> :<C-u>Defx -toggle -split=vertical -winwidth=20 -direction=topleft<CR>
+nnoremap <silent> <C-n> :<C-u>Defx -toggle -split=tab -winwidth=20 -direction=topleft<CR>
 
 " defxウィンドウ内専用キーマップ
 autocmd FileType defx call s:defx_my_settings()

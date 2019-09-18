@@ -80,6 +80,14 @@ on_ft = ['vim']
 depends = ['deoplete.nvim']
 
 
+# zsh/shコマンド補完用プラグイン
+[[plugins]]
+repo = 'deoplete-plugins/deoplete-zsh'
+on_ft = ['zsh', 'sh']
+depends = ['deoplete.nvim']
+
+
+
 [[plugins]]  # deoplete連携用
 repo = 'lighttiger2505/deoplete-vim-lsp'
 depends = ['vim-lsp',  'async.vim']
