@@ -1,10 +1,12 @@
 #TODO list -------------------------------------------------------
 #
 # 'Shougo/defx.nvim'
-# - nerdtree 見たいに画面左側に置いておきたい(Toggle操作出来ると神)
-# - nerdtree はdefxがインストール出来ない場合に置いておく(設計思想が違いすぎるので不便だが無いよりマシ)
 # - ターミナル上で何回も 'bash install.sh && vi' みたいなことをやっていると何故か起動エラーが起こるようになる
 #   - もちろん初回インストール時は正しく動く
+# - ftがdefxならquit 違うならdefxウィンドウを起動するみたいなトグルに変えてもいいかも?
+# - defx のインストールが出来ない場合,nerdtreeを利用していく方向
+# 'Shougo/deol.nvim'
+# - 将来的にfloatingウィンドウで揃えたい(defx, deol等のShougo製プラグイン)
 
 
 # :help を日本語化
@@ -21,57 +23,69 @@ repo = 'vim-jp/vimdoc-ja'
 # '''
 
 
-# ディレクトリツリーの表示
+# ディレクトリツリーの表示やファイル操作
 [[plugins]]
 repo ='Shougo/defx.nvim'
 on_cmd = 'Defx'
 hook_add = '''
-" defx起動キーマップ
-" nnoremap <silent> <C-n> :<C-u>Defx -listed -resume -buffer-name=tab`tabpagenr()`<CR>
-" オプション引数
-" -split : defx起動時，ウィンドウを分割 vertical horizontal floating あたりがおすすめ
-" -winwidth : 文字通りdefxのウィンドウ幅を指定
-" -direction : ウィンドウの展開位置を指定 topleft or botright を指定
-" nnoremap <silent> <C-n> :<C-u>Defx -toggle -split=vertical -winwidth=20 -direction=topleft<CR>
-nnoremap <silent> <C-n> :<C-u>Defx -toggle -split=tab -winwidth=20 -direction=topleft<CR>
+" defx起動キーマップ(画面左側に表示)
+nnoremap <silent> <C-n> :<C-u>Defx -toggle -split=vertical -winwidth=30 -direction=topleft<CR>
 
 " defxウィンドウ内専用キーマップ
 autocmd FileType defx call s:defx_my_settings()
 function! s:defx_my_settings() abort
-    " ファイル展開
-    nnoremap <silent><buffer><expr> <CR> defx#do_action('open')
-    " 終了
+    " ファイル展開(展開後もdefxバッファを開いたまま. nerdtree に近い振る舞い)
+    nnoremap <silent><buffer><expr> <CR> defx#do_action('multi', ['drop', 'vsplit'])
+    " ファイル展開(展開後もdefxバッファ削除)
+    nnoremap <silent><buffer><expr> o defx#do_action('multi', ['drop', 'quit'])
+    " 終了(複数登録)
     nnoremap <silent><buffer><expr> q defx#do_action('quit')
     nnoremap <silent><buffer><expr> <ESC> defx#do_action('quit')
     " カーソル行のファイルパス名をyank
-    nnoremap <silent><buffer><expr> yy defx#do_action('yank_path')
-    " カーソル行のファイルをコピー / 貼り付け (yankと別物?)
+    nnoremap <silent><buffer><expr> y defx#do_action('yank_path')
+    " カーソル行のファイルをコピー
     nnoremap <silent><buffer><expr> c defx#do_action('copy')
-    nnoremap <silent><buffer><expr> p defx#do_action('paste')
-
+    " カーソル行のファイルの移動元を指定
     nnoremap <silent><buffer><expr> m defx#do_action('move')
-    nnoremap <silent><buffer><expr> E defx#do_action('open', 'vsplit')
-    nnoremap <silent><buffer><expr> P defx#do_action('open', 'pedit')
-    nnoremap <silent><buffer><expr> K defx#do_action('new_directory')
-    nnoremap <silent><buffer><expr> N defx#do_action('new_file')
-    nnoremap <silent><buffer><expr> d defx#do_action('remove')
+    " copy や move の貼り付け
+    nnoremap <silent><buffer><expr> p defx#do_action('paste')
+    " 新しいディレクトリの作成
+    nnoremap <silent><buffer><expr> d defx#do_action('new_directory')
+    " 新しいファイルの作成
+    nnoremap <silent><buffer><expr> f defx#do_action('new_file')
+    " ファイル(ディレクトリも)削除
+    nnoremap <silent><buffer><expr> x defx#do_action('remove')
+    " ファイル(ディレクトリ)の名前を変更
     nnoremap <silent><buffer><expr> r defx#do_action('rename')
-    nnoremap <silent><buffer><expr> x defx#do_action('execute_system')
+    " ドットファイルの表示/非表示切り替え
     nnoremap <silent><buffer><expr> . defx#do_action('toggle_ignored_files')
-    nnoremap <silent><buffer><expr> h defx#do_action('cd', ['..'])
+    " 一つ上のディレクトリへ移動
+    nnoremap <silent><buffer><expr> u defx#do_action('cd', ['..'])
+    " ホームディレクトリへ移動
     nnoremap <silent><buffer><expr> ~ defx#do_action('cd')
+    " 複数選択
     nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select') . 'j'
+    " 全選択
     nnoremap <silent><buffer><expr> * defx#do_action('toggle_select_all')
-    " カーソルの上下移動を循環
+    " カーソル循環上下移動
     nnoremap <silent><buffer><expr> j line('.') == line('$') ? 'gg' : 'j'
     nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
-    " 良く分からん
+    " 再描画?
     nnoremap <silent><buffer><expr> <C-l> defx#do_action('redraw')
     " ステータスラインにフルパスを表示
     nnoremap <silent><buffer><expr> <C-g> defx#do_action('print')
-
-    nnoremap <silent><buffer><expr> cd defx#do_action('change_vim_cwd')
 endfunction
+'''
+
+
+# ターミナル起動
+[[plugins]]
+repo ='Shougo/deol.nvim'
+on_cmd = 'Deol'
+hook_add = '''
+" deol 起動キーマップ
+nnoremap <silent> <C-i> :<C-u>Deol -split=horizontal -start-insert<CR>
+nnoremap <silent> <C-i> :<C-u>Deol -split=horizontal<CR>
 '''
 
 
