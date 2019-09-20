@@ -81,7 +81,6 @@ set wildignorecase
 set wildmode=list,full
 " 補完候補が1つでもポップアップを表示
 set completeopt=menuone
-
 " 補完候補のポップアップ数
 set pumheight=12
 
@@ -210,7 +209,6 @@ call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/deoplete.toml') " asyn
 call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/lsp.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/others.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/Filer/fzf.toml')  " denite.toml と選択
-" call dein#load_toml(s:toml_dir . '/Plugins/Filer/denite.toml')  " denite.toml と選択
 call dein#end()
 
 " プラグインが入っていなければvim起動時に自動でインストール

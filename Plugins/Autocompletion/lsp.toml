@@ -1,6 +1,12 @@
+#TODO list -------------------------------------------------------
+#
+# 'prabirshrestha/vim-lsp'
+# - LSPによる補完はサーバーが running 状態になってからで無いと補完が効かない(deopleteで確認)
+# 'prabirshrestha/async.vim'
+# - async.vimの役割は,曰く, async.vim is required to use vim-lsp. It is used to normalize the jobs api between Vim 8 and Neovim.
 
 
-# 非同期処理用のプラグイン(調べてません)
+# 非同期処理用のプラグイン
 [[plugins]]
 repo = 'prabirshrestha/async.vim'
 
@@ -50,8 +56,8 @@ setlocal omnifunc=lsp#complete
 noremap <C-j> :LspNextError<CR>
 " Ctrl+k で前のエラー箇所へジャンプ
 noremap <C-k> :LspPreviousError<CR>
-" Ctrl+m で定義元へジャンプ(Enterでも対応しているらしい)
-nnoremap <C-m> :LspDefinition<CR>
+" Ctrl+l で定義元へジャンプ
+nnoremap <C-l> :LspDefinition<CR>
 
 " Python補完設定
 if executable('pyls')
