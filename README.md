@@ -73,6 +73,7 @@ sudo apt install vim
 <br>
 
 ## Memo
+- TODO 登録したファイルをトグルで切り替えて表示するプラグインとか作った方が良い?
 - deoplete + LSP はlanguage-server がrunning 状態に遷移してから入力を始めないと言語の補完が上手く行かない
   - neosnippet も一度 Ctrl+k などで起動させないと動かなかった
 - neco-look がlook コマンドに依存し，Windows環境で使いづらい(MinGWとかいるらしい)

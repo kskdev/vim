@@ -1,3 +1,8 @@
+#TODO list -------------------------------------------------------
+# 
+# 'lervag/vimtex'
+# - オートコンプリートプラグインと連携したいがまだ対応できていないためコメント化してある
+
 
 # スニペットファイル
 [[plugins]]
@@ -12,7 +17,7 @@ on_ft = ['snippet']
 hook_add = '''
 " snipMate との互換を有効化
 let g:neosnippet#enable_snipmate_compatibility = 1
-let g:neosnippet#enable_completed_snippet = 1
+let g:neosnippet#enable_completed_snippet = 0
 let g:neosnippet#expand_word_boundary = 1
 
 " For conceal markers.
@@ -22,18 +27,12 @@ endif
 '''
 
 
-# 関数に関する情報を表示
+# 関数等の引数を表示
 [[plugins]]
 repo = 'Shougo/echodoc.vim'
 hook_add = '''
-" For neovim.
 let g:echodoc#enable_at_startup = 1
-if has('nvim')
-    let g:echodoc#type = 'virtual'
-else
-    set cmdheight=2
-    let g:echodoc#type = 'echo'
-endif
+let g:echodoc#type = 'echo'
 '''
 
 

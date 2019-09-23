@@ -1,5 +1,5 @@
 "//		vim setting and tips		//
-"Backspaceで何でも文字を削除できるように設定
+" Backspaceで何でも文字を削除できるように設定
 set backspace=start,eol,indent
 " バッファの文字コードの設定
 set encoding=utf-8
@@ -18,25 +18,27 @@ set ambiwidth=double
 
 "::::::::::::::::::::::::::::::::::
 "::::::::::display setting
-"行数を表示
+" 行数を表示
 set number
-"ステータスラインに行数を表示
+" ステータスラインに行数を表示
 set ruler
-"カーソル業をハイライト
+" カーソル業をハイライト
 set cursorline
-"対応する括弧をハイライト
+" 対応する括弧をハイライト
 set showmatch
 " showmatchのハイライト時間を調整(1 is 0.1sec)
 set matchtime=1
-"入力中のコマンドを表示
+" 入力中のコマンドを表示
 set showcmd
-"現在のコマンドモードを表示
-set showmode
-"N行余裕を持たせてスクロール
+" 現在のコマンドモードを非表示
+set noshowmode
+" コマンドラインの行数
+set cmdheight=1
+" N行余裕を持たせてスクロール
 set scrolloff=3
-"ステータスラインを常に表示
+" ステータスラインを常に表示
 set laststatus=2
-"エディタの編集タイトルを表示しない
+" エディタの編集タイトルを表示しない
 set notitle
 
 " 分割ペインの背景色
@@ -94,8 +96,7 @@ inoremap <C-x><C-f> <C-X><C-F><C-P>
 " ただし,検索リピートの邪魔になるので現在は無効化
 " nnoremap ;; :
 
-" インサートモード時左右に動けるようにする
-inoremap <C-h> <Left>
+" インサートモードでのカーソル挙動
 inoremap <C-l> <Right>
 
 " 連続入力が必要なコマンドの入力受付時間[ms]
