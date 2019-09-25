@@ -307,3 +307,25 @@ let g:cheatsheet#float_window_height_ratio = 0.4
 '''
 
 
+# Read-Eval-Print Loop(REPL)をvimで使う
+[[plugins]]
+repo = 'kassio/neoterm'
+hook_add = '''
+" REPLを自動的に改行
+let g:neoterm_autoscroll = 1
+" 画面左側に結果を展開
+let g:neoterm_default_mod = 'vertical'
+" ノーマルモードで現在のカーソル行を実行
+nmap <C-e> <Plug>(neoterm-repl-send-line)
+" ヴィジュアルモードで選択範囲を実行
+xmap <C-e> <Plug>(neoterm-repl-send)
+
+" neoterm起動後のターミナルバッファ専用キーマップ
+autocmd FileType neoterm call s:neoterm_my_settings()
+function! s:neoterm_my_settings() abort
+    " ESCでターミナルモードを抜ける
+    tnoremap fff <C-\><C-n><C-w>
+    " ターミナル画面バッファを終了
+    nnoremap <silent><ESC> :Tclose!<CR>
+endfunction
+'''
