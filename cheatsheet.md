@@ -24,6 +24,8 @@
 - `Ctrl+s`,           <Normal> [vim-over]       置換の起動
 - `sub`,              <Normal> [vim-over]       カーソル上のテキストオブジェクトを置換
 - `Ctrl+i`,           <Normal> [deol]           仮想ターミナル起動
+- `Ctrl+e`,           <Normal> [neoterm]        カーソル行のコードを評価
+- `Ctrl+e`,           <Visual> [neoterm]        選択範囲のコードを評価
 # Defx (Filer)
 - `Ctrl+n`,           <Normal> [defx]           起動
   - `<CR>`    : ペインを残したままファイルを展開
