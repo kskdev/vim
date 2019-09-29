@@ -91,6 +91,15 @@ on_cmd = 'Deol'
 hook_add = '''
 " Ctrl + i でdeol 起動
 nnoremap <silent> <C-i> :<C-u>Deol -split=horizontal<CR>
+
+" deol起動後のターミナルバッファ専用キーマップ
+autocmd FileType deol call s:deol_my_settings()
+function! s:deol_my_settings() abort
+    " ターミナルモード : ESCでバッファを閉じる
+    tnoremap <silent><ESC> <C-\><C-n>:bd!<CR>
+    " ターミナルモード : fffでノーマルモードへ以降
+    tnoremap <silent>fff <C-\><C-n>
+endfunction
 '''
 
 
@@ -178,8 +187,6 @@ set updatetime=100
 " ハンク(変更点のかたまり)へジャンプ
 nmap <C-f> <Plug>(GitGutterNextHunk)
 nmap <C-d> <Plug>(GitGutterPrevHunk)
-" 左端2文字分の空間を常に表示
-set signcolumn=yes
 
 " プラグインの有効化
 let g:gitgutter_enabled = 1
@@ -304,6 +311,9 @@ let g:cheatsheet#cheat_file = g:dein_dir . '/cheatsheet.md'
 let g:cheatsheet#float_window = 0
 let g:cheatsheet#float_window_width_ratio = 0.9
 let g:cheatsheet#float_window_height_ratio = 0.4
+
+" Ctrl+c でチートシート展開トグル
+nnoremap <silent> <C-c> :<C-u>:Cheat<CR>
 '''
 
 

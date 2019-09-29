@@ -40,6 +40,8 @@ set scrolloff=3
 set laststatus=2
 " エディタの編集タイトルを表示しない
 set notitle
+" 左端2文字分の空間を常に表示
+set signcolumn=yes
 
 " 分割ペインの背景色
 augroup ChangeBackground
@@ -54,13 +56,12 @@ augroup END
 "::::::::::search setting
 " 検索結果のハイライト表示
 set hlsearch
-" 小文字入力時,大文字も含めて検索
+" 大文字小文字無視して検索
 set ignorecase
-set smartcase
 " 入力文字数を増やすと候補が絞られる
 set incsearch
 " Escで検索ハイライトを削除
-nnoremap <ESC> :nohlsearch<CR>
+nnoremap <silent><ESC> :nohlsearch<CR>
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::indent setting
@@ -106,21 +107,6 @@ set ttimeoutlen=10
 
 " 画面切り替え(Ctrl+wを2回も押すのは面倒)
 nnoremap <C-w> <C-w><C-w>
-
-" インサートモードでESCを入力した時,IMEをOFFにする
-" 何とかしてmac版,win版を作りたいが作れるならとっくに誰かが作ってるはず...
-" 現状 macはkarabinerを利用するしか無いかも?
-function! OffFcitx()
-    if has('unix')
-        call system('fcitx-remote -c')
-        echo 'switched [fcitx jp] -> [fcitx en]'
-    else
-        echo ''
-    endif
-endfunction
-
-inoremap <ESC> <ESC>:call OffFcitx()<CR>
-inoremap fff <ESC>:call OffFcitx()<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  /$$$$$$$            /$$

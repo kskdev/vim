@@ -82,7 +82,7 @@ depends = ['deoplete.nvim']
 
 # zsh/shコマンド補完用プラグイン
 [[plugins]]
-repo = 'deoplete-plugins/deoplete-zsh'
+repo = 'zchee/deoplete-zsh'
 on_ft = ['zsh', 'sh', 'deol']
 depends = ['deoplete.nvim']
 

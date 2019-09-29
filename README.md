@@ -1,5 +1,5 @@
 # About
-ぼくのかんがえたさいきょうのvimかいはつかんきょーをつくる
+ぼくのかんがえたさいきょうのビムかんきょーをつくる
 (永遠に終わらないのでは...?)
 
 目標:なるべくポータブルで使いやすいエディタを目指す
@@ -9,7 +9,11 @@
 
 ## Target Environment
 - **neovim**
-- vim8(動かないことは無いと思うが，自分の環境では動作の確認が出来ない)
+- vim8(動かないことは無いと思うが，自分の環境では一部プラグイン動作の確認が出来ない)
+
+## Requirement
+- python(3.6.1+)
+- neovim
 
 ## How to install
 あらかじめ，python3系 の環境は用意しておく必要があることに注意．
@@ -18,7 +22,6 @@ python3 環境が整っている場合，以下を実行することでインス
 ``` bash
 git clone https://github.com/kskdev/vim && cd ./vim && bash ./install.sh && nvim
 ```
-`nvim` or `vim` を起動したらプラグインのインストールが開始．
 また，表示が色々とおかしなことになるかもしれないが，端末を開き直せばOK
 
 もしpython補完を利用するなら以下をインストールする必要がある．
@@ -49,10 +52,13 @@ sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt-get update
 sudo apt-get install -y neovim
 ```
+
+sudo権限が無い場合は,公式ページにバイナリが置いてあるのでダウンロードして使うこともできる.
 #### Mac
 ```
 brew install neovim
 ```
+
 #### Windows
 - https://github.com/neovim/neovim/releases のlatest releaseからzipをダウンロードして展開
 - 展開して出てきた`Neovim`ディレクトリを`C:/Program files`に移動し,パスを通す
@@ -73,7 +79,9 @@ sudo apt install vim
 <br>
 
 ## Memo
-- TODO 登録したファイルをトグルで切り替えて表示するプラグインとか作った方が良い?
+**思ったことをダラダラと記述**
+
+- 登録したファイルをトグルで切り替えて表示するプラグインとか作った方が良い?
 - deoplete + LSP はlanguage-server がrunning 状態に遷移してから入力を始めないと言語の補完が上手く行かない
   - neosnippet も一度 Ctrl+k などで起動させないと動かなかった
 - neco-look がlook コマンドに依存し，Windows環境で使いづらい(MinGWとかいるらしい)
@@ -97,6 +105,15 @@ sudo apt install vim
   - LSP + vista.vim で対応
 
 ## Update log
+- 2019/09/29(dev branch)
+  - README.md の更新(久々)
+  - cheatsheet.md
+  - 微調整
+    - vim-cheatsheet をトグル(Ctrl+c)で表示/非表示にした.
+    - deol ウィンドウ操作キーマップの変更など細かい部分が変更になった.
+  - defxのインストールがちょこっと面倒臭いことに気づいた.
+    - `bash install.sh` 実行後,nvimを起動し,defxを展開しようとすると,`:UpdateRemotePlugins`を要求される.
+      - install.sh の中で 実行しているはずなのに...
 - 2019/09/25(dev branch)
   - kassio/neoterm の導入
     - vim上でREPL(対話形式でデバッグ出来る)を利用するため.
@@ -252,6 +269,18 @@ sudo apt install vim
   - 個人的な使い方はツリーを表示するだけ(ファイルを開いたりするのは後述のfzfで行うため)
   - 現在, [ Ctrl + n ] でof/off切り替え
 
+- 'Shougo/defx.nvim'
+  - ディレクトリツリーの表示やファイル操作を行う
+    - ファイル/ディレクトリの作成,移動,消去,リネームなど便利
+  - nerdtreeの上位互換に感じる
+  - キーマップはチートシートを参照
+    - defx ペインがアクティブ時,専用キーマップがいくつも与えられているため.
+
+- 'Shougo/deol.nvim'
+  - vimの中でターミナルを起動
+    - ただそれだけだが,キーマップを与えることでストレスなくターミナルの展開/削除が容易行えるのが地味に便利
+
+
 - 'mbbill/undotree'
   - 変更履歴をツリー形式で表示
   - 現在, [ Ctrl + u ] でof/off切り替え
@@ -310,6 +339,11 @@ sudo apt install vim
     - [ Ctrl + p ] : カレントディレクトリ以下を検索
     - [ Ctrl + h ] : 最近展開したファイルを表示
     - [ Ctrl + g ] : ripgrep を利用した文字列検索
+
+- 'Shougo/denite'
+  - ファイル/文字列/バッファ/etcを検索する
+    - 現在fzf.vim と選択を迫られている
+  - 使い心地がfzfの方が上なので今はまだ使う予定が無い(これも設定次第だと思うが...)
 
 - 'thinca/vim-quickrun'
   - vimを開きながら編集中のファイルを実行 (:Quickrun)
@@ -371,6 +405,13 @@ sudo apt install vim
   - 作成したファイルを `:Cheat` で呼び出し，チートシート確認出来る
   - ファイルタイプごとの作成も可能
   - float window にも対応．(使っていないが)
+  - トグル的な運用が使いやすいかも
+
+- 'kassio/neoterm'
+  - vim上でREPLを使用
+  - インタプリタ言語なら対応しているっぽい
+    - カーソル行の式を評価したり,選択範囲を評価したりデバッグ時の友達になるかもしれない
+    - pythonだとipythonが使えたりする
 
 - 'w0rp/ale'
   - プログラムの危ない部分やエラーが出る場所をコード上に示してくれる
@@ -383,6 +424,9 @@ sudo apt install vim
   - タグジャンプ等や定義元へジャンプすることが出来るようになる
     - vim-lsp の力を借りて実行
     - fzf と連携し，定義やシンボルの検索も可能
+
+- 'Shougo/echodoc'
+  - 関数の引数をコマンドライン上に表示してくれる地味ながら利用してるプラグイン
 
 
 #### 現在利用中のオートコンプリートプラグイン(deoplete + vim-lsp)

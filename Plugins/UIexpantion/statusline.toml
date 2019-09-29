@@ -237,7 +237,7 @@ function! LightlineMode()
 endfunction
 
 function! LspServerStatusForStatusLine()
-    return split(g:lsp#get_server_status() , ': ')[-1]
+    return g:lsp#get_server_status()
 endfunction
 
 function! LspWarningNum()
