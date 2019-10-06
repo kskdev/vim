@@ -1,16 +1,12 @@
 #TODO list -------------------------------------------------------
 # 
 # 'junegunn/fzf'
-# - 各OSに対応した処理に対応したい (fzf, ripgrep両方)
-#   - ripgrep:Rust製の高速grepツール
-# - コマンドラインから利用するなら sudo apt-get install ripgrep の方が良い
+# - ripgrepの対応について
+#   - コマンドラインから利用するなら sudo apt-get install ripgrep の方が良い
 #   - しかし，恐らくvimでしか使わないため，バイナリを拾ってたりする
-#   - Rustを導入せずバイナリを拾ってくる
+#   - ripgrep はRust の導入がいるらしい?
 # - 何より余計なインストールの手間を省くことが目標
-# - https://leico.github.io/TechnicalNote/VimR/VimR-dein-toml ここ参照
-#
-# 'junegunn/fzf.vim'
-#
+# - fzf & ripgrep インストールについて自作した方が早いまである
 
 
 # 曖昧検索(ファジー検索)インターフェース
@@ -28,7 +24,6 @@ if has('mac')
     catch /error/  " エラーメッセージにマッチする正規表現
     catch          " 空の場合は必ずマッチする
         " ... 例外処理 ...
-        " let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
         if strlen(glob(s:fzf_bin_dir . '/fzf.exe')) == 0
             execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-darwin_amd64.tgz'
             execute '!tar -zxvf fzf-0.18.0-darwin_amd64.tgz'
@@ -43,7 +38,6 @@ elseif has('unix')
     catch /error/  " エラーメッセージにマッチする正規表現
     catch          " 空の場合は必ずマッチする
         " ... 例外処理 ...
-        " let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
         if strlen(glob(s:fzf_bin_dir . '/fzf.exe')) == 0
             execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-linux_amd64.tgz'
             execute '!tar -zxvf fzf-0.18.0-linux_amd64.tgz'
@@ -53,7 +47,6 @@ elseif has('unix')
     endtry
 elseif has('win64')
     " windowsの場合ビルド方法が分からないため,バイナリを取得(かなり強引)
-    " let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
     if strlen(glob(s:fzf_bin_dir . '/fzf.exe')) == 0
         execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-windows_amd64.zip'
         execute '!unzip fzf-0.18.0-windows_amd64.zip'
@@ -66,7 +59,6 @@ endif
 " --- ripgrep のインストール ---
 " ripgrepのバイナリを強引に取得
 if has('mac')
-    " let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
     if strlen(glob(s:fzf_bin_dir . '/rg')) == 0
         execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep-11.0.2-x86_64-apple-darwin.tar.gz'
         execute '!tar -zxvf ripgrep-11.0.2-x86_64-apple-darwin.tar.gz'
@@ -84,8 +76,6 @@ elseif has('unix')
     endif
 
 elseif has('win64')
-    " rg.exeのパスをこのスコープ内で追加したい(まだ出来てない)
-    " let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
     if strlen(glob(s:fzf_bin_dir . '/rg.exe')) == 0
         execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep-11.0.2-x86_64-pc-windows-gnu.zip'
         execute '!unzip ripgrep-11.0.2-x86_64-pc-windows-gnu.zip'
@@ -93,6 +83,14 @@ elseif has('win64')
         execute '!del *.zip'
         execute '!del *.ps1'
     endif
+else
+endif
+'''
+hook_add = '''
+" Windows 環境でripgrep を利用できるようにPATHを通す
+let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
+if has('win64')
+    let $PATH .= ';' . s:fzf_bin_dir
 else
 endif
 '''
@@ -104,6 +102,10 @@ depends = ['fzf']
 hook_add = '''
 " Ctrl + t で現在開いているバッファの一覧表示及び絞り込み
 nnoremap <C-t> :Buffers<CR>
+" Ctrl + u で現在展開中のバッファの文字列を検索
+nnoremap <C-u> :BLines<CR>
+" Ctrl + m マークの一覧表示
+nnoremap <C-m> :Marks<CR>
 " Ctrl + p でファイル検索
 nnoremap <C-p> :Files<CR>
 " Ctrl + g でRipgrep(ripgrepがインストールされていないと使えない)
