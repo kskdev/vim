@@ -11,9 +11,10 @@
 [[plugins]]
 repo = 'Shougo/denite.nvim'
 hook_add = '''
-call denite#custom#source('file/rec', 'matchers', ['matcher_fuzzy'])
+" call denite#custom#source('file/rec', 'matchers', ['matcher_fuzzy'])
+call denite#custom#source('file/rec', 'matchers', ['converter/tail_path', 'matcher/fuzzy'])
 call denite#custom#source('grep', 'args', ['','','!'])
-call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
+" call denite#custom#source('grep', 'converters', ['converter/abbr_word'])
 
 " grep処理のオプション設定
 if executable('rg')
@@ -29,13 +30,26 @@ endif
 " -auto-action=preview -ignorecase -vertical-preview
 
 " Ctrl + p でファイルサーチ展開
-nnoremap <C-p> :Denite file/rec -auto-action=preview -auto-resize -ignorecase -vertical-preview<CR>
-" nnoremap <C-p> :Denite file/rec -auto-resize -ignorecase<CR>
+nnoremap <C-p> :Denite file/rec -auto-action=preview -prompt='>' -start-filter=true -ignorecase -split=horizontal -vertical-preview<CR>
 " Ctrl + t でバッファサーチ展開
-nnoremap <C-t> :Denite buffer -auto-action=preview -ignorecase -vertical-preview<CR>
+nnoremap <C-t> :Denite buffer -auto-action=preview -prompt='>' -start-filter=true -ignorecase -vertical-preview<CR>
 " Ctrl + g でgrepサーチ
-" nnoremap <C-g> :Denite grep -auto-action=preview -ignorecase -immediately -vertical-preview<CR>
-nnoremap <C-g> :Denite grep -auto-action=preview -ignorecase -vertical-preview<CR>
+nnoremap <C-g> :Denite grep -auto-resume -auto-action=preview -prompt='>' -start-filter=true -ignorecase -immediately-1=true -vertical-preview<CR>
+
+" denite フィルタリングウィンドウ内限定のキーマップ
+" TODO いちいちモード選択しないでリアルタイムgrepしたい(理想はfzf.vimの操作)
+autocmd FileType denite-filter call s:denite_filter_my_settings()
+" 以下の関数にキーマップを定義
+function! s:denite_filter_my_settings() abort
+    " inoremap <silent><buffer><expr> <CR> denite#do_map('do_action')
+    " imap <silent><buffer> <C-j> <CR>
+    " インサートモードから直接ファイルを開く
+    imap <silent><buffer> <C-j> <CR><CR>
+    " denite-filter を閉じる
+    imap <silent><buffer> <ESC> <Plug>(denite_filter_quit)
+    " denite-filterでの入力時,autocompleteの取り扱い
+    call deoplete#custom#buffer_option('auto_complete', v:false)
+endfunction
 
 " denite ウィンドウ内限定のキーマップ
 autocmd FileType denite cal s:denite_my_settings()
@@ -59,16 +73,5 @@ nnoremap <silent><buffer><expr> q denite#do_map('quit')
 nnoremap <silent><buffer><expr> jj denite#do_map('quit')
 nnoremap <silent><buffer><expr> <ESC> denite#do_map('quit')
 nnoremap <silent><buffer><expr> <C-c> denite#do_map('quit')
-endfunction
-
-" denite フィルタリングウィンドウ内限定のキーマップ
-" TODO いちいちモード選択しないでリアルタイムgrepしたい(理想はfzf.vimの操作)
-autocmd FileType denite-filter call s:denite_filter_my_settings()
-" 以下の関数にキーマップを定義
-function! s:denite_filter_my_settings() abort
-    imap <silent><buffer> <C-j> <CR>
-    inoremap <silent><buffer><expr> <C-c> denite#do_map('quit')
-    nnoremap <silent><buffer><expr> <C-c> denite#do_map('quit')
-    inoremap <silent><buffer><expr> <ESC> denite#do_map('quit')
 endfunction
 '''
