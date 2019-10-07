@@ -16,7 +16,7 @@ if [ "$(uname)" == "Darwin" ]; then
     cp "./cheatsheet.md" ${TARGET_DIR}"/cheatsheet.md"
 
     nvim -e -c ":silent! call dein#install() | :q"
-    nvim -e -c ":silent! UpdateRemotePlugins | :q"
+    nvim -e -c ":Defx | :silent! UpdateRemotePlugins | :q"
 
 elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
     # Windows (MinGW series???)
@@ -49,7 +49,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     cp "./cheatsheet.md" ${TARGET_DIR}"/cheatsheet.md"
 
     nvim -e -c ":silent! call dein#install() | :q!"
-    nvim -e -c ":silent! UpdateRemotePlugins | :q!"
+    nvim -e -c ":Defx | :silent! UpdateRemotePlugins | :q"
 else
     echo "Unsupported..."
 fi
