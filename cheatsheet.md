@@ -11,6 +11,8 @@
 - `Ctrl+g`,           <Normal>  [fzf]            ripgrepによる文字列検索
 - `Ctrl+h`,           <Normal>  [fzf]            開いたファイルの履歴表示
 - `Ctrl+t`,           <Normal>  [fzf]            開いているバッファを表示
+- `Ctrl+u`,           <Normal>  [fzf]            現在展開中のバッファの文字列を検索
+- `Ctrl+m`,           <Normal>  [fzf]            マークの一覧表示
 # Cursor jump
 - `s+s+{key}`,        <Normal>  [vim-easymotion] `{key}`がハイライトされる．
 - `Ctrl+d`,           <Normal>  [vim-gitgutter]  次のハンクに移動

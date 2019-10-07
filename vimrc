@@ -15,6 +15,8 @@ set nobackup
 highlight Normal ctermbg=none
 " □ や○ 文字が崩れ問題を解消
 set ambiwidth=double
+" マウスの利用
+set mouse=a
 
 "::::::::::::::::::::::::::::::::::
 "::::::::::display setting
@@ -42,15 +44,6 @@ set laststatus=2
 set notitle
 " 左端2文字分の空間を常に表示
 set signcolumn=yes
-
-" 分割ペインの背景色
-augroup ChangeBackground
-  autocmd!
-  " 操作中のペインの背景色定義
-  autocmd WinEnter * highlight Normal guibg=default
-  " 非操作のペインの背景色定義
-  autocmd WinEnter * highlight NormalNC guibg='#102020'
-augroup END
 
 ":::::::::::::::::::::::::::::::::::::
 "::::::::::search setting
@@ -192,10 +185,12 @@ call dein#add('morhetz/gruvbox')
 call dein#add('joshdick/onedark.vim')
 call dein#load_toml(s:toml_dir . '/Plugins/UIexpantion/statusline.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/utils.toml')
-call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/deoplete.toml') " asyncomoplete.toml と選択
+call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/deoplete.toml') " asyncomplete.toml と選択
+" call dein#load_toml(s:toml_dir . './Plugins/Autocompletion/asyncomplete.toml') " deoplete.toml と選択
 call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/lsp.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/others.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/Filer/fzf.toml')  " denite.toml と選択
+" call dein#load_toml(s:toml_dir . '/Plugins/Filer/denite.toml')  " fzf.toml と選択
 call dein#end()
 
 " プラグインが入っていなければvim起動時に自動でインストール
@@ -210,9 +205,18 @@ syntax on
 
 " カラースキーマの設定(vimとneovimで色分け)
 if has('nvim')
+    " gruvboxを利用
     set termguicolors  " enable true colors support
     colorscheme gruvbox
     set background=dark
+    " 操作中/非操作中ウィンドウの背景色
+    augroup ChangeBackground
+      autocmd!
+      au WinEnter * highlight Normal guibg='#282828'
+      au WinEnter * highlight NormalNC guibg='#050606'
+    augroup END
 else
     colorscheme onedark
 endif
+
+

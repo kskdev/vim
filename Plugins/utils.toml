@@ -226,6 +226,19 @@ repo = 'jiangmiao/auto-pairs'
 repo = 'machakann/vim-sandwich'
 
 
+# vim-operator-replace の依存プラグイン
+[[plugins]]
+repo = 'kana/vim-operator-user'
+
+
+# yank文字列と置き換えるオペレータ拡張
+[[plugins]]
+repo = 'kana/vim-operator-replace'
+hook_add = '''
+nmap s <Plug>(operator-replace)
+'''
+
+
 # 表示を整える
 [[plugins]]
 repo = 'junegunn/vim-easy-align'
@@ -339,3 +352,11 @@ function! s:neoterm_my_settings() abort
     nnoremap <silent><ESC> :Tclose!<CR>
 endfunction
 '''
+
+
+# mark機能を画面左端に表示
+[[plugins]]
+repo = 'kshenoy/vim-signature'
+hook_add = '''
+'''
+

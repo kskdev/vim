@@ -1,3 +1,8 @@
+#TODO list -------------------------------------------------------
+#
+# 'itchyny/lightline.vim'
+# - エラー時の色定義 上手く動かない...
+
 
 # ステータスライン(& タブライン)カスタマイズ 
 [[plugins]]
@@ -14,6 +19,9 @@ command! -bar LightLineUpdate call lightline#init()| call lightline#colorscheme(
 
 " lightline 設定
 let g:lightline = {'separator': {'left': '', 'right': ''}, 'subseparator': {'left': '','right': ''}, 'mode_map': {'c': 'NORMAL'},}
+
+let g:lightline.colorscheme = 'mypalette'
+let g:pltt = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'tabline': {}}
 
 " lightline.componet 定義
 let g:lightline.component           = {}
@@ -69,8 +77,6 @@ let g:lightline.tabline = {'left': [ ['buffers'] ], 'right': [ ['fileformat'], [
 " ----------------------------------------
 " カラースキーマ設定
 " ----------------------------------------
-let g:lightline.colorscheme = 'mypalette'
-let s:p = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'tabline': {}}
 
 " 色定義 ( [d]ark, [n]ormal, [l]ight ) 参考 : https://www.materialui.co/colors
 let s:blk_d = ['#212121', 233]
@@ -105,14 +111,14 @@ let s:org_l = ['#FFCC80', 179]
 " [{文字色},{背景色},{カラーターミナルの文字色},{カラーターミナルの背景色},{文字装飾(省略可)}]
 
 " ステータスライン基本色
-let s:STL_BASECOLOR = [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]]
-let s:p.inactive.middle = [s:STL_BASECOLOR]
+let g:STL_BASECOLOR = [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]]
+let g:pltt.inactive.middle = [g:STL_BASECOLOR]
 
 " ステータスライン強調色(反対色)
-let s:STL_ATTRIBUTECOLOR = [s:blk_d[0], s:wht_n[0], s:blk_d[1], s:wht_d[1]]
+let g:STL_ATTRIBUTECOLOR = [s:blk_d[0], s:wht_n[0], s:blk_d[1], s:wht_d[1]]
 
 " ステータスライン左側(Mode Fugitive Filename None None)
-let s:p.inactive.left = [
+let g:pltt.inactive.left = [
             \ [s:wht_n[0], s:grn_d[0], s:wht_n[1], s:grn_d[1]],
             \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
             \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
@@ -120,7 +126,7 @@ let s:p.inactive.left = [
             \ ]
 
 " ステータスライン右側(LSPError LSPWarning LSPStatus LineNum None)
-let s:p.inactive.right = [
+let g:pltt.inactive.right = [
             \ [s:wht_l[0], s:blk_d[0], s:wht_l[1], s:blk_d[1]],
             \ [s:wht_l[0], s:blk_n[0], s:wht_l[1], s:blk_n[1]],
             \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
@@ -129,23 +135,19 @@ let s:p.inactive.right = [
             \ ]
 
 " ノーマルモード中央
-let s:p.normal.middle = s:p.inactive.middle
+let g:pltt.normal.middle = g:pltt.inactive.middle
 
 " ノーマルモード左側
-let s:p.normal.left = deepcopy(s:p.inactive.left)
+let g:pltt.normal.left = deepcopy(g:pltt.inactive.left)
 
 " ノーマルモード右側
-let s:p.normal.right = deepcopy(s:p.inactive.right)
-
-" TODO エラー時の色定義 上手く動かない...
-let s:p.error = [s:wht_l[0], s:red_d[0], s:wht_l[1], s:red_d[1]]
-let s:p.warning = [s:wht_l[0], s:org_n[0], s:wht_l[1], s:org_d[1]]
+let g:pltt.normal.right = deepcopy(g:pltt.inactive.right)
 
 " インサートモード(中央)
-let s:p.insert.middle = [s:STL_BASECOLOR]
+let g:pltt.insert.middle = [g:STL_BASECOLOR]
 
 " インサートモード(左側)
-let s:p.insert.left = [
+let g:pltt.insert.left = [
             \ [s:wht_n[0], s:blu_n[0], s:wht_n[1], s:blu_n[1]],
             \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
             \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
@@ -153,7 +155,7 @@ let s:p.insert.left = [
             \ ]
 
 " インサートモード(右側)
-let s:p.insert.right = [
+let g:pltt.insert.right = [
             \ [s:wht_l[0], s:blk_d[0], s:wht_l[1], s:blk_d[1]],
             \ [s:wht_l[0], s:blk_n[0], s:wht_l[1], s:blk_n[1]],
             \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
@@ -162,34 +164,31 @@ let s:p.insert.right = [
             \ ]
 
 " ヴィジュアルモード中央
-let s:p.visual.middle = [[s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]]]
+let g:pltt.visual.middle = [[s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]]]
 
 " ヴィジュアルモード左側
-let s:p.visual.left = deepcopy(s:p.insert.left)
-let s:p.visual.left[0] = [s:wht_l[0], s:org_d[0], s:wht_l[1], s:org_d[1]]
+let g:pltt.visual.left = deepcopy(g:pltt.insert.left)
+let g:pltt.visual.left[0] = [s:wht_l[0], s:org_d[0], s:wht_l[1], s:org_d[1]]
 
 " ヴィジュアルモード右側
-let s:p.visual.right = deepcopy(s:p.insert.right)
+let g:pltt.visual.right = deepcopy(g:pltt.insert.right)
 
 " タブライン中央
-let s:p.tabline.middle = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
+let g:pltt.tabline.middle = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
 
 " タブライン左側
-let s:p.tabline.left = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
+let g:pltt.tabline.left = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
 
 " タブラインカレントバッファ
-let s:p.tabline.tabsel = [[s:org_n[0], s:blk_d[0], s:org_n[1], s:blk_d[1]]]
+let g:pltt.tabline.tabsel = [[s:org_n[0], s:blk_d[0], s:org_n[1], s:blk_d[1]]]
 
 " タブライン右側
-let s:p.tabline.right = [
+let g:pltt.tabline.right = [
             \ [s:wht_n[0], s:blk_d[0], s:wht_n[1], s:blk_d[1]],
             \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
             \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
             \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
             \ ]
-
-let g:lightline#colorscheme#mypalette#palette = s:p
-unlet s:p s:STL_BASECOLOR s:STL_ATTRIBUTECOLOR
 
 
 " ----------------------------------------
@@ -250,10 +249,42 @@ function! LspErrorNum()
     return s:error_num == 0 ? '' : 'Error:' . s:error_num
 endfunction
 
+function! LspErrorColor()
+    TODO 動かない...(g:plttの値が更新されていない模様)
+    let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
+
+    if s:error_num != 0
+        " ステータスライン右側(LSPError LSPWarning LSPStatus LineNum None)
+        let g:pltt.normal.right = [
+        \ [s:org_l[0], s:blk_d[0], s:org_l[1], s:blk_d[1]],
+        \ [s:org_l[0], s:blk_n[0], s:org_l[1], s:blk_n[1]],
+        \ [s:org_n[0], s:blk_l[0], s:org_n[1], s:blk_l[1]],
+        \ [s:org_n[0], s:gry_d[0], s:org_n[1], s:gry_d[1]],
+        \ [s:org_n[0], s:gry_n[0], s:org_n[1], s:gry_n[1]],
+        \ ]
+    else
+        " ステータスライン右側(LSPError LSPWarning LSPStatus LineNum None)
+        let g:pltt.normal.right = [
+        \ [s:wht_l[0], s:blk_d[0], s:wht_l[1], s:blk_d[1]],
+        \ [s:wht_l[0], s:blk_n[0], s:wht_l[1], s:blk_n[1]],
+        \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
+        \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
+        \ [s:wht_n[0], s:gry_n[0], s:wht_n[1], s:gry_n[1]],
+        \ ]
+    endif
+    let g:lightline#colorscheme#mypalette#palette = g:pltt
+    unlet g:pltt g:STL_BASECOLOR g:STL_ATTRIBUTECOLOR
+
+    " return s:error_num == 0 ? '' : 'Error:' . s:error_num
+endfunction
+
 augroup lightline#LSP
   autocmd!
   autocmd User FileChangedShellPost call lightline#update()
 augroup END
+
+let g:lightline#colorscheme#mypalette#palette = g:pltt
+unlet g:pltt g:STL_BASECOLOR g:STL_ATTRIBUTECOLOR
 
 '''
 

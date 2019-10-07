@@ -82,6 +82,8 @@ sudo apt install vim
 **思ったことをダラダラと記述**
 
 - 登録したファイルをトグルで切り替えて表示するプラグインとか作った方が良い?
+  - vim-cheatsheetはこれが出来る
+  - そもそもプラグインで行う必要が無いほどの設定の可能性
 - deoplete + LSP はlanguage-server がrunning 状態に遷移してから入力を始めないと言語の補完が上手く行かない
   - neosnippet も一度 Ctrl+k などで起動させないと動かなかった
 - neco-look がlook コマンドに依存し，Windows環境で使いづらい(MinGWとかいるらしい)
