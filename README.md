@@ -107,6 +107,13 @@ sudo apt install vim
   - LSP + vista.vim で対応
 
 ## Update log
+- 2019/10/07(dev branch)
+  - replaceを強くするプラグインとマークをgutterに表示するプラグインを追加
+  - fzfインストール時にripgrepを使えるようにした(windows)
+  - denite のUXをfzfに寄せた(使うとは言ってない)
+  - いくつかのキーマップを変更
+  - lightline の設定を変えようとして面倒くさくなり途中で挫折
+  - lsp のpreview-windowが表示される問題がまだ未解決
 - 2019/09/29(dev branch)
   - README.md の更新(久々)
   - cheatsheet.md
