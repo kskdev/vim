@@ -55,23 +55,23 @@ endfunction
 autocmd FileType denite cal s:denite_my_settings()
 " 以下の関数にキーマップを定義
 function! s:denite_my_settings() abort
-" キーマッピングの例
-nnoremap <silent><buffer> j <Nop>
-nnoremap <silent><buffer> k <Nop>
-" カーソルの上下移動
-nnoremap <silent><buffer> <C-j> j
-nnoremap <silent><buffer> <C-k> k
-" 絞り込み用ウィンドウ起動のキーマップ
-nnoremap <silent><buffer><expr> i denite#do_map('open_filter_buffer')
-nnoremap <silent><buffer><expr> a denite#do_map('open_filter_buffer')
-" 選択ラインのバッファへの展開キーマッピング
-nnoremap <silent><buffer><expr> <CR> denite#do_map('do_action', 'open')
-nnoremap <silent><buffer><expr> <C-v> denite#do_map('do_action', 'vsplit')
-nnoremap <silent><buffer><expr> <C-s> denite#do_map('do_action', 'split')
-" denite ウィンドウ終了キーマッピング
-nnoremap <silent><buffer><expr> q denite#do_map('quit')
-nnoremap <silent><buffer><expr> jj denite#do_map('quit')
-nnoremap <silent><buffer><expr> <ESC> denite#do_map('quit')
-nnoremap <silent><buffer><expr> <C-c> denite#do_map('quit')
+    " キーマッピングの例
+    nnoremap <silent><buffer> j <Nop>
+    nnoremap <silent><buffer> k <Nop>
+    " カーソルの上下移動
+    nnoremap <silent><buffer> <C-j> j
+    nnoremap <silent><buffer> <C-k> k
+    " 絞り込み用ウィンドウ起動のキーマップ
+    nnoremap <silent><buffer><expr> i denite#do_map('open_filter_buffer')
+    nnoremap <silent><buffer><expr> a denite#do_map('open_filter_buffer')
+    " 選択ラインのバッファへの展開キーマッピング
+    nnoremap <silent><buffer><expr> <CR> denite#do_map('do_action', 'open')
+    nnoremap <silent><buffer><expr> <C-v> denite#do_map('do_action', 'vsplit')
+    nnoremap <silent><buffer><expr> <C-s> denite#do_map('do_action', 'split')
+    " denite ウィンドウ終了キーマッピング
+    nnoremap <silent><buffer><expr> q denite#do_map('quit')
+    nnoremap <silent><buffer><expr> jj denite#do_map('quit')
+    nnoremap <silent><buffer><expr> <ESC> denite#do_map('quit')
+    nnoremap <silent><buffer><expr> <C-c> denite#do_map('quit')
 endfunction
 '''

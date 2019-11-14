@@ -280,8 +280,9 @@ endfunction
 
 augroup lightline#LSP
   autocmd!
-  autocmd User FileChangedShellPost call lightline#update()
+  autocmd User BufWinEnter call lightline#update()
 augroup END
+" autocmd User FileChangedShellPost call lightline#update()
 
 let g:lightline#colorscheme#mypalette#palette = g:pltt
 unlet g:pltt g:STL_BASECOLOR g:STL_ATTRIBUTECOLOR

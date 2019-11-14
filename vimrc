@@ -14,9 +14,15 @@ set nobackup
 " 背景の透過処理
 highlight Normal ctermbg=none
 " □ や○ 文字が崩れ問題を解消
-set ambiwidth=double
+" set ambiwidth=double
+" Concealの無効化(マルチバイト文字の修飾表現)
+let g:tex_conceal = ''
 " マウスの利用
-set mouse=a
+" set mouse=a
+" ファイル展開時,カーソル位置復元
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
 
 "::::::::::::::::::::::::::::::::::
 "::::::::::display setting
@@ -66,6 +72,17 @@ set tabstop=4
 set shiftwidth=4
 " 改行時に行からインデントの増減を行う．
 set smartindent
+" 言語別設定
+filetype on
+filetype indent on
+augroup fileTypeIndent
+    autocmd!
+    au BufNewFile,BufRead *.py setlocal tabstop=4 softtabstop=4 shiftwidth=4
+    au BufNewFile,BufRead *.zsh setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    au BufNewFile,BufRead *.sh setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    au BufNewFile,BufRead *.vim setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    au BufNewFile,BufRead *.tex setlocal tabstop=2 softtabstop=2 shiftwidth=2
+augroup END
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::autoComplete setting
@@ -92,6 +109,9 @@ inoremap <C-x><C-f> <C-X><C-F><C-P>
 
 " インサートモードでのカーソル挙動
 inoremap <C-l> <Right>
+
+" インサートモードからノーマルモードへ移行
+inoremap <C-f> <ESC>
 
 " 連続入力が必要なコマンドの入力受付時間[ms]
 set timeoutlen=500
@@ -183,6 +203,8 @@ call dein#begin(g:dein_dir)
 call dein#add(s:dein_repo_dir)
 call dein#add('morhetz/gruvbox')
 call dein#add('joshdick/onedark.vim')
+call dein#add('cocopon/iceberg.vim')
+call dein#add('jacoborus/tender.vim')
 call dein#load_toml(s:toml_dir . '/Plugins/UIexpantion/statusline.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/utils.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/deoplete.toml') " asyncomplete.toml と選択
@@ -197,24 +219,21 @@ call dein#end()
 if dein#check_install()
     call dein#install()
 endif
-
-filetype on
 filetype plugin on
-filetype indent on
-syntax on
 
 " カラースキーマの設定(vimとneovimで色分け)
+syntax on
 if has('nvim')
     " gruvboxを利用
     set termguicolors  " enable true colors support
-    colorscheme gruvbox
+    colorscheme tender
     set background=dark
     " 操作中/非操作中ウィンドウの背景色
-    augroup ChangeBackground
-      autocmd!
-      au WinEnter * highlight Normal guibg='#282828'
-      au WinEnter * highlight NormalNC guibg='#050606'
-    augroup END
+    " augroup ChangeBackground
+    "   autocmd!
+    "   au WinEnter * highlight Normal guibg='#282828'
+    "   au WinEnter * highlight NormalNC guibg='#050606'
+    " augroup END
 else
     colorscheme onedark
 endif

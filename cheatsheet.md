@@ -1,5 +1,5 @@
-`:Cheat` : ,<Normal> [vim-cheatsheet] チートシートを表示
-
+`:Cheat` ,<Normal> [vim-cheatsheet] チートシートを表示
+`Ctrl+c` ,<Normal> [vim-cheatsheet] チートシートを開く/閉じる(:Cheat のショートカット)
 # Autocompletion (deoplete & vim-lsp)
 - `<Tab>`,            <Insert>  [deoplete]       (候補表示中に)次の候補を選択
 - `<Shift+Tab>`,      <Insert>  [deoplete]       (候補表示中に)前の候補を選択
@@ -32,6 +32,16 @@
 - `Ctrl+e`,           <Normal>  [neoterm]        カーソル行のコードを評価
 - `Ctrl+e`,           <Visual>  [neoterm]        選択範囲のコードを評価
 - `<ESC>`,            <Terminal>[neoterm]        neotermウィンドウを閉じる
+# Marks (Vim standard function)
+- `m[a-z]`            <Normal>                   カーソル位置をmark(カレントバッファ専用)
+- `m[A-Z]`            <Normal>                   カーソル位置をmark(別ファイルへのジャンプ可能)
+- `Ctrl+o`            <Normal>                   直前のマークへ移動
+- `Ctrl-i`            <Normal>                   新しいマークへ移動
+- `Ctrl+o`            <Normal>                   前のカーソル位置へ移動
+- `Ctrl+i`            <Normal>                   次のカーソル位置へ移動
+- `g;`                <Normal>                   直前の編集位置へ移動
+- `dm[a-zA-Z]`        <Normal>                   マークを削除
+- `:delmarks!`        <Normal>                   マークを一括削除
 # Defx (Filer)
 - `Ctrl+n`,           <Normal>  [defx]           画面左側に起動
   - `<CR>`    : ペインを残したままファイルを展開

@@ -19,7 +19,7 @@ hook_post_update = '''
 let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
 if has('mac')
     try
-        let g:dein#plugin.build = './insta --all'
+        let g:dein#plugin.build = './install --all'
         throw "Error messege: Cannot install fzf..."
     catch /error/  " エラーメッセージにマッチする正規表現
     catch          " 空の場合は必ずマッチする
