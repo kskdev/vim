@@ -3,8 +3,9 @@
 # 'prabirshrestha/vim-lsp'
 # - LSPによる補完はサーバーが running 状態になってからで無いと補完が効かない(deopleteで確認)
 # - clang の補完周りのインストールが面倒
+#   - brew install llvm が必要だった
 # - プレビューウィンドウを非表示にしたい...
-#   - 画面上が新しくバッファが開く.便利だが鬱陶しい
+#   - 画面上で新しくバッファが開く.便利だが鬱陶しい
 #   - 将来はfloating window と連携して快適にしたい
 # 'prabirshrestha/async.vim'
 # - async.vimの役割は,曰く, async.vim is required to use vim-lsp. It is used to normalize the jobs api between Vim 8 and Neovim.
@@ -62,27 +63,49 @@ augroup END
 " Omni 補完の有効化
 setlocal omnifunc=lsp#complete
 " Ctrl+j で次のエラー箇所へジャンプ
-noremap <C-j> :LspNextError<CR>
+noremap <silent><C-j> :LspNextError<CR>
 " Ctrl+k で前のエラー箇所へジャンプ
-noremap <C-k> :LspPreviousError<CR>
+noremap <silent><C-k> :LspPreviousError<CR>
 " Ctrl+l で定義元へジャンプ
-nnoremap <C-l> :LspDefinition<CR>
+nnoremap <silent><C-l> :LspDefinition<CR>
 
+let s:kakuchoshi = expand('%:e')
 " Python補完設定
-if executable('pyls')
-    " pyls のパスを指定 (.vimrc(init.vim)に記述)
+if s:kakuchoshi == 'py' && executable('pyls')
     let s:pyls_path = fnamemodify(g:python3_host_prog, ':h') . '/'. 'pyls'
-    " required : 'python-language-server' via pip(conda) command
     au User lsp_setup call lsp#register_server({
                 \ 'name': 'pyls',
                 \ 'cmd': {server_info->['pyls']},
                 \ 'whitelist': ['python'],
-                \ 'config': {'snippets': 0, 'hover_conceal': 0},
-                \ 'workspace_config': {'pyls': {'plugins': {
-                \   'pycodestyle': {'enabled': v:false},
-                \   'jedi_definition': {'follow_imports': v:true, 'follow_builtin_imports': v:true},}}},
                 \ })
 endif
+
+" C言語補完設定
+if s:kakuchoshi == 'c' && executable('clangd')
+    au User lsp_setup call lsp#register_server({
+                \ 'name': 'clangd',
+                \ 'cmd': {server_info->['clangd', '-background-index']},
+                \ 'whitelist': ['c, h'],
+                \ })
+endif
+
+" C++言語補完設定
+if s:kakuchoshi == 'cpp' && executable('clangd')
+    au User lsp_setup call lsp#register_server({
+                \ 'name': 'clangd',
+                \ 'cmd': {server_info->['clangd', '-background-index']},
+                \ 'whitelist': ['cpp, hpp, h'],
+                \ })
+endif
+
+" C++言語補完設定(正規表現活用版. 現在編集中...)
+" if match(s:kakuchoshi,'(cpp|hpp|h)')!=#-1 && executable('clangd')
+"     au User lsp_setup call lsp#register_server({
+"                 \ 'name': 'clangd',
+"                 \ 'cmd': {server_info->['clangd', '-background-index']},
+"                 \ 'whitelist': ['cpp, hpp, h'],
+"                 \ })
+" endif
 '''
 
 
