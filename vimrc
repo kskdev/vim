@@ -100,6 +100,9 @@ set pumheight=12
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
 
+" Leaderキーの変更 from ',' to <Space>
+let mapleader = "\<Space>"
+
 "  vimのファイルパス補完のマッピングを変更
 inoremap <C-x><C-f> <C-X><C-F><C-P>
 
@@ -110,9 +113,6 @@ inoremap <C-x><C-f> <C-X><C-F><C-P>
 " インサートモードでのカーソル挙動
 inoremap <C-l> <Right>
 
-" インサートモードからノーマルモードへ移行
-inoremap <C-f> <ESC>
-
 " 連続入力が必要なコマンドの入力受付時間[ms]
 set timeoutlen=500
 " ESCを押してからノーマルモードに移行するまでの待機時間[ms]
@@ -120,6 +120,19 @@ set ttimeoutlen=10
 
 " 画面切り替え(Ctrl+wを2回も押すのは面倒)
 nnoremap <C-w> <C-w><C-w>
+
+" インサートモードからノーマルモードへ移行
+" (Linux+fcitxの場合は日本語入力を無効化してノーマルモードに移行)
+function! OffFcitx()
+    call system('fcitx-remote -c')
+endfunction
+if has('unix')
+    inoremap jj <ESC>:call OffFcitx()<CR>
+    inoremap っｊ <ESC>:call OffFcitx()<CR>
+else
+    inoremap jj <ESC>
+    inoremap っｊ <ESC>
+endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  /$$$$$$$            /$$

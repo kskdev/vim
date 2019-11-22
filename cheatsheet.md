@@ -7,12 +7,13 @@
 - `Ctrl+j`,           <Normal>  [vim-lsp]        次のエラー行へジャンプ
 - `Ctrl+k`,           <Normal>  [vim-lsp]        前のエラー行へジャンプ
 # Search
-- `Ctrl+p`,           <Normal>  [fzf]            ファイル一覧表示
-- `Ctrl+g`,           <Normal>  [fzf]            ripgrepによる文字列検索
-- `Ctrl+h`,           <Normal>  [fzf]            開いたファイルの履歴表示
-- `Ctrl+t`,           <Normal>  [fzf]            開いているバッファを表示
-- `Ctrl+u`,           <Normal>  [fzf]            現在展開中のバッファの文字列を検索
-- `Ctrl+m`,           <Normal>  [fzf]            マークの一覧表示
+- `<Leader>+a`,           <Normal>  [fzf]            ripgrepによる文字列検索
+- `<Leader>+s`,           <Normal>  [fzf]            現在展開中のバッファの文字列を検索
+- `<Leader>+d`,           <Normal>  [fzf]            開いているバッファを表示
+- `<Leader>+f`,           <Normal>  [fzf]            ファイル一覧表示
+- `<Leader>+q`,           <Normal>  [fzf]            開いたファイルの履歴表示
+- `<Leader>+w`,           <Normal>  [fzf]            マークの一覧表示
+- `<Leader><Leader>`,     <Normal>  [fzf]            fzfウィンドウを閉じる[fzfウィンドウ専用]
 # Cursor jump
 - `s+s+{key}`,        <Normal>  [vim-easymotion] `{key}`がハイライトされる．
 - `Ctrl+d`,           <Normal>  [vim-gitgutter]  次のハンクに移動

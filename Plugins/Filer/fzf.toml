@@ -100,24 +100,26 @@ endif
 repo = 'junegunn/fzf.vim'
 depends = ['fzf']
 hook_add = '''
-" Ctrl + t で現在開いているバッファの一覧表示及び絞り込み
-nnoremap <C-t> :Buffers<CR>
-" Ctrl + u で現在展開中のバッファの文字列を検索
-nnoremap <C-u> :BLines<CR>
-" Ctrl + m マークの一覧表示
-nnoremap <C-m> :Marks<CR>
-" Ctrl + p でファイル検索
-nnoremap <C-p> :Files<CR>
-" Ctrl + g でRipgrep(ripgrepがインストールされていないと使えない)
-nnoremap <C-g> :Rg<CR>
-" Ctrl + h で最近展開したファイルを表示&検索
-nnoremap <C-h> :History<CR>
-" ステータスラインの非表示化
+" <Leader> + a でRipgrep(ripgrepがインストールされていないと使えない)
+nnoremap <Leader>a :Rg<CR>
+" <Leader> + s で現在展開中のバッファの文字列を検索
+nnoremap <Leader>s :BLines<CR>
+" <Leader> + d で現在開いているバッファの一覧表示及び絞り込み
+nnoremap <Leader>d :Buffers<CR>
+" <Leader> + f でファイル検索
+nnoremap <Leader>f :Files<CR>
+" <Leader> + w マークの一覧表示
+nnoremap <Leader>w :Marks<CR>
+" <Leader> + q で最近展開したファイルを表示&検索
+nnoremap <Leader>q :History<CR>
+
 augroup fzf
     autocmd!
     autocmd! FileType fzf
-    au  FileType fzf set laststatus=0 noruler
-                \| au BufLeave <buffer> set laststatus=2 ruler
+    " ステータスラインの非表示化
+    au FileType fzf set laststatus=0 noruler | au BufLeave <buffer> set laststatus=2 ruler
+    " fzfウィンドウ展開時，<Leader>を2回連続入力すると、ウィンドウを閉じる
+    au FileType fzf tnoremap <Leader><Leader> <ESC>
 augroup END
 
 " 可能であれば展開済みバッファへ移動
