@@ -360,3 +360,18 @@ repo = 'kshenoy/vim-signature'
 hook_add = '''
 '''
 
+
+# 構文のスコープ対応ジャンプに対応するプラグイン
+[[plugins]]
+repo = 'andymass/vim-matchup'
+hook_add = '''
+" matchupの有効化
+let g:loaded_matchit = 1
+
+" スコープ対応の可視化色
+augroup matchup_matchparen_highlight
+  autocmd!
+  autocmd ColorScheme * hi MatchParen ctermbg=None guibg=None ctermfg=yellow guifg=LightGreen cterm=bold gui=bold
+augroup END
+'''
+

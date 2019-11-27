@@ -36,12 +36,3 @@ let g:echodoc#type = 'echo'
 '''
 
 
-# tex記述支援プラグイン
-# [[plugins]]
-# repo = 'lervag/vimtex'
-# depends = ['Shougo/deoplete.nvim']
-# on_ft = ['tex']
-# hook_add = '''
-# '''
-
-

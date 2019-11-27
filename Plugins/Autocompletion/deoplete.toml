@@ -55,6 +55,38 @@ smap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expan
 '''
 
 
+# tex記述支援プラグイン
+[[plugins]]
+repo = 'lervag/vimtex'
+depends = ['Shougo/deoplete.nvim']
+on_ft = ['tex']
+hook_source = '''
+" vimtexを利用したオムニ補完を有効化(for deoplete)
+call deoplete#custom#var('omni', 'input_patterns', {'tex':g:vimtex#re#deoplete} )
+" vimtex 有効化
+let g:vimtex_enabled = 1
+let g:vimtex_complete = 1
+let g:vimtex_complete_bib = { 'simple': 1 }
+" ラベル補完の有効化
+let g:vimtex_complete_ref = {'custom_patterns'=['\\figref\*\?{[^}]*$']}
+" デリミタを登録
+let g:vimtex_delim_list = {
+            \ 'name' : [
+            \   ['\(', '\)'],
+            \   ['\[', '\]'],
+            \   ['$$', '$$'],
+            \   ['$', '$'],
+            \ ],
+            \ 're' : [
+            \   ['\\(', '\\)'],
+            \   ['\\\@<!\\\[', '\\\]'],
+            \   ['\$\$', '\$\$'],
+            \   ['\$', '\$'],
+            \ ],
+}
+'''
+
+
 # Python用 補完プラグイン   LSPと選択(現在はvim-lspを利用)
 # [[plugins]]
 # repo = 'zchee/deoplete-jedi'

@@ -121,6 +121,9 @@ set ttimeoutlen=10
 " 画面切り替え(Ctrl+wを2回も押すのは面倒)
 nnoremap <C-w> <C-w><C-w>
 
+" 左右のカーソルh,lで行間も移動可能にする(h,lの追加は非推奨らしい...)
+set whichwrap=b,s,<,>,[,],h,l
+
 " インサートモードからノーマルモードへ移行
 " (Linux+fcitxの場合は日本語入力を無効化してノーマルモードに移行)
 function! OffFcitx()
@@ -239,14 +242,8 @@ syntax on
 if has('nvim')
     " gruvboxを利用
     set termguicolors  " enable true colors support
-    colorscheme tender
     set background=dark
-    " 操作中/非操作中ウィンドウの背景色
-    " augroup ChangeBackground
-    "   autocmd!
-    "   au WinEnter * highlight Normal guibg='#282828'
-    "   au WinEnter * highlight NormalNC guibg='#050606'
-    " augroup END
+    colorscheme gruvbox
 else
     colorscheme onedark
 endif
