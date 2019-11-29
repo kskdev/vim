@@ -89,16 +89,27 @@ endfunction
 repo ='Shougo/deol.nvim'
 on_cmd = 'Deol'
 hook_add = '''
-" Ctrl + i でdeol 起動
-nnoremap <silent> <C-i> :<C-u>Deol -split=horizontal<CR>
+" <Leader> + i でdeol 起動
+if has('nvim')
+    " floating window版
+    nnoremap <silent><Leader>i :<C-u>Deol -split=floating<CR>
+    autocmd FileType deol set winblend=30
+else
+    " ウィンドウ分割版
+    nnoremap <silent><Leader>i :<C-u>Deol -split=horizontal<CR>
+endif
+
 
 " deol起動後のターミナルバッファ専用キーマップ
 autocmd FileType deol call s:deol_my_settings()
 function! s:deol_my_settings() abort
     " ターミナルモード : ESCでバッファを閉じる
     tnoremap <silent><ESC> <C-\><C-n>:bd!<CR>
+    " ターミナルモード : ESCでバッファを閉じる
+    tnoremap <silent><Leader><Space> <C-\><C-n>:bd!<CR>
     " ターミナルモード : fffでノーマルモードへ以降
     tnoremap <silent>fff <C-\><C-n>
+    " Deol コマンドで開いたウィンドウは全て半透明にする。
 endfunction
 '''
 
@@ -320,11 +331,20 @@ repo = 'reireias/vim-cheatsheet'
 hook_add = '''
 " :Cheat でvimのチートファイルを開く
 let g:cheatsheet#cheat_file = g:dein_dir . '/cheatsheet.md'
-" float windowを利用する場合の設定
-let g:cheatsheet#float_window = 0
-let g:cheatsheet#float_window_width_ratio = 0.9
-let g:cheatsheet#float_window_height_ratio = 0.4
 
+if has('nvim')
+    " float windowを利用する場合の設定
+    let g:cheatsheet#float_window = 1
+    let g:cheatsheet#float_window_width_ratio = 0.8
+    let g:cheatsheet#float_window_height_ratio = 0.4
+    " float windowのハイライト定義(TODO まだ色設定が未対応)
+    hi CheatSheatColor guifg=#2e3440 guibg=#ebcb8b
+    set winhighlight=Normal:CheatSheatColor
+    " set winhighlight=Normal:NormalNC
+    " 透明度指定
+    set winblend=40
+
+endif
 " Ctrl+c でチートシート展開トグル
 nnoremap <silent> <C-c> :<C-u>:Cheat<CR>
 '''

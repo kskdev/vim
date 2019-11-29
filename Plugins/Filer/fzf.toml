@@ -7,6 +7,7 @@
 #   - ripgrep はRust の導入がいるらしい?
 # - 何より余計なインストールの手間を省くことが目標
 # - fzf & ripgrep インストールについて自作した方が早いまである
+# - floatingwindowをオサレにしたい
 
 
 # 曖昧検索(ファジー検索)インターフェース
@@ -112,14 +113,16 @@ nnoremap <Leader>f :Files<CR>
 nnoremap <Leader>w :Marks<CR>
 " <Leader> + q で最近展開したファイルを表示&検索
 nnoremap <Leader>q :History<CR>
+" [Insert] Ctrl + f パス保管用fzfを展開
+imap <C-f> <plug>(fzf-complete-path)
 
 augroup fzf
     autocmd!
     autocmd! FileType fzf
-    " ステータスラインの非表示化
-    au FileType fzf set laststatus=0 noruler | au BufLeave <buffer> set laststatus=2 ruler
     " fzfウィンドウ展開時，<Leader>を2回連続入力すると、ウィンドウを閉じる
     au FileType fzf tnoremap <Leader><Leader> <ESC>
+    " ステータスラインの非表示化
+    " au FileType fzf set laststatus=0 noruler | au BufLeave <buffer> set laststatus=2 ruler
 augroup END
 
 " 可能であれば展開済みバッファへ移動
@@ -138,4 +141,54 @@ command! -bang -nargs=* Rg
 " :Files コマンドでプレビュー表示
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+" ファイル展開方法
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit',
+  \ }
+
+" float windowの利用[Only Neovim env]
+if has('nvim')
+    " let $FZF_DEFAULT_OPTS .= ' --border --margin=0,2'
+    let $FZF_DEFAULT_OPTS .= '--margin=0,2'
+
+    " float window定義
+    function! FloatWinForFZF()
+        let width = min([&columns - 4, max([80, &columns - 20])])
+        let height = min([&lines - 4, max([20, &lines - 10])])
+        let top = ((&lines - height) / 2) - 1
+        let left = (&columns - width) / 2
+        let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
+
+        " float windowのフレームライン
+        let top = "╭" . repeat("─", width - 2) . "╮"
+        let mid = "│" . repeat(" ", width - 2) . "│"
+        let bot = "╰" . repeat("─", width - 2) . "╯"
+        let lines = [top] + repeat([mid], height - 2) + [bot]
+
+        let s:buf = nvim_create_buf(v:false, v:true)
+        call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+        call nvim_open_win(s:buf, v:true, opts)
+
+        " カラー定義
+        " hi ColorFZF guifg=#ffcccc guibg=#232323
+        hi ColorFZF guifg=#f6ae72 guibg=#343434
+        set winhighlight=Normal:ColorFZF
+        " 現在のウィンドウの半透明度を指定
+        set winblend=30
+
+        let opts.row += 1
+        let opts.height -= 2
+        let opts.col += 2
+        let opts.width -= 4
+
+        call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+        au BufWipeout <buffer> exe 'bw '.s:buf
+    endfunction
+
+    let g:fzf_layout = { 'window': 'call FloatWinForFZF()' }
+endif
+
 '''

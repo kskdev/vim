@@ -237,13 +237,15 @@ if dein#check_install()
 endif
 filetype plugin on
 
-" カラースキーマの設定(vimとneovimで色分け)
+" カラー周りの設定
 syntax on
 if has('nvim')
-    " gruvboxを利用
+    " カラースキーマの設定
     set termguicolors  " enable true colors support
     set background=dark
-    colorscheme gruvbox
+    colorscheme onedark
+    " ポップアップメニューの透明度指定
+    set pumblend=20
 else
     colorscheme onedark
 endif
