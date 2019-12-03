@@ -14,14 +14,8 @@ set showtabline=2
 " ----------------------------------------
 "  lightline フォーマット設定
 " ----------------------------------------
-" 初期化
-command! -bar LightLineUpdate call lightline#init()| call lightline#colorscheme()| call lightline#update()
-
 " lightline 設定
 let g:lightline = {'separator': {'left': '', 'right': ''}, 'subseparator': {'left': '','right': ''}, 'mode_map': {'c': 'NORMAL'},}
-
-let g:lightline.colorscheme = 'mypalette'
-let g:pltt = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'tabline': {}}
 
 " lightline.componet 定義
 let g:lightline.component           = {}
@@ -74,125 +68,9 @@ let g:lightline.inactive.right = [['lineinfo']]
 let g:lightline.tabline = {}
 let g:lightline.tabline = {'left': [ ['buffers'] ], 'right': [ ['fileformat'], ['fileencoding'], ['filetype'], ['cd'] ]}
 
-" ----------------------------------------
-" カラースキーマ設定
-" ----------------------------------------
-
-" 色定義 ( [d]ark, [n]ormal, [l]ight ) 参考 : https://www.materialui.co/colors
-let s:blk_d = ['#212121', 233]
-let s:blk_n = ['#424242', 237]
-let s:blk_l = ['#616161', 241]
-
-let s:gry_d = ['#757575', 242]
-let s:gry_n = ['#9E9E9E', 246]
-let s:gry_l = ['#BDBDBD', 248]
-
-let s:wht_d = ['#90A4AE', 249]
-let s:wht_n = ['#EEEEEE', 252]
-let s:wht_l = ['#FAFAFA', 255]
-
-let s:red_d = ['#e53935', 124]
-let s:red_n = ['#ef5350',   9]
-let s:red_l = ['#ef9a9a',   1]
-
-let s:grn_d = ['#00796B',  28]
-let s:grn_n = ['#26A69A',   2]
-let s:grn_l = ['#80CBC4',  10]
-
-let s:blu_d = ['#1976D2',  20]
-let s:blu_n = ['#2196F3',   4]
-let s:blu_l = ['#64B5F6',  31]
-
-let s:org_d = ['#FF6F00', 166]
-let s:org_n = ['#FF9800', 172]
-let s:org_l = ['#FFCC80', 179]
-
-" リスト要素 : 
-" [{文字色},{背景色},{カラーターミナルの文字色},{カラーターミナルの背景色},{文字装飾(省略可)}]
-
-" ステータスライン基本色
-let g:STL_BASECOLOR = [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]]
-let g:pltt.inactive.middle = [g:STL_BASECOLOR]
-
-" ステータスライン強調色(反対色)
-let g:STL_ATTRIBUTECOLOR = [s:blk_d[0], s:wht_n[0], s:blk_d[1], s:wht_d[1]]
-
-" ステータスライン左側(Mode Fugitive Filename None None)
-let g:pltt.inactive.left = [
-            \ [s:wht_n[0], s:grn_d[0], s:wht_n[1], s:grn_d[1]],
-            \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
-            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
-            \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
-            \ ]
-
-" ステータスライン右側(LSPError LSPWarning LSPStatus LineNum None)
-let g:pltt.inactive.right = [
-            \ [s:wht_l[0], s:blk_d[0], s:wht_l[1], s:blk_d[1]],
-            \ [s:wht_l[0], s:blk_n[0], s:wht_l[1], s:blk_n[1]],
-            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
-            \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
-            \ [s:wht_n[0], s:gry_n[0], s:wht_n[1], s:gry_n[1]],
-            \ ]
-
-" ノーマルモード中央
-let g:pltt.normal.middle = g:pltt.inactive.middle
-
-" ノーマルモード左側
-let g:pltt.normal.left = deepcopy(g:pltt.inactive.left)
-
-" ノーマルモード右側
-let g:pltt.normal.right = deepcopy(g:pltt.inactive.right)
-
-" インサートモード(中央)
-let g:pltt.insert.middle = [g:STL_BASECOLOR]
-
-" インサートモード(左側)
-let g:pltt.insert.left = [
-            \ [s:wht_n[0], s:blu_n[0], s:wht_n[1], s:blu_n[1]],
-            \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
-            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
-            \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
-            \ ]
-
-" インサートモード(右側)
-let g:pltt.insert.right = [
-            \ [s:wht_l[0], s:blk_d[0], s:wht_l[1], s:blk_d[1]],
-            \ [s:wht_l[0], s:blk_n[0], s:wht_l[1], s:blk_n[1]],
-            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
-            \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
-            \ [s:wht_n[0], s:gry_n[0], s:wht_n[1], s:gry_n[1]],
-            \ ]
-
-" ヴィジュアルモード中央
-let g:pltt.visual.middle = [[s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_d[1]]]
-
-" ヴィジュアルモード左側
-let g:pltt.visual.left = deepcopy(g:pltt.insert.left)
-let g:pltt.visual.left[0] = [s:wht_l[0], s:org_d[0], s:wht_l[1], s:org_d[1]]
-
-" ヴィジュアルモード右側
-let g:pltt.visual.right = deepcopy(g:pltt.insert.right)
-
-" タブライン中央
-let g:pltt.tabline.middle = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
-
-" タブライン左側
-let g:pltt.tabline.left = [[s:gry_n[0], s:blk_n[0], s:gry_n[1], s:blk_n[1]]]
-
-" タブラインカレントバッファ
-let g:pltt.tabline.tabsel = [[s:org_n[0], s:blk_d[0], s:org_n[1], s:blk_d[1]]]
-
-" タブライン右側
-let g:pltt.tabline.right = [
-            \ [s:wht_n[0], s:blk_d[0], s:wht_n[1], s:blk_d[1]],
-            \ [s:wht_n[0], s:blk_n[0], s:wht_n[1], s:blk_n[1]],
-            \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
-            \ [s:wht_l[0], s:gry_d[0], s:wht_l[1], s:gry_d[1]],
-            \ ]
-
 
 " ----------------------------------------
-" component 用関数定義
+" component 定義
 " ----------------------------------------
 function! LightlineModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -204,10 +82,7 @@ endfunction
 
 function! LightlineFilename()
   return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
-        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
-        \  &ft == 'unite' ? unite#get_status_string() :
-        \  &ft == 'vimshell' ? vimshell#get_status_string() :
-        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+        \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
         \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
 endfunction
 
@@ -232,7 +107,7 @@ function! LightlineFileencoding()
 endfunction
 
 function! LightlineMode()
-  return winwidth(0) > 60 ? lightline#mode() : ''
+  return winwidth(0) > 40 ? lightline#mode() : ''
 endfunction
 
 function! LspServerStatusForStatusLine()
@@ -248,44 +123,6 @@ function! LspErrorNum()
     let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
     return s:error_num == 0 ? '' : 'Error:' . s:error_num
 endfunction
-
-function! LspErrorColor()
-    TODO 動かない...(g:plttの値が更新されていない模様)
-    let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
-
-    if s:error_num != 0
-        " ステータスライン右側(LSPError LSPWarning LSPStatus LineNum None)
-        let g:pltt.normal.right = [
-        \ [s:org_l[0], s:blk_d[0], s:org_l[1], s:blk_d[1]],
-        \ [s:org_l[0], s:blk_n[0], s:org_l[1], s:blk_n[1]],
-        \ [s:org_n[0], s:blk_l[0], s:org_n[1], s:blk_l[1]],
-        \ [s:org_n[0], s:gry_d[0], s:org_n[1], s:gry_d[1]],
-        \ [s:org_n[0], s:gry_n[0], s:org_n[1], s:gry_n[1]],
-        \ ]
-    else
-        " ステータスライン右側(LSPError LSPWarning LSPStatus LineNum None)
-        let g:pltt.normal.right = [
-        \ [s:wht_l[0], s:blk_d[0], s:wht_l[1], s:blk_d[1]],
-        \ [s:wht_l[0], s:blk_n[0], s:wht_l[1], s:blk_n[1]],
-        \ [s:wht_n[0], s:blk_l[0], s:wht_n[1], s:blk_l[1]],
-        \ [s:wht_n[0], s:gry_d[0], s:wht_n[1], s:gry_d[1]],
-        \ [s:wht_n[0], s:gry_n[0], s:wht_n[1], s:gry_n[1]],
-        \ ]
-    endif
-    let g:lightline#colorscheme#mypalette#palette = g:pltt
-    unlet g:pltt g:STL_BASECOLOR g:STL_ATTRIBUTECOLOR
-
-    " return s:error_num == 0 ? '' : 'Error:' . s:error_num
-endfunction
-
-augroup lightline#LSP
-  autocmd!
-  autocmd User BufWinEnter call lightline#update()
-augroup END
-" autocmd User FileChangedShellPost call lightline#update()
-
-let g:lightline#colorscheme#mypalette#palette = g:pltt
-unlet g:pltt g:STL_BASECOLOR g:STL_ATTRIBUTECOLOR
 
 '''
 
@@ -304,5 +141,4 @@ let g:lightline#bufferline#unnamed = '[No Name]'
 " バッファの表示設定(相対パスで表示)
 let g:lightline#bufferline#filename_modifier = '%f'
 '''
-
 

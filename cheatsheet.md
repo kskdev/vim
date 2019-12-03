@@ -7,15 +7,16 @@
 - `Ctrl+j`,           <Normal>  [vim-lsp]        次のエラー行へジャンプ
 - `Ctrl+k`,           <Normal>  [vim-lsp]        前のエラー行へジャンプ
 # Search
-- `<Leader>+a`,           <Normal>  [fzf]            ripgrepによる文字列検索
-- `<Leader>+s`,           <Normal>  [fzf]            現在展開中のバッファの文字列を検索
-- `<Leader>+d`,           <Normal>  [fzf]            開いているバッファを表示
-- `<Leader>+f`,           <Normal>  [fzf]            ファイル一覧表示
-- `<Leader>+q`,           <Normal>  [fzf]            開いたファイルの履歴表示
-- `<Leader>+w`,           <Normal>  [fzf]            マークの一覧表示
-- `<Leader><Leader>`,     <Normal>  [fzf]            fzfウィンドウを閉じる[fzfウィンドウ専用]
+- `<Leader>a`,        <Normal>  [fzf]            ripgrepによる文字列検索
+- `<Leader>s`,        <Normal>  [fzf]            現在展開中のバッファの文字列を検索
+- `<Leader>d`,        <Normal>  [fzf]            開いているバッファを表示
+- `<Leader>f`,        <Normal>  [fzf]            ファイル一覧表示
+- `<Leader>q`,        <Normal>  [fzf]            開いたファイルの履歴表示
+- `<Leader>w`,        <Normal>  [fzf]            マークの一覧表示
+- `Ctrl+f`,           <Insert>  [fzf]            カレントディレクトリ以下のファイルパス補完
+- `<Leader><Leader>`, <Terminal>[fzf]            fzfウィンドウを閉じる[fzfウィンドウ専用]
 # Cursor jump
-- `s+s+{key}`,        <Normal>  [vim-easymotion] `{key}`がハイライトされる．
+- `ss{key}`,          <Normal>  [vim-easymotion] `{key}`がハイライト&ジャンプ．
 - `Ctrl+d`,           <Normal>  [vim-gitgutter]  次のハンクに移動
 - `Ctrl+f`,           <Normal>  [vim-gitgutter]  前のハンクに移動
 - `:Gdiff`,           <Normal>  [vim-fugitive]   git diff
@@ -28,16 +29,15 @@
 - `gcc`,              <Normal>  [Normal]         行のコメント化/コメント解除
 - `Ctrl+s`,           <Normal>  [vim-over]       置換の起動
 - `sub`,              <Normal>  [vim-over]       カーソル上のテキストオブジェクトを置換
-- `Ctrl+i`,           <Normal>  [deol]           仮想ターミナル起動
+- `<Leader>i`,        <Normal>  [deol]           仮想ターミナル起動
 - `<ESC>`,            <Terminal>[deol]           deolウィンドウを閉じる
+- `<Leader><Space>`,  <Terminal>[deol]           deolウィンドウを閉じる
 - `Ctrl+e`,           <Normal>  [neoterm]        カーソル行のコードを評価
 - `Ctrl+e`,           <Visual>  [neoterm]        選択範囲のコードを評価
 - `<ESC>`,            <Terminal>[neoterm]        neotermウィンドウを閉じる
 # Marks (Vim standard function)
 - `m[a-z]`            <Normal>                   カーソル位置をmark(カレントバッファ専用)
 - `m[A-Z]`            <Normal>                   カーソル位置をmark(別ファイルへのジャンプ可能)
-- `Ctrl+o`            <Normal>                   直前のマークへ移動
-- `Ctrl-i`            <Normal>                   新しいマークへ移動
 - `Ctrl+o`            <Normal>                   前のカーソル位置へ移動
 - `Ctrl+i`            <Normal>                   次のカーソル位置へ移動
 - `g;`                <Normal>                   直前の編集位置へ移動

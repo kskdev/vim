@@ -81,6 +81,16 @@ sudo apt install vim
 ## Memo
 **思ったことをダラダラと記述**
 
+- 以下の関数を s:getGruvColor('GruvboxBg0') みたいに使うと定義された色を見れるっぽい
+
+https://github.com/morhetz/gruvbox/blob/master/autoload/lightline/colorscheme/gruvbox.vim 参照
+``` vim
+function! s:getGruvColor(group)
+  let guiColor = synIDattr(hlID(a:group), "fg", "gui")
+  let termColor = synIDattr(hlID(a:group), "fg", "cterm")
+  return [ guiColor, termColor ]
+endfunction
+```
 - 登録したファイルをトグルで切り替えて表示するプラグインとか作った方が良い?
   - vim-cheatsheetはこれが出来る
   - そもそもプラグインで行う必要が無いほどの設定の可能性
@@ -107,6 +117,20 @@ sudo apt install vim
   - LSP + vista.vim で対応
 
 ## Update log
+- 2019/12/03(dev branch)
+  - statuline 周りをリファクタ(簡略化)? & 4種のcolorscheme(dark theme)をイメージしたlightline color を設定．
+    - gruvbox, onedark, iceberg, tender の4種類
+    - float windowの配色なども設定出来るようにする予定．
+  - 2019/10/07以降に更新した内容を説明(細かいのは省略)．
+    - lsp をc, c++ に対応した．
+    - zsh 用のインストーラを追加．
+    - 開いたことのあるファイルは，最後に閉じた時のカーソル位置から編集出来るようにした．
+    - キーマップを変更. 特にfzf 関連(Ctrl+hogeの組み合わせから <Leader>hogeに変更)
+    - latex の編集時に補完が出るようにした．(放置していたvimtex使い方分かんない問題を解決.)
+    - vim-matchupの導入.関数や構文のスコープが分かりやすくなった．
+    - h,l が行端まで来たら改行して移動出来るようにした．(helpを見たら非推奨設定になってた)
+    - fzf, deol, cheatsheet をfloat windowに対応&半透明化．補完用popupなども半透明化．(要調整)
+  - その他細かい修正有り．
 - 2019/10/07(dev branch)
   - replaceを強くするプラグインとマークをgutterに表示するプラグインを追加
   - fzfインストール時にripgrepを使えるようにした(windows)

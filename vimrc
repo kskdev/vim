@@ -243,11 +243,16 @@ if has('nvim')
     " カラースキーマの設定
     set termguicolors  " enable true colors support
     set background=dark
-    colorscheme onedark
+    colorscheme gruvbox
     " ポップアップメニューの透明度指定
     set pumblend=20
 else
     colorscheme onedark
 endif
 
+" その他配色定義を記述したファイル(インストール済みのcolorschemeにのみ対応)
+let s:path = g:dein_dir . '/Plugins/UIexpantion/' . colors_name . 'Style.vim'
+if filereadable(s:path)
+    execute 'source' fnameescape(s:path)
+endif
 

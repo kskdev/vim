@@ -121,8 +121,6 @@ augroup fzf
     autocmd! FileType fzf
     " fzfウィンドウ展開時，<Leader>を2回連続入力すると、ウィンドウを閉じる
     au FileType fzf tnoremap <Leader><Leader> <ESC>
-    " ステータスラインの非表示化
-    " au FileType fzf set laststatus=0 noruler | au BufLeave <buffer> set laststatus=2 ruler
 augroup END
 
 " 可能であれば展開済みバッファへ移動
@@ -173,7 +171,6 @@ if has('nvim')
         call nvim_open_win(s:buf, v:true, opts)
 
         " カラー定義
-        " hi ColorFZF guifg=#ffcccc guibg=#232323
         hi ColorFZF guifg=#f6ae72 guibg=#343434
         set winhighlight=Normal:ColorFZF
         " 現在のウィンドウの半透明度を指定
