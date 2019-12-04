@@ -237,20 +237,16 @@ if dein#check_install()
 endif
 filetype plugin on
 
-" カラー周りの設定
 syntax on
+" カラースキーマの設定
 if has('nvim')
-    " カラースキーマの設定
     set termguicolors  " enable true colors support
-    set background=dark
-    colorscheme gruvbox
-    " ポップアップメニューの透明度指定
-    set pumblend=20
-else
-    colorscheme onedark
+    set pumblend=20  " ポップアップメニューの透明度指定
 endif
+set background=dark
+colorscheme gruvbox
 
-" その他配色定義を記述したファイル(インストール済みのcolorschemeにのみ対応)
+" 配色定義を記述したファイルのロード
 let s:path = g:dein_dir . '/Plugins/UIexpantion/' . colors_name . 'Style.vim'
 if filereadable(s:path)
     execute 'source' fnameescape(s:path)
