@@ -10,22 +10,22 @@ let g:lightline.colorscheme = 'mypalette'
 let g:pltt = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'replace': {}, 'tabline': {}}
 
 " let s:hoge = [ {guifg}, {guibg}, {ctermfg}, {ctermbg} ]
-let s:base_0 = ['#d9d7ce', '#272d38', 15 , 5  ]  " basic
-let s:base_1 = ['#272d38', '#d9d7ce', 5  , 15 ]  " basic reverse
-let s:base_2 = ['#d9d7ce', '#272d38', 15 , 5  ]  " tabline
+let s:base_0 = ['#a9b7c6', '#263b59', 67 , 23 ]  " basic
+let s:base_1 = ['#263b59', '#a9b7c6', 23 , 67 ]  " basic reverse
+let s:base_2 = ['#a9b7c6', '#263b59', 67 , 23 ]  " tabline
 
 " mode color
-let s:mode_stl = ['#ff3333', '#272d38', 224, 5  ]
-let s:mode_nor = ['#272d38', '#bbe67e', 5  , 14 ]
-let s:mode_ins = ['#272d38', '#5ccfe6', 5  , 121]
-let s:mode_vis = ['#272d38', '#ffae57', 5  , 225]
-let s:mode_rep = ['#272d38', '#d4bfff', 5  , 11 ]
-let s:mode_war = ['#ffae57', '#272d38', 11 , 5  ]
-let s:mode_err = ['#f07178', '#272d38', 0  , 5  ]
+let s:mode_stl = ['#ff3333', '#263b59', 224, 23 ]
+let s:mode_nor = ['#263b59', '#5e8759', 23 , 65 ]
+let s:mode_ins = ['#263b59', '#7ca8c6', 23 , 67 ]
+let s:mode_vis = ['#263b59', '#c57825', 23 , 172]
+let s:mode_rep = ['#263b59', '#a9b7c6', 23 , 67 ]
+let s:mode_war = ['#c57825', '#263b59', 172, 236]
+let s:mode_err = ['#f43753', '#263b59', 203, 236]
 
 " tabline
-let s:tab_f = ['#d4bfff', '#212733', 11 , 12 ]
-let s:tab_b = ['#abb2bf', '#272d38', 145, 5  ]
+let s:tab_f = ['#7ca8c6', '#323232', 67 , 236]
+let s:tab_b = ['#8e9292', '#263b59', 244, 23 ]
 
 " statusline basic
 let g:STL_BASECOLOR = s:base_0
@@ -71,3 +71,8 @@ let g:pltt.normal.error   = [s:mode_err]
 " update palette
 let g:lightline#colorscheme#mypalette#palette = g:pltt
 unlet g:pltt g:STL_BASECOLOR g:STL_ATTRIBUTECOLOR
+
+
+" redefine highlight color.
+hi MyLineNum guifg=#b1c73d guibg=#323232
+set winhighlight=CursorLineNr:MyLineNum

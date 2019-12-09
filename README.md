@@ -110,13 +110,20 @@ endfunction
 
 - インサートモードからノーマルモードに遷移する時,IMEがonのままならoffにするプラグインがほしい(作りたい)
   - 想像以上にダルそう
+  - Linux : Mozc 環境ならOK.
+  - MacOS : Karabiner ? で無理やり出来そう?
+  - Windows : ???
 
 - 意外とCtrlキーを利用するキーマップになってしまった.小指がお亡くなりになる前にキーマップを再検討(無理そう)
+  - <Leader>をスペースキーに割り当てたらことで楽になった
 
 - ctagsとの連携をしようか検討中(tagbarというプラグインの動作が重すぎた)
   - LSP + vista.vim で対応
 
 ## Update log
+- 2019/12/09(dev branch)
+  - lightline のLSPハイライトに対応(忘れていた)
+    - darcula colorを追加.
 - 2019/12/03(dev branch)
   - statuline 周りをリファクタ(簡略化)? & 4種のcolorscheme(dark theme)をイメージしたlightline color を設定．
     - gruvbox, onedark, iceberg, tender の4種類

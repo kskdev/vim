@@ -222,11 +222,10 @@ call dein#add('joshdick/onedark.vim')
 call dein#add('cocopon/iceberg.vim')
 call dein#add('jacoborus/tender.vim')
 call dein#add('ayu-theme/ayu-vim')
-
-call dein#add('altercation/vim-colors-solarized')  " 動かん
-call dein#add('tlhr/anderson.vim')  " カレントライン文字領域ハイライトがダサい
-call dein#add('sickill/vim-monokai')  " gitgutterのハイライトが付かない. gutterの配色が嫌い
-call dein#add('blueshirts/darcula')  " カレント行番号のハイライトがダサい
+call dein#add('blueshirts/darcula')
+" call dein#add('altercation/vim-colors-solarized')  " 動かん
+" call dein#add('tlhr/anderson.vim')  " カレントライン文字領域ハイライトがダサい
+" call dein#add('sickill/vim-monokai')  " gitgutterのハイライトが付かない. gutterの配色が嫌い
 
 call dein#load_toml(s:toml_dir . '/Plugins/UIexpantion/statusline.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/utils.toml')
@@ -252,7 +251,7 @@ if has('nvim')
     set pumblend=20  " ポップアップメニューの透明度指定
 endif
 set background=dark
-colorscheme ayu
+colorscheme tender
 
 " 配色定義を記述したファイルのロード
 let s:path = g:dein_dir . '/Plugins/UIexpantion/' . colors_name . 'Style.vim'

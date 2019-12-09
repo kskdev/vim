@@ -43,7 +43,7 @@ let g:deoplete#max_list = 10000
 " マルチバイト文字の補完を無効化
 let g:skip_multibyte = 1
 " deopleteの並列処理のスレッド数 (default : 4)
-let g:deoplete#num_processes = 4
+let g:deoplete#num_processes = 8
 
 " TAB で補完(順選択)
 inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"

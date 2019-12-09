@@ -20,6 +20,8 @@ let s:mode_nor = ['#282828', '#b8bb26', 235, 142]
 let s:mode_ins = ['#282828', '#8ec07c', 235, 108]
 let s:mode_vis = ['#282828', '#fabd2f', 235, 214]
 let s:mode_rep = ['#282828', '#d3869b', 235, 175]
+let s:mode_war = ['#fabd2f', '#3c3836', 214, 237]
+let s:mode_err = ['#fb4934', '#3c3836', 167, 237]
 
 " tabline
 let s:tab_f = ['#d3869b', '#282828', 175, 235]
@@ -60,6 +62,10 @@ let g:pltt.tabline.middle = [s:base_2]
 let g:pltt.tabline.left = [s:tab_b]
 let g:pltt.tabline.right = [s:base_2, ]
 let g:pltt.tabline.tabsel = [s:tab_f]  " active window color
+
+" error and warning
+let g:pltt.normal.warning = [s:mode_war]
+let g:pltt.normal.error   = [s:mode_err]
 
 
 " update palette
