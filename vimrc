@@ -217,16 +217,7 @@ endif
 " プラグインのロード
 call dein#begin(g:dein_dir)
 call dein#add(s:dein_repo_dir)
-call dein#add('morhetz/gruvbox')
-call dein#add('joshdick/onedark.vim')
-call dein#add('cocopon/iceberg.vim')
-call dein#add('jacoborus/tender.vim')
-call dein#add('ayu-theme/ayu-vim')
-call dein#add('blueshirts/darcula')
-" call dein#add('altercation/vim-colors-solarized')  " 動かん
-" call dein#add('tlhr/anderson.vim')  " カレントライン文字領域ハイライトがダサい
-" call dein#add('sickill/vim-monokai')  " gitgutterのハイライトが付かない. gutterの配色が嫌い
-
+call dein#add('rafi/awesome-vim-colorschemes')
 call dein#load_toml(s:toml_dir . '/Plugins/UIexpantion/statusline.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/utils.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/deoplete.toml') " asyncomplete.toml と選択
@@ -247,14 +238,17 @@ syntax on
 " カラースキーマの設定
 if has('nvim')
     set termguicolors  " enable true colors support
-    let ayucolor='mirage'  " only for ayu theme
     set pumblend=20  " ポップアップメニューの透明度指定
 endif
 set background=dark
-colorscheme tender
+" gruvbox onedark tender iceberg one gotham256 angr carbonized-dark orange-moon
+colorscheme gruvbox
 
 " 配色定義を記述したファイルのロード
 let s:path = g:dein_dir . '/Plugins/UIexpantion/' . colors_name . 'Style.vim'
 if filereadable(s:path)
+    execute 'source' fnameescape(s:path)
+else
+    let s:path = g:dein_dir . '/Plugins/UIexpantion/others.vim'
     execute 'source' fnameescape(s:path)
 endif
