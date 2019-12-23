@@ -7,6 +7,9 @@
 # - プレビューウィンドウを非表示にしたい...
 #   - 画面上で新しくバッファが開く.便利だが鬱陶しい
 #   - 将来はfloating window と連携して快適にしたい
+#   - 'jedi_signature_help': {'enabled': v:false} で非表示化可能
+# - 詳細な設定方法 : https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Python を参考に
+#   - 細かい内容 : https://github.com/palantir/python-language-server/blob/develop/vscode-client/package.json を見る
 # 'prabirshrestha/async.vim'
 # - async.vimの役割は,曰く, async.vim is required to use vim-lsp. It is used to normalize the jobs api between Vim 8 and Neovim.
 
@@ -77,6 +80,13 @@ if s:kakuchoshi == 'py' && executable('pyls')
                 \ 'name': 'pyls',
                 \ 'cmd': {server_info->['pyls']},
                 \ 'whitelist': ['python'],
+                \ 'workspace_config': {'pyls': {'plugins': {
+                \           'pydocstyle': {'enabled': v:true},
+                \           'jedi_references': {'enabled': v:true},
+                \           'jedi_hover': {'enabled': v:true},
+                \           'jedi_signature_help': {'enabled': v:false},
+                \ }
+                \ }},
                 \ })
 endif
 

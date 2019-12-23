@@ -11,6 +11,8 @@ set fileformats=unix,dos,mac
 set noswapfile
 " バックアップファイル不要
 set nobackup
+" undoファイル不要
+set noundofile
 " 背景の透過処理
 highlight Normal ctermbg=none
 " □ や○ 文字が崩れ問題を解消
@@ -82,6 +84,7 @@ augroup fileTypeIndent
     au BufNewFile,BufRead *.sh setlocal tabstop=2 softtabstop=2 shiftwidth=2
     au BufNewFile,BufRead *.vim setlocal tabstop=2 softtabstop=2 shiftwidth=2
     au BufNewFile,BufRead *.tex setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    au BufNewFile,BufRead *.yaml setlocal tabstop=2 softtabstop=2 shiftwidth=2
 augroup END
 
 "::::::::::::::::::::::::::::::::::::::
@@ -99,7 +102,6 @@ set pumheight=12
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::Key Map
-
 " Leaderキーの変更 from ',' to <Space>
 let mapleader = "\<Space>"
 
@@ -126,12 +128,12 @@ set whichwrap=b,s,<,>,[,],h,l
 
 " インサートモードからノーマルモードへ移行
 " (Linux+fcitxの場合は日本語入力を無効化してノーマルモードに移行)
-function! OffFcitx()
-    call system('fcitx-remote -c')
-endfunction
+" function! OffFcitx()
+"     call system('fcitx-remote -c')
+" endfunction
 if has('unix')
-    inoremap jj <ESC>:call OffFcitx()<CR>
-    inoremap っｊ <ESC>:call OffFcitx()<CR>
+    inoremap jj <ESC>:call system('fcitx-remote -c')<CR>
+    inoremap っｊ <ESC>:call system('fcitx-remote -c')<CR>
 else
     inoremap jj <ESC>
     inoremap っｊ <ESC>
@@ -176,9 +178,9 @@ elseif has('win64') && has('win32') " 64bit & 32bit windows用の設定
     let g:python3_path = expand('~\Anaconda3\python.exe')
     " プラグインのパス指定
     let s:neovim_dein_dir = expand('~\.cache\dein')
-    let s:vim_dein_dir = expand('~\.cache\dein')
+    let s:vim_dein_dir = expand('~\GVim')
     let s:neovim_toml_dir = expand('~\AppData\Local\nvim')
-    let s:vim_toml_dir = expand('~\.cache\dein')
+    let s:vim_toml_dir = expand('~\GVim')
 
 elseif has('win32unix') " Cygwin固有の設定
     echo 'No implementation!'
@@ -241,8 +243,8 @@ if has('nvim')
     set pumblend=20  " ポップアップメニューの透明度指定
 endif
 set background=dark
-" gruvbox onedark tender iceberg one gotham256 angr carbonized-dark orange-moon
-colorscheme gruvbox
+" gruvbox onedark tender iceberg one gotham256 angr orange-moon yellow-moon
+colorscheme onedark
 
 " 配色定義を記述したファイルのロード
 let s:path = g:dein_dir . '/Plugins/UIexpantion/' . colors_name . 'Style.vim'
@@ -251,4 +253,14 @@ if filereadable(s:path)
 else
     let s:path = g:dein_dir . '/Plugins/UIexpantion/others.vim'
     execute 'source' fnameescape(s:path)
+endif
+
+
+"::::::::::::::::::::::::::::::::::::::
+"::::::::::GVim Windows Settings
+if has('win32')
+    let s:gvim_opt = g:dein_dir . '/Plugins/gvim.vim'
+    if filereadable(s:gvim_opt)
+        execute 'source' fnameescape(s:gvim_opt)
+    endif
 endif

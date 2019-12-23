@@ -14,7 +14,6 @@ case ${OSTYPE} in
         mkdir -p ${TARGET_DIR}
         cp ${SOURCE_VIMRC} ${TARGET_VIMRC}
         cp -r ${SOURCE_DEIN} ${TARGET_DEIN}
-        cp "./cheatsheet.md" ${TARGET_DIR}"/cheatsheet.md"
 
         nvim -e -c ":silent! call dein#install() | :q"
         nvim -e -c ":Defx | :silent! UpdateRemotePlugins | :q"
@@ -30,7 +29,6 @@ case ${OSTYPE} in
         mkdir -p ${TARGET_DIR}
         cp ${SOURCE_VIMRC} ${TARGET_VIMRC}
         cp -r ${SOURCE_DEIN} ${TARGET_DEIN}
-        cp "./cheatsheet.md" ${TARGET_DIR}"/cheatsheet.md"
 
         nvim -e -c ":silent! call dein#install() | :q!"
         nvim -e -c ":Defx | :silent! UpdateRemotePlugins | :q"

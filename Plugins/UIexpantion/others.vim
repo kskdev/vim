@@ -26,12 +26,12 @@ let g:lightline.colorscheme = 'mypalette'
 let g:pltt = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'replace': {}, 'tabline': {}}
 
 " let s:hoge = [ {guifg}, {guibg}, {ctermfg}, {ctermbg} ]
-let s:base_0 = s:setHi2('CursorLineNr', 'StatusLine')               " statuline
+let s:base_0 = s:setHi2('Normal', 'StatusLine')                     " statuline
 let s:base_1 = [s:base_0[1], s:base_0[0], s:base_0[3], s:base_0[2]] " statusline inverse
-let s:base_2 = s:setHi2('CursorLineNr', 'StatusLine')               " tabline
+let s:base_2 = s:setHi2('Normal', 'StatusLine')                     " tabline
 
 " mode color
-let s:mode_stl = ['#ff3333', '#272d38', 224, 5  ]
+let s:mode_stl = s:setHi2('Normal', 'StatusLine')
 let s:mode_nor = ['#272d38', '#bbe67e', 5  , 14 ]
 let s:mode_ins = ['#272d38', '#5ccfe6', 5  , 121]
 let s:mode_vis = ['#272d38', '#ffae57', 5  , 225]
@@ -40,8 +40,8 @@ let s:mode_war = ['#ffae57', s:base_0[1], 11, s:base_0[3]]
 let s:mode_err = ['#f07178', s:base_0[1], 0 , s:base_0[3]]
 
 " tabline
-let s:tab_f = s:setHi2('CursorLineNr', 'StatusLine') 
-let s:tab_b = s:setHi2('Comment', 'StatusLine') 
+let s:tab_f = s:setHi2('Special', 'TabLine')
+let s:tab_b = s:setHi2('Normal', 'StatusLine')
 
 " statusline basic
 let g:STL_BASECOLOR = s:base_0

@@ -25,6 +25,7 @@ let s:mode_err = ['#fb4934', '#3c3836', 167, 237]
 
 " tabline
 let s:tab_f = ['#d3869b', '#282828', 175, 235]
+let s:tab_f = ['#8ec07c', '#282828', 108, 235]
 let s:tab_b = ['#928374', '#3c3836', 245, 237]
 
 " statusline basic

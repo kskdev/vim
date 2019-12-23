@@ -10,10 +10,12 @@
 ## Target Environment
 - **neovim**
 - vim8(動かないことは無いと思うが，自分の環境では一部プラグイン動作の確認が出来ない)
+- GVim (<https://www.kaoriya.net/software/vim/>)
+  - Gvimのベースはvim8だがwindows環境でなぜか簡単に動作した．環境依存っぽいので普通のvim8で動作しないか要チェック
 
 ## Requirement
 - python(3.6.1+)
-- neovim
+- curl
 
 ## How to install
 あらかじめ，python3系 の環境は用意しておく必要があることに注意．
@@ -66,6 +68,23 @@ brew install neovim
 インストールについて詳しいことは,
 https://github.com/neovim/neovim/wiki/Installing-Neovim
 に記述されているので参考に
+
+
+
+[追記]<br>
+
+GVim for Windows に対応．
+
+Windows環境での編集がようやくいい感じになってきた．
+
+
+
+ただし，KaoriyaさんのGVimはFloating Windowに対応していないので注意.
+
+(プラグインの振る舞いがちょっと違うかも?)
+
+
+
 <br>
 <br>
 
@@ -112,7 +131,7 @@ endfunction
   - 想像以上にダルそう
   - Linux : Mozc 環境ならOK.
   - MacOS : Karabiner ? で無理やり出来そう?
-  - Windows : ???
+  - Windows : GVimならIMEの切り替えを感知出来るっぽい.
 
 - 意外とCtrlキーを利用するキーマップになってしまった.小指がお亡くなりになる前にキーマップを再検討(無理そう)
   - <Leader>をスペースキーに割り当てたらことで楽になった
@@ -121,6 +140,15 @@ endfunction
   - LSP + vista.vim で対応
 
 ## Update log
+- 2019/12/16(dev branch)
+  - GVim for Windowsにほぼ全てのプラグインが対応．
+    - neovim でのLSPは何故か`pyls : failed`になるが，GVimでのLSPは正常に動作`pyls : running`する．
+    - Plugins/gvim.vimに記述
+  - Cica フォント前提のUIに変更(statuslineのセパレータをPowerlineなどで使えるシンボル文字を使ってみたかったから)
+  - その他細かい修正
+    - vim-lsp : 自動でヘルプ(関数の説明とか)が出ないようにした
+    - statulineの色味を少し修正
+    - その他極小の変更
 - 2019/12/09(dev branch)
   - lightline のLSPハイライトに対応(忘れていた)
     - darcula colorを追加.
@@ -180,7 +208,6 @@ endfunction
       - asyncomplete はバージョン指定無しのpython3さえあれば動くため導入が楽
       - そのため, deoplete でインストールに失敗したら asyncomplete で再挑戦
     - 様々な環境で動かしたいが, deoplete の要求基準を満たさないサーバでの作業を強いられたりする.最低でも補完が欲しい人間にとって死活問題
-
 - 2019/08/09(deolsp branch)
   - deoplete + vim-lsp で補完する方針に戻る
     - 理由 deoplete は補完テキストの途中が抜けても補完してくれる(asyncompleteでは出来なかった．知らないだけ?)
@@ -234,7 +261,6 @@ endfunction
       - 何より余計なインストールの手間を省くことが目標
     - Rustを導入しなくても使えるようにバイナリを拾ってきた
       - Rustの導入は難しくないが依存関係が発生するのが嫌い
-
 - 2019/07/07
   - 検索周りのプラグインの更新
   - ctagは導入したいけど外部ツールが必要で面倒
@@ -278,13 +304,12 @@ endfunction
 - 'Shougo/dein.vim'
   - 暗黒美夢王 製のプラグインマネージャー (この他のプラグイン管理はこいつに一任)
 
-- 'morhetz/gruvbox'
+- 'rafi/awesome-vim-colorschemes'
   - カラースキーマ(エディタの見た目を変更するためのプラグイン)
   - http://vimcolors.com/ この辺りで探したりすると良いかも?
   - 個人的なおすすめ
-    - 'joshdick/onedark.vim'
-    - 'cocopon/iceberg.vim'
-    - 'morhetz/gruvbox'
+    - gruvbox, onedark, tender, iceberg, ayu, one, gotham256, angr, carbonized-dark, orange-moon
+    - 特に気に入っているgruvbox, onedark, tender, iceberg辺りは専用のStatuline配色を設定した
 
 - 'itchyny/lightline.vim'
   - vimのステータスバーを拡張するためのプラグイン
@@ -374,11 +399,6 @@ endfunction
     - Rustを導入しなくても使えるようにバイナリを拾ってきた
       - Rustの導入は難しくないが依存関係が発生するのが嫌い
     - 中々マヌケなのでもっとスマートな方法で入れたい
-  - 現在の設定
-    - [ Ctrl + t ] : 展開中のバッファ一覧を表示
-    - [ Ctrl + p ] : カレントディレクトリ以下を検索
-    - [ Ctrl + h ] : 最近展開したファイルを表示
-    - [ Ctrl + g ] : ripgrep を利用した文字列検索
 
 - 'Shougo/denite'
   - ファイル/文字列/バッファ/etcを検索する

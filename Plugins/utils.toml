@@ -330,7 +330,7 @@ nnoremap subp y:OverCommandLine<CR>%s!<C-r>=substitute(@0, '!', '\\!', 'g')<CR>!
 repo = 'reireias/vim-cheatsheet'
 hook_add = '''
 " :Cheat でvimのチートファイルを開く
-let g:cheatsheet#cheat_file = g:dein_dir . '/cheatsheet.md'
+let g:cheatsheet#cheat_file = g:dein_dir . '/Plugins/cheatsheet.md'
 
 if has('nvim')
     " float windowを利用する場合の設定
@@ -391,7 +391,7 @@ let g:loaded_matchit = 1
 " スコープ対応の可視化色
 augroup matchup_matchparen_highlight
   autocmd!
-  autocmd ColorScheme * hi MatchParen ctermbg=None guibg=None ctermfg=yellow guifg=LightGreen cterm=bold gui=bold
+  autocmd ColorScheme * hi MatchParen ctermbg=bg guibg=bg ctermfg=yellow guifg=LightGreen cterm=bold gui=bold
 augroup END
 '''
 
@@ -408,7 +408,7 @@ vmap <Space> y
 let g:expand_region_text_objects = {
       \ 'iw'  :0,
       \ 'iW'  :0,
-      \ 'i"'  :0,
+      \ 'i"'  :1,
       \ 'i)'  :1,
       \ 'i}'  :1,
       \ 'i]'  :1,
