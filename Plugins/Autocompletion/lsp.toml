@@ -81,9 +81,9 @@ if s:kakuchoshi == 'py' && executable('pyls')
                 \ 'cmd': {server_info->['pyls']},
                 \ 'whitelist': ['python'],
                 \ 'workspace_config': {'pyls': {'plugins': {
-                \           'pydocstyle': {'enabled': v:true},
-                \           'jedi_references': {'enabled': v:true},
-                \           'jedi_hover': {'enabled': v:true},
+                \           'pydocstyle': {'enabled': v:false},
+                \           'jedi_references': {'enabled': v:false},
+                \           'jedi_hover': {'enabled': v:false},
                 \           'jedi_signature_help': {'enabled': v:false},
                 \ }
                 \ }},

@@ -128,9 +128,6 @@ set whichwrap=b,s,<,>,[,],h,l
 
 " インサートモードからノーマルモードへ移行
 " (Linux+fcitxの場合は日本語入力を無効化してノーマルモードに移行)
-" function! OffFcitx()
-"     call system('fcitx-remote -c')
-" endfunction
 if has('unix')
     inoremap jj <ESC>:call system('fcitx-remote -c')<CR>
     inoremap っｊ <ESC>:call system('fcitx-remote -c')<CR>
@@ -138,6 +135,27 @@ else
     inoremap jj <ESC>
     inoremap っｊ <ESC>
 endif
+
+" カーソル下の単語をGoogleで検索する
+" https://www.rasukarusan.com/entry/2019/03/09/011630 参照
+function! s:search_by_google()
+    let line = line(".")
+    let col  = col(".")
+    let searchWord = expand("<cword>")
+    if has('mac')
+        let s:open_cmd = 'read !open '
+    elseif has('unix')
+        let s:open_cmd = 'read !xdg-open '
+    else
+    endif
+    if searchWord  != ''
+        execute s:open_cmd . 'https://www.google.co.jp/search\?q\=' . searchWord
+        execute 'call cursor(' . line . ',' . col . ')'
+    endif
+endfunction
+command! SearchByGoogle call s:search_by_google()
+nnoremap <silent> <Space>g :SearchByGoogle<CR>
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  /$$$$$$$            /$$
@@ -181,7 +199,10 @@ elseif has('win64') && has('win32') " 64bit & 32bit windows用の設定
     let s:vim_dein_dir = expand('~\GVim')
     let s:neovim_toml_dir = expand('~\AppData\Local\nvim')
     let s:vim_toml_dir = expand('~\GVim')
-
+    " Gvimで [vim-hug-neovim-rpc] Vim(python):E370: ライブラリ python27.dll をロードできませんでした
+    " という状況に対する対応 : .dll のファイル位置を指定する
+    " 参考 : https://github.com/vim/vim-win32-installer/issues/48
+    let &pythonthreedll = expand('~\Anaconda3\python36.dll')
 elseif has('win32unix') " Cygwin固有の設定
     echo 'No implementation!'
 endif
@@ -190,6 +211,7 @@ endif
 " Python3インタープリターのパス指定(2系を指定する必要はほぼ無いかも)
 let g:python3_host_prog = g:python3_path
 " let g:python_host_prog = g:python2_path
+set pyxversion=3
 
 " viとの互換を切る
 if &compatible
@@ -239,22 +261,26 @@ filetype plugin on
 syntax on
 " カラースキーマの設定
 if has('nvim')
-    set termguicolors  " enable true colors support
-    set pumblend=20  " ポップアップメニューの透明度指定
+    if has("termguicolors")     " set true colors
+        " TODO 以下2行を何故追加したかを覚えていない
+        set t_8f=\[[38;2;%lu;%lu;%lum
+        set t_8b=\[[48;2;%lu;%lu;%lum
+        set termguicolors  " enable true colors support
+        set pumblend=20  " ポップアップメニューの透明度指定
+    endif
 endif
 set background=dark
 " gruvbox onedark tender iceberg one gotham256 angr orange-moon yellow-moon
-colorscheme onedark
+colorscheme tender
 
 " 配色定義を記述したファイルのロード
-let s:path = g:dein_dir . '/Plugins/UIexpantion/' . colors_name . 'Style.vim'
+let s:path = s:vim_toml_dir . '/Plugins/UIexpantion/' . colors_name . 'Style.vim'
 if filereadable(s:path)
     execute 'source' fnameescape(s:path)
 else
-    let s:path = g:dein_dir . '/Plugins/UIexpantion/others.vim'
+    let s:path = s:vim_toml_dir . '/Plugins/UIexpantion/others.vim'
     execute 'source' fnameescape(s:path)
 endif
-
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::GVim Windows Settings
@@ -264,3 +290,8 @@ if has('win32')
         execute 'source' fnameescape(s:gvim_opt)
     endif
 endif
+
+" 背景透過 (Neovim + Tmux + Alacritty on Ubuntu 環境下専用?(他のOSでは考えていない))
+hi! Normal ctermbg=NONE guibg=NONE
+hi! NonText ctermbg=NONE guibg=NONE
+
