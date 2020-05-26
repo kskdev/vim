@@ -4,6 +4,7 @@
 # - LSPによる補完はサーバーが running 状態になってからで無いと補完が効かない(deopleteで確認)
 # - clang の補完周りのインストールが面倒
 #   - brew install llvm が必要だった
+#   - mattn/vim-lsp-settings を利用して簡単にインストールが可能になった!
 # - プレビューウィンドウを非表示にしたい...
 #   - 画面上で新しくバッファが開く.便利だが鬱陶しい
 #   - 将来はfloating window と連携して快適にしたい
@@ -21,6 +22,7 @@ repo = 'prabirshrestha/async.vim'
 # Language Server Protocol
 [[plugins]]
 repo = 'prabirshrestha/vim-lsp'
+lazy = 1
 hook_source = '''
 " LSP 有効化
 let g:lsp_auto_enable = 1
@@ -52,16 +54,6 @@ let g:lsp_signs_hint = {'text': '?'}
 " ログやデバッグ用の設定
 let g:lsp_log_verbose = 0
 let g:lsp_log_file = expand('~/vim-lsp.log')
-'''
-hook_add = '''
-" sign と virtual text の色定義 
-augroup vimlsp_colors
-    autocmd!
-    au ColorScheme * :hi LspErrorText ctermfg=red guifg=red
-    au ColorScheme * :hi LspWarningText ctermfg=yellow guifg=yellow
-    au ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray
-    au ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan
-augroup END
 
 " Omni 補完の有効化
 setlocal omnifunc=lsp#complete
@@ -72,56 +64,56 @@ noremap <silent><C-k> :LspPreviousError<CR>
 " Ctrl+l で定義元へジャンプ
 nnoremap <silent><C-l> :LspDefinition<CR>
 
-let s:kakuchoshi = expand('%:e')
-" Python補完設定
-if s:kakuchoshi == 'py' && executable('pyls')
-    let s:pyls_path = fnamemodify(g:python3_host_prog, ':h') . '/'. 'pyls'
-    au User lsp_setup call lsp#register_server({
-                \ 'name': 'pyls',
-                \ 'cmd': {server_info->['pyls']},
-                \ 'whitelist': ['python'],
-                \ 'workspace_config': {'pyls': {'plugins': {
-                \           'pydocstyle': {'enabled': v:false},
-                \           'jedi_references': {'enabled': v:false},
-                \           'jedi_hover': {'enabled': v:false},
-                \           'jedi_signature_help': {'enabled': v:false},
-                \ }
-                \ }},
-                \ })
-endif
-
-" C言語補完設定
-if s:kakuchoshi == 'c' && executable('clangd')
-    au User lsp_setup call lsp#register_server({
-                \ 'name': 'clangd',
-                \ 'cmd': {server_info->['clangd', '-background-index']},
-                \ 'whitelist': ['c, h'],
-                \ })
-endif
-
-" C++言語補完設定
-if s:kakuchoshi == 'cpp' && executable('clangd')
-    au User lsp_setup call lsp#register_server({
-                \ 'name': 'clangd',
-                \ 'cmd': {server_info->['clangd', '-background-index']},
-                \ 'whitelist': ['cpp, hpp, h'],
-                \ })
-endif
-
-" C++言語補完設定(正規表現活用版. 現在編集中...)
-" if match(s:kakuchoshi,'(cpp|hpp|h)')!=#-1 && executable('clangd')
+" let s:kakuchoshi = expand('%:e')
+" " Python補完設定
+" if s:kakuchoshi == 'py' && executable('pyls')
+"     let s:pyls_path = fnamemodify(g:python3_host_prog, ':h') . '/'. 'pyls'
 "     au User lsp_setup call lsp#register_server({
-"                 \ 'name': 'clangd',
-"                 \ 'cmd': {server_info->['clangd', '-background-index']},
-"                 \ 'whitelist': ['cpp, hpp, h'],
+"                 \ 'name': 'pyls',
+"                 \ 'cmd': {server_info->['pyls']},
+"                 \ 'whitelist': ['python'],
+"                 \ 'workspace_config': {'pyls': {'plugins': {
+"                 \           'pydocstyle': {'enabled': v:false},
+"                 \           'jedi_references': {'enabled': v:false},
+"                 \           'jedi_hover': {'enabled': v:false},
+"                 \           'jedi_signature_help': {'enabled': v:false},
+"                 \ }
+"                 \ }},
 "                 \ })
 " endif
+'''
+
+hook_add = '''
+" sign と virtual text の色定義 
+augroup vimlsp_colors
+    autocmd!
+    au ColorScheme * :hi LspErrorText ctermfg=214 guifg=red
+    au ColorScheme * :hi LspWarningText ctermfg=167 guifg=orange
+    au ColorScheme * :hi LspInformationText ctermfg=gray guifg=gray
+    au ColorScheme * :hi LspHintfomationText ctermfg=cyan guifg=cyan
+augroup END
+'''
+
+
+# LSP の設定を一括管理
+[[plugins]]
+repo = 'mattn/vim-lsp-settings'
+depends = ['vim-lsp']
+hook_add = '''
+if has('unix') || has('mac')
+    g:lsp_settings_servers_dir = $HOME/.local/share/vim-lsp-settings/servers
+" elseif has('win32')
+    " g:lsp_settings_servers_dir = '%LOCALAPPDATA%\vim-lsp-settings\servers'
+    " g:lsp_settings_servers_dir = expand('~\Gvim\vim-lsp-settings\servers')
+    " let s:vim_toml_dir = expand('~\GVim')
+endif
 '''
 
 
 # LSP経由でタグジャンプ等が使えるようになる
 [[plugins]]
 repo = 'liuchengxu/vista.vim'
+lazy = 1
 depends = ['vim-lsp']
 hook_add = '''
 " fzf の表示領域設定

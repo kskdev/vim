@@ -54,7 +54,7 @@ endif
 " Windows用 (Win+R実行後，%windir%\fonts を入力すると確認できる)
 " Cicaを入れることをおすすめ．理由は，Powerlineのようなシンボル文字が利用可能
 " https://github.com/miiton/Cica/releases を選択した(withoutでも良いと思う)
-set guifont=Cica-Regular:h16:cSHIFTJIS
+set guifont=Cica-Regular:h16:cSHIFTJIS  " 使わなくても良いかも(くどい)
 " set guifont=MS_Gothic:h12:cSHIFTJIS  " Default
 "set guifont=MS_Mincho:h12:cSHIFTJIS   " Default
 " 行間隔の設定

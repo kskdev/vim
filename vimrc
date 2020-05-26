@@ -178,7 +178,7 @@ if has('mac') " mac用の設定
     let s:neovim_dein_dir = expand('~/.config/nvim')
     let s:vim_dein_dir = expand('~/.vim/dein')
     let s:neovim_toml_dir = expand('~/.config/nvim')
-    let s:vim_toml_dir = expand('~/.vim')
+    let s:vim_toml_dir = expand('~/.vim/dein')
 
 elseif has('unix') " unix用の設定
     " ヤンクをClipboardに入れる
@@ -189,7 +189,7 @@ elseif has('unix') " unix用の設定
     let s:neovim_dein_dir = expand('~/.config/nvim')
     let s:vim_dein_dir = expand('~/.vim/dein')
     let s:neovim_toml_dir = expand('~/.config/nvim')
-    let s:vim_toml_dir = expand('~/.vim')
+    let s:vim_toml_dir = expand('~/.vim/dein')
 
 elseif has('win64') && has('win32') " 64bit & 32bit windows用の設定
     " Pythonインタープリターのパス指定
@@ -202,7 +202,9 @@ elseif has('win64') && has('win32') " 64bit & 32bit windows用の設定
     " Gvimで [vim-hug-neovim-rpc] Vim(python):E370: ライブラリ python27.dll をロードできませんでした
     " という状況に対する対応 : .dll のファイル位置を指定する
     " 参考 : https://github.com/vim/vim-win32-installer/issues/48
-    let &pythonthreedll = expand('~\Anaconda3\python36.dll')
+    " if has('vim')
+        let &pythonthreedll = expand('~\Anaconda3\python36.dll')
+    " endif
 elseif has('win32unix') " Cygwin固有の設定
     echo 'No implementation!'
 endif
@@ -243,11 +245,11 @@ call dein#begin(g:dein_dir)
 call dein#add(s:dein_repo_dir)
 call dein#add('rafi/awesome-vim-colorschemes')
 call dein#load_toml(s:toml_dir . '/Plugins/UIexpantion/statusline.toml')
+call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/others.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/utils.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/deoplete.toml') " asyncomplete.toml と選択
-" call dein#load_toml(s:toml_dir . './Plugins/Autocompletion/asyncomplete.toml') " deoplete.toml と選択
+" call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/asyncomplete.toml') " deoplete.toml と選択
 call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/lsp.toml')
-call dein#load_toml(s:toml_dir . '/Plugins/Autocompletion/others.toml')
 call dein#load_toml(s:toml_dir . '/Plugins/Filer/fzf.toml')  " denite.toml と選択
 " call dein#load_toml(s:toml_dir . '/Plugins/Filer/denite.toml')  " fzf.toml と選択
 call dein#end()
@@ -270,15 +272,17 @@ if has('nvim')
     endif
 endif
 set background=dark
-" gruvbox onedark tender iceberg one gotham256 angr orange-moon yellow-moon
-colorscheme tender
+" オススメ
+" gruvbox onedark tender iceberg gotham256 one hybrid hybrid_material hybrid_reverse two-firewatch meta5 OceanicNext molokayo
+" orbital angr orange-moon yellow-moon scheakur flattened_dark ayu
+colorscheme gruvbox
 
 " 配色定義を記述したファイルのロード
-let s:path = s:vim_toml_dir . '/Plugins/UIexpantion/' . colors_name . 'Style.vim'
+let s:path = s:toml_dir . '/Plugins/UIexpantion/' . colors_name . 'Style.vim'
 if filereadable(s:path)
     execute 'source' fnameescape(s:path)
 else
-    let s:path = s:vim_toml_dir . '/Plugins/UIexpantion/others.vim'
+    let s:path = s:toml_dir . '/Plugins/UIexpantion/others.vim'
     execute 'source' fnameescape(s:path)
 endif
 
@@ -291,7 +295,25 @@ if has('win32')
     endif
 endif
 
+if !has('win32')
 " 背景透過 (Neovim + Tmux + Alacritty on Ubuntu 環境下専用?(他のOSでは考えていない))
 hi! Normal ctermbg=NONE guibg=NONE
 hi! NonText ctermbg=NONE guibg=NONE
+endif
+
+
+if system('uname -a | grep microsoft') != ""
+    let g:clipboard = {
+        \ 'name': 'myClipboard',
+        \ 'copy': {
+        \     '+':'win32yank.exe -i',
+        \     '*':'win32yank.exe -i',
+        \ },
+        \ 'paste': {
+        \     '+': 'win32yank.exe -o',
+        \     '*': 'win32yank.exe -o',
+        \ },
+        \ 'cache_enabled': 1,
+        \ }
+endif
 

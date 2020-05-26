@@ -7,43 +7,37 @@
 # - もし，自前の辞書を利用する場合 'deoplete-plugins/deoplete-dictionary' を検討
 
 
-# deoplete をvim8で動作させるための追加プラグイン1(neovimでは不要)
-[[plugins]]
-repo = 'roxma/vim-hug-neovim-rpc'
-if = '!has("nvim")'
-
-
-# deoplete をvim8で動作させるための追加プラグイン2(neovimでは不要)
-[[plugins]]
-repo = 'roxma/nvim-yarp'
-if = '!has("nvim")'
-
-
 # オートコンプリートプラグイン
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
 depends = ['neosnippet-snippets']
 hook_source = '''
+if !has('nvim')
+    call dein#add('roxma/nvim-yarp')
+    call dein#add('roxma/vim-hug-neovim-rpc')
+endif
+'''
+hook_add='''
 " deoplete 有効化
 let g:deoplete#enable_at_startup = 1
 " 補完に掛かる時間を指定(ms)
-let g:deoplete#auto_complete_delay = 0
+call deoplete#custom#var('auto_complete_delay', 10)
 " 非同期時から同期に移る時間(ms)
-let g:deoplete#auto_refresh_delay = 10
+call deoplete#custom#var('auto_refresh_delay', 10)
 " 補完が始まるまでに必要な文字数
-let g:deoplete#auto_complete_start_length = 1
+call deoplete#custom#var('auto_complete_start_length', 1)
 " キャメルケースに対応(細かいことはよくわからん)
 let g:deoplete#enable_camel_case = 1
 " 大文字小文字を無視して補完
 let g:deoplete#enable_ignore_case = 1
 " 補完機能が作用するたびに候補表示を再表示
-let g:deoplete#enable_refresh_always = 1
+call deoplete#custom#var('enable_refresh_always', 1)
 " 補完候補の表示数の最大値を設定
-let g:deoplete#max_list = 100
+call deoplete#custom#var('max_list', 48)
 " マルチバイト文字の補完を無効化
 let g:skip_multibyte = 1
 " deopleteの並列処理のスレッド数 (default : 4)
-let g:deoplete#num_processes = 8
+call deoplete#custom#var('num_processes', 4)
 
 " TAB で補完(順選択)
 inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"

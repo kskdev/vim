@@ -24,8 +24,9 @@ let g:lightline = {'separator': {'left': '', 'right': ''}, 'subseparator': {'lef
 " for powerline (with Cica-font by brew cask install font-cica)
 " 様々な導入方法があるが個人的にこれが一番楽だった(MacOS) : https://joppot.info/2018/11/05/4215
 " シンボル一覧 : https://github.com/ryanoasis/powerline-extra-symbols
-let g:lightline = {'separator': {'left': "\ue0c6", 'right': "\ue0c7"}, 'subseparator': {'left': "\ue0c4", 'right': "\ue0c5"}, 'mode_map': {'c': 'NORMAL'},}
-let g:lightline = {'separator': {'left': "\ue0b0", 'right': "\ue0b2"}, 'subseparator': {'left': "\ue0b1", 'right': "\ue0b3"}, 'mode_map': {'c': 'NORMAL'},}
+" Cica font などが有効な場合にコメントアウトして使うが良い...
+" let g:lightline = {'separator': {'left': "\ue0c6", 'right': "\ue0c7"}, 'subseparator': {'left': "\ue0c4", 'right': "\ue0c5"}, 'mode_map': {'c': 'NORMAL'},}
+" let g:lightline = {'separator': {'left': "\ue0b0", 'right': "\ue0b2"}, 'subseparator': {'left': "\ue0b1", 'right': "\ue0b3"}, 'mode_map': {'c': 'NORMAL'},}
 
 " lightline.componet 定義
 let g:lightline.component           = {}
@@ -50,20 +51,18 @@ let g:lightline.component_function.filetype       = 'LightlineFiletype'
 let g:lightline.component_function.fileencoding   = 'LightlineFileencoding'
 let g:lightline.component_function.mode           = 'LightlineMode'
 let g:lightline.component_function.lsp            = 'LspServerStatusForStatusLine'
-" let g:lightline.component_function.lspwarning = 'LspWarningNum'
-" let g:lightline.component_function.lsperror   = 'LspErrorNum'
 
 " lightline.component_expand 定義
 let g:lightline.component_expand            = {}
 let g:lightline.component_expand.buffers    = 'lightline#bufferline#buffers'
-let g:lightline.component_expand.lspwarning = 'LspWarningNum'
-let g:lightline.component_expand.lsperror   = 'LspErrorNum'
+" let g:lightline.component_expand.lspwarning = 'LspWarningNum'
+" let g:lightline.component_expand.lsperror   = 'LspErrorNum'
 
 " lightline.component_type 定義
 let g:lightline.component_type            = {}
 let g:lightline.component_type.buffers    = 'tabsel'
-let g:lightline.component_type.lspwarning = 'warning'
-let g:lightline.component_type.lsperror   = 'error'
+" let g:lightline.component_type.lspwarning = 'warning'
+" let g:lightline.component_type.lsperror   = 'error'
 let g:lightline.component_type.lsp        = 'right'
 
 " ステータスラインの表示フォーマット定義
@@ -127,23 +126,23 @@ function! LspServerStatusForStatusLine()
     return g:lsp#get_server_status()
 endfunction
 
-function! LspWarningNum()
-    let s:warning_num = lsp#get_buffer_diagnostics_counts()['warning']
-    return s:warning_num == 0 ? '' : 'Warning:' . s:warning_num
-endfunction
-
-function! LspErrorNum()
-    let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
-    return s:error_num == 0 ? '' : 'Error:' . s:error_num
-endfunction
-
+" function! LspWarningNum()
+"     let s:warning_num = lsp#get_buffer_diagnostics_counts()['warning']
+"     return s:warning_num == 0 ? '' : 'Warning:' . s:warning_num
+" endfunction
+"
+" function! LspErrorNum()
+"     let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
+"     return s:error_num == 0 ? '' : 'Error:' . s:error_num
+" endfunction
+"
 " LSPサーバーが running 状態になっていないと表示されないみたい...
 " タイミング:ファイル展開,ファイル保存,補完完了,カーソル操作停止時(Insert/Normal)
 " 理想はLSPの diagnostics が完了時? (それが一番効率的な気がする)
-augroup AutoLSP
-  autocmd!
-  autocmd BufEnter,BufWritePost,CompleteDone,CursorHold,CursorHoldI *.py,*.c,*.cpp call lightline#update()
-augroup END
+" augroup AutoLSP
+"   autocmd!
+"   autocmd BufEnter,BufWritePost,CompleteDone,CursorHold,CursorHoldI *.py,*.c,*.cpp call lightline#update()
+" augroup END
 '''
 
 

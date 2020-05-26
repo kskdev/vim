@@ -80,8 +80,8 @@ let g:pltt.tabline.right  = [s:base_2, ]
 let g:pltt.tabline.tabsel = [s:tab_f]  " active window color
 
 " error and warning
-let g:pltt.normal.warning = [s:mode_war]
-let g:pltt.normal.error   = [s:mode_err]
+" let g:pltt.normal.warning = [s:mode_war]
+" let g:pltt.normal.error   = [s:mode_err]
 
 
 " update palette

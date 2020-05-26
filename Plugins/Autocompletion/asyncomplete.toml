@@ -1,19 +1,45 @@
+#TODO list -------------------------------------------------------
+#
+# 'prabirshrestha/asyncomplete.vim'
+# - deopleteのような曖昧部分一致の補完が欲しい...
 
 
 # 非同期で補完を行うためのプラグイン(deoplete.nvimみたいなもの?)
 [[plugins]]
 repo = 'prabirshrestha/asyncomplete.vim'
 hook_add = '''
-" 自動補完候補表示の有効化
-let g:asyncomplete_auto_popup = 1
 " popup表示までのち円時間[ms] (defaulat:30)
 let g:asyncomplete_popup_delay = 10
 " TAB で補完(順選択)
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 " Shift TAB で補完(逆順選択)
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 " リターンキーで補完ポップアップを閉じる
 inoremap <expr><CR> pumvisible() ? asyncomplete#close_popup(): "\<CR>" 
+
+" LSPを用いた補完の利用
+let g:lsp_async_completion = 1
+
+" C-Space で強制更新
+imap <c-space> <Plug>(asyncomplete_force_refresh)
+" autocmd FileType python setlocal omnifunc=lsp#complete
+" 自動補完候補表示の有効化
+let g:asyncomplete_auto_popup = 1
+" バックスペースに対応
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+" TAB で補完(順選択)
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+" Shift TAB で補完(逆順選択)
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Omni 補完の有効化
+set completeopt+=preview
 '''
 
 
@@ -34,7 +60,7 @@ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options
     \ 'priority': 50,
     \ 'completor': function('asyncomplete#sources#buffer#completor'),
     \ 'config': {
-    \    'max_buffer_size': 5000000,
+    \    'max_buffer_size': 500000,
     \  },
     \ }))
 '''
@@ -72,6 +98,16 @@ au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#source
 '''
 
 
+# asyncomplete-neosnippet.vimで利用するためのスニペット1
+[[plugins]]
+repo = 'Shougo/neosnippet.vim'
+
+
+# asyncomplete-neosnippet.vimで利用するためのスニペット2
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+
+
 # asyncomplete.vim のNeosnippet補完拡張
 [[plugins]]
 repo = 'prabirshrestha/asyncomplete-neosnippet.vim'
@@ -80,6 +116,7 @@ hook_add = '''
 call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
     \ 'name': 'neosnippet',
     \ 'whitelist': ['*'],
+    \ 'priority': 90,
     \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
     \ }))
 " キーマッピング設定
@@ -88,3 +125,11 @@ smap <C-k> <Plug>(neosnippet_expand_or_jump)
 xmap <C-k> <Plug>(neosnippet_expand_target)
 '''
 
+
+# 関数等の引数を表示
+[[plugins]]
+repo = 'Shougo/echodoc.vim'
+hook_add = '''
+let g:echodoc#enable_at_startup = 1
+let g:echodoc#type = 'echo'
+'''
