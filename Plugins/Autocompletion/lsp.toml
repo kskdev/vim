@@ -4,6 +4,7 @@
 # - LSPによる補完はサーバーが running 状態になってからで無いと補完が効かない(deopleteで確認)
 # - clang の補完周りのインストールが面倒
 #   - brew install llvm が必要だった
+#   - mattn/vim-lsp-settings を利用して簡単にインストールが可能になった!
 # - プレビューウィンドウを非表示にしたい...
 #   - 画面上で新しくバッファが開く.便利だが鬱陶しい
 #   - 将来はfloating window と連携して快適にしたい
@@ -116,6 +117,20 @@ endif
 "                 \ 'whitelist': ['cpp, hpp, h'],
 "                 \ })
 " endif
+'''
+
+# LSP の設定を一括管理
+[[plugins]]
+repo = 'mattn/vim-lsp-settings'
+depends = ['vim-lsp']
+hook_add = '''
+if has('unix') || has('mac')
+    g:lsp_settings_servers_dir = $HOME/.local/share/vim-lsp-settings/servers
+" elseif has('win32')
+    " g:lsp_settings_servers_dir = '%LOCALAPPDATA%\vim-lsp-settings\servers'
+    " g:lsp_settings_servers_dir = expand('~\Gvim\vim-lsp-settings\servers')
+    " let s:vim_toml_dir = expand('~\GVim')
+endif
 '''
 
 

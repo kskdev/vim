@@ -24,8 +24,8 @@ let g:lightline = {'separator': {'left': '', 'right': ''}, 'subseparator': {'lef
 " for powerline (with Cica-font by brew cask install font-cica)
 " 様々な導入方法があるが個人的にこれが一番楽だった(MacOS) : https://joppot.info/2018/11/05/4215
 " シンボル一覧 : https://github.com/ryanoasis/powerline-extra-symbols
-let g:lightline = {'separator': {'left': "\ue0c6", 'right': "\ue0c7"}, 'subseparator': {'left': "\ue0c4", 'right': "\ue0c5"}, 'mode_map': {'c': 'NORMAL'},}
-let g:lightline = {'separator': {'left': "\ue0b0", 'right': "\ue0b2"}, 'subseparator': {'left': "\ue0b1", 'right': "\ue0b3"}, 'mode_map': {'c': 'NORMAL'},}
+" let g:lightline = {'separator': {'left': "\ue0c6", 'right': "\ue0c7"}, 'subseparator': {'left': "\ue0c4", 'right': "\ue0c5"}, 'mode_map': {'c': 'NORMAL'},}
+" let g:lightline = {'separator': {'left': "\ue0b0", 'right': "\ue0b2"}, 'subseparator': {'left': "\ue0b1", 'right': "\ue0b3"}, 'mode_map': {'c': 'NORMAL'},}
 
 " lightline.componet 定義
 let g:lightline.component           = {}
