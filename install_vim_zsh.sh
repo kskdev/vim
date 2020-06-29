@@ -26,7 +26,7 @@ case ${OSTYPE} in
         TARGET_VIMRC="${HOME}/.vimrc"
         TARGET_DEIN="${HOME}/.vim/dein/Plugins/"
 
-        mkdir -p ${TARGET_DIR}
+        mkdir -p ${TARGET_DEIN}
         cp ${SOURCE_VIMRC} ${TARGET_VIMRC}
         cp -r ${SOURCE_DEIN} ${TARGET_DEIN}
 
