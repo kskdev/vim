@@ -165,7 +165,7 @@ let g:indent_guides_guide_size = 1
 # j,k キーでカーソル移動の高速化
 [[plugins]]
 repo = 'rhysd/accelerated-jk'
-hook_source = '''
+hook_add = '''
 " j,kにキーマッピング
 nmap j <Plug>(accelerated_jk_gj)
 nmap k <Plug>(accelerated_jk_gk)

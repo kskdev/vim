@@ -16,7 +16,7 @@ set noundofile
 " 背景の透過処理
 highlight Normal ctermbg=none
 " □ や○ 文字が崩れ問題を解消
-" set ambiwidth=double
+set ambiwidth=double
 " Concealの無効化(マルチバイト文字の修飾表現)
 let g:tex_conceal = ''
 " マウスの利用
