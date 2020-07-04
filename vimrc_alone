@@ -200,9 +200,9 @@ if dein#load_state(g:dein_dir)
     " Language Server Protocol - コーディングサポート with python3
     call dein#add('prabirshrestha/vim-lsp') " LSP本体
     call dein#add('prabirshrestha/async.vim') " vim-lspの補助
-    call dein#add('mattn/vim-lsp-settings', {'lazy':1}) " Language Server の簡単インストール
+    call dein#add('mattn/vim-lsp-settings') " Language Server の簡単インストール
     call dein#add('lighttiger2505/deoplete-vim-lsp') " Deoplete 連携
-    call dein#add('liuchengxu/vista.vim', {'lazy':1}) " LSP経由でタグジャンプなどを可能にする
+    call dein#add('liuchengxu/vista.vim') " LSP経由でタグジャンプなどを可能にする
 
     " Deoplete - 補完プラグインと拡張プラグイン with python3
     call dein#add('Shougo/deoplete.nvim')
