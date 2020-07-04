@@ -200,9 +200,9 @@ if dein#load_state(g:dein_dir)
     " Language Server Protocol - コーディングサポート with python3
     call dein#add('prabirshrestha/vim-lsp') " LSP本体
     call dein#add('prabirshrestha/async.vim') " vim-lspの補助
-    call dein#add('mattn/vim-lsp-settings') " Language Server の簡単インストール
+    call dein#add('mattn/vim-lsp-settings', {'lazy':1}) " Language Server の簡単インストール
     call dein#add('lighttiger2505/deoplete-vim-lsp') " Deoplete 連携
-    call dein#add('liuchengxu/vista.vim') " LSP経由でタグジャンプなどを可能にする
+    call dein#add('liuchengxu/vista.vim', {'lazy':1}) " LSP経由でタグジャンプなどを可能にする
 
     " Deoplete - 補完プラグインと拡張プラグイン with python3
     call dein#add('Shougo/deoplete.nvim')
@@ -219,27 +219,27 @@ if dein#load_state(g:dein_dir)
 
     " その他Shougoプラグイン(Defx - ファイラ / Deol / 仮想端末) with python3
     call dein#add('Shougo/defx.nvim')
-    call dein#add('Shougo/deol.nvim')
+    call dein#add('Shougo/deol.nvim', {'lazy':1})
 
     " 入力UI拡張 (スモールプラグイン限定)
-    call dein#add('jiangmiao/auto-pairs') " 括弧やクォーテーションなどを補間
-    call dein#add('machakann/vim-sandwich') " 記号ペアで範囲を囲んだり置換や削除を行う
-    call dein#add('tomtom/tcomment_vim') " gcc でコメントアウト
-    call dein#add('junegunn/vim-easy-align') " 表示を整える
+    call dein#add('jiangmiao/auto-pairs', {'lazy':1}) " 括弧やクォーテーションなどを補間
+    call dein#add('machakann/vim-sandwich', {'lazy':1}) " 記号ペアで範囲を囲んだり置換や削除を行う
+    call dein#add('tomtom/tcomment_vim', {'lazy':1}) " gcc でコメントアウト
+    call dein#add('junegunn/vim-easy-align', {'lazy':1}) " 表示を整える
     call dein#add('terryma/vim-expand-region') " vi) vi' などを使わずに登録キー連打でスコープ範囲を選択
 
     " 表示UI拡張
     call dein#add('nathanaelkane/vim-indent-guides') " インデントの可視化
-    call dein#add('machakann/vim-highlightedyank') " ヤンクのハイライト可視化
-    call dein#add('osyo-manga/vim-over') " 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
-    call dein#add('andymass/vim-matchup') " 構文のスコープ対応ジャンプ&ハイライトに対応するプラグイン
+    call dein#add('machakann/vim-highlightedyank', {'lazy':1}) " ヤンクのハイライト可視化
+    call dein#add('osyo-manga/vim-over', {'lazy':1}) " 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
+    call dein#add('andymass/vim-matchup', {'lazy':1}) " 構文のスコープ対応ジャンプ&ハイライトに対応するプラグイン
 
     " 検索UI拡張
     call dein#add('rhysd/accelerated-jk') " jk移動の高速化
     call dein#add('rhysd/clever-f.vim') " f キージャンプの拡張
     call dein#add('easymotion/vim-easymotion') " 特定文字へカーソルジャンプ
-    call dein#add('nelstrom/vim-visual-star-search') " ヴィジュアルモードの選択範囲を「*」で検索
-    call dein#add('osyo-manga/vim-anzu') " 検索位置を表示(マッチ数等も表示)
+    call dein#add('nelstrom/vim-visual-star-search', {'lazy':1}) " ヴィジュアルモードの選択範囲を「*」で検索
+    call dein#add('osyo-manga/vim-anzu', {'lazy':1}) " 検索位置を表示(マッチ数等も表示)
     call dein#add('tpope/vim-fugitive') " vim上でgit操作を可能にする
     call dein#add('airblade/vim-gitgutter') " git の diffを左端に表示
     " TODO FZFの挙動が不審なので，いったん削除．後に追加予定．
