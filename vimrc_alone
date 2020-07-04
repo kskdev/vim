@@ -1,7 +1,10 @@
 " How to this file.
 " このファイルを .vimrc として，HOMEディレクトリに配置して，vimを起動するだけ．
+" Windows Gvim : このファイルを _gvimrc _vimrc にリネームしてホームディレクトリに配置. [_gvimrc or _vimrc だけだとカラースキーマが反映されなかったり，一部のコマンドが受け付けなかったりする．(原因は調べてない)]
 " 現状FZFがうまく機能していないので省略しているが，それ以外はほぼこのファイル単独で動作する
-" 確認状況は Ubuntu18.04 on WSL のみ
+" 確認状況 : 
+  " Ubuntu18.04 on WSL
+  " GVim8.2 (vim82-kaoriya-win64-8.2.0087-20200106.zipのファイル群を C:/Program files/Vim/に配置．さらに，Python3.6.1+ が必要)
 
 " //		vim setting and tips		//
 " Backspaceで何でも文字を削除できるように設定
@@ -190,23 +193,81 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-call dein#begin(g:dein_dir)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if dein#load_state(g:dein_dir)
+    call dein#begin(g:dein_dir)
+    call dein#add(s:dein_repo_dir) " dein.vim 本体
 
-"""""""""""""""""""""""""""""
-" Dein
-"""""""""""""""""""""""""""""
-call dein#add(s:dein_repo_dir) " dein.vim 本体
+    " Language Server Protocol - コーディングサポート with python3
+    call dein#add('prabirshrestha/vim-lsp') " LSP本体
+    call dein#add('prabirshrestha/async.vim') " vim-lspの補助
+    call dein#add('mattn/vim-lsp-settings') " Language Server の簡単インストール
+    call dein#add('lighttiger2505/deoplete-vim-lsp') " Deoplete 連携
+    call dein#add('liuchengxu/vista.vim') " LSP経由でタグジャンプなどを可能にする
+
+    " Deoplete - 補完プラグインと拡張プラグイン with python3
+    call dein#add('Shougo/deoplete.nvim')
+    if !has('nvim')
+        call dein#add('roxma/nvim-yarp')
+        call dein#add('roxma/vim-hug-neovim-rpc')
+    endif
+    call dein#add('ujihisa/neco-look') " 英単語補完 (lookコマンド依存)
+    call dein#add('Shougo/neco-vim') " vimコマンド補完
+    call dein#add('zchee/deoplete-zsh') " zshコマンド補完 
+    call dein#add('Shougo/echodoc.vim') " 関数等の引数を表示
+    call dein#add('Shougo/neosnippet-snippets') " スニペット集
+    call dein#add('Shougo/neosnippet.vim') " スニペット補完の動作定義
+
+    " その他Shougoプラグイン(Defx - ファイラ / Deol / 仮想端末) with python3
+    call dein#add('Shougo/defx.nvim')
+    call dein#add('Shougo/deol.nvim')
+
+    " 入力UI拡張 (スモールプラグイン限定)
+    call dein#add('jiangmiao/auto-pairs') " 括弧やクォーテーションなどを補間
+    call dein#add('machakann/vim-sandwich') " 記号ペアで範囲を囲んだり置換や削除を行う
+    call dein#add('tomtom/tcomment_vim') " gcc でコメントアウト
+    call dein#add('junegunn/vim-easy-align') " 表示を整える
+    call dein#add('terryma/vim-expand-region') " vi) vi' などを使わずに登録キー連打でスコープ範囲を選択
+
+    " 表示UI拡張
+    call dein#add('nathanaelkane/vim-indent-guides') " インデントの可視化
+    call dein#add('machakann/vim-highlightedyank') " ヤンクのハイライト可視化
+    call dein#add('osyo-manga/vim-over') " 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
+    call dein#add('andymass/vim-matchup') " 構文のスコープ対応ジャンプ&ハイライトに対応するプラグイン
+
+    " 検索UI拡張
+    call dein#add('rhysd/accelerated-jk') " jk移動の高速化
+    call dein#add('rhysd/clever-f.vim') " f キージャンプの拡張
+    call dein#add('easymotion/vim-easymotion') " 特定文字へカーソルジャンプ
+    call dein#add('nelstrom/vim-visual-star-search') " ヴィジュアルモードの選択範囲を「*」で検索
+    call dein#add('osyo-manga/vim-anzu') " 検索位置を表示(マッチ数等も表示)
+    call dein#add('tpope/vim-fugitive') " vim上でgit操作を可能にする
+    call dein#add('airblade/vim-gitgutter') " git の diffを左端に表示
+    " TODO FZFの挙動が不審なので，いったん削除．後に追加予定．
+
+    " Colorscheme & Statusbar
+    call dein#add('rafi/awesome-vim-colorschemes') " カラースキーマ詰め合わせ
+    call dein#add('itchyny/lightline.vim') " ステータスライン(&タブライン)カスタマイズ 
+    call dein#add('mengelbrecht/lightline-bufferline') " ウィンドウ上部のタブを拡張
+
+    call dein#end()
+    call dein#save_state()
+endif
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" プラグインが入っていなければvim起動時に自動でインストール
+if dein#check_install()
+    call dein#install()
+endif
+" filetype plugin on
+filetype plugin indent on
+syntax enable
+
+
 
 """""""""""""""""""""""""""""
 " Language Server Protocol - コーディングサポート with python3
 """""""""""""""""""""""""""""
-call dein#add('prabirshrestha/vim-lsp') " LSP本体
-call dein#add('prabirshrestha/async.vim') " vim-lspの補助
-call dein#add('mattn/vim-lsp-settings') " Language Server の簡単インストール
-call dein#add('lighttiger2505/deoplete-vim-lsp') " Deoplete 連携
-call dein#add('liuchengxu/vista.vim') " LSP経由でタグジャンプなどを可能にする
-
 " vim-lsp 設定
 let g:lsp_auto_enable = 1 " LSP 有効化
 let g:lsp_diagnostics_enabled = 1 " Lint有効化
@@ -244,19 +305,7 @@ let g:vista_executive_for = {'python':'vim_lsp'} " Vista の実行プラグイ�
 """""""""""""""""""""""""""""
 " Deoplete - 補完プラグインと拡張プラグイン with python3
 """""""""""""""""""""""""""""
-call dein#add('Shougo/deoplete.nvim')
-if !has('nvim')
-    call dein#add('roxma/nvim-yarp')
-    call dein#add('roxma/vim-hug-neovim-rpc')
-endif
-call dein#add('ujihisa/neco-look') " 英単語補完 (lookコマンド依存)
-call dein#add('Shougo/neco-vim') " vimコマンド補完
-call dein#add('zchee/deoplete-zsh') " zshコマンド補完 
-call dein#add('Shougo/echodoc.vim') " 関数等の引数を表示
-call dein#add('Shougo/neosnippet-snippets') " スニペット集
-call dein#add('Shougo/neosnippet.vim') " スニペット補完の動作定義
-
-" Deopleteの設定
+" Deoplete 設定
 let g:deoplete#enable_at_startup = 1
 call deoplete#custom#var('auto_complete_delay', 10) " 補完に掛かる時間を指定(ms)
 call deoplete#custom#var('auto_refresh_delay', 10) " 非同期時から同期に移る時間(ms)
@@ -274,7 +323,7 @@ inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 imap <expr><C-k> neosnippet#expandable_or_jumpable() ?"\<Plug>(neosnippet_expand_or_jump)" : ""
 smap <expr><C-k> neosnippet#expandable_or_jumpable() ?"\<Plug>(neosnippet_expand_or_jump)" : ""
 
-" スニペットの設定
+" neosnippet 設定
 let g:neosnippet#enable_snipmate_compatibility = 1
 let g:neosnippet#enable_completed_snippet = 0
 let g:neosnippet#expand_word_boundary = 1
@@ -283,16 +332,14 @@ if has('conceal')
     set conceallevel=2 concealcursor=niv
 endif
 
-" echodocの設定
+" echodoc 設定
 let g:echodoc#enable_at_startup = 1
 let g:echodoc#type = 'echo'
-
 
 
 """""""""""""""""""""""""""""
 " Defx - ファイラ with python3
 """""""""""""""""""""""""""""
-call dein#add('Shougo/defx.nvim')
 " Ctrl + n でdefx起動. トグル対応. (画面左側に表示)
 nnoremap <silent> <C-n> :<C-u>Defx -toggle -split=vertical -winwidth=30 -direction=topleft<CR>
 " defxウィンドウ内専用キーマップ
@@ -350,7 +397,6 @@ endfunction
 """""""""""""""""""""""""""""
 " Deol - ウィンドウ内で端末起動 with python3
 """""""""""""""""""""""""""""
-call dein#add('Shougo/deol.nvim')
 " <Leader> + i でdeol 起動
 if has('nvim')
     " floating window版
@@ -376,18 +422,11 @@ endfunction
 """""""""""""""""""""""""""""
 " 入力UI拡張 (スモールプラグイン限定)
 """""""""""""""""""""""""""""
-call dein#add('jiangmiao/auto-pairs') " 括弧やクォーテーションなどを補間
-
-call dein#add('machakann/vim-sandwich') " 記号ペアで範囲を囲んだり置換や削除を行う
-
-call dein#add('tomtom/tcomment_vim') " gcc でコメントアウト
-
-call dein#add('junegunn/vim-easy-align') " 表示を整える
-" ga 入力後,指定の文字を入力して実行 (in visual mode)
+" vim-easy-align 設定 [ga 入力後,指定の文字を入力して実行 (in visual mode)]
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
-call dein#add('terryma/vim-expand-region') " vi) vi' などを使わずに登録キー連打でスコープ範囲を選択
+" vim-expand-region 設定
 " キーマップ
 vmap v <Plug>(expand_region_expand)
 vmap V <Plug>(expand_region_shrink)
@@ -411,26 +450,24 @@ let g:expand_region_text_objects = {
 """""""""""""""""""""""""""""
 " 表示UI拡張
 """""""""""""""""""""""""""""
-" call dein#add()
-call dein#add('nathanaelkane/vim-indent-guides') " インデントの可視化
+" vim-indent-guides 設定
 let g:indent_guides_enable_on_vim_startup = 1 " indent guideの有効
 let g:indent_guides_auto_colors = 0 " 自動配色の有効化
 let g:indent_guides_guide_size = 1 " ガイドの幅を設定
 
-call dein#add('machakann/vim-highlightedyank') " ヤンクのハイライト可視化
+" vim-highlightedyank 設定
 highlight HighlightedyankRegion cterm=reverse gui=reverse 
 let g:highlightedyank_highlight_duration = 500 " ハイライト表示する時間[ms]
 
-
-call dein#add('osyo-manga/vim-over') " 置換時にプレビュー表示(置換の基本コマンド: %s/before/after/g[c])
-" Ctrl+s でover.vimの起動 
+" vim-over 設定
+" Ctrl+s で起動 
 nnoremap <C-s> :OverCommandLine <CR>%s//g<Left><Left>
 " ノーマルモード時に sub と入力することでカーソル下の単語をハイライト付きで置換
 nnoremap sub :OverCommandLine<CR>%s/<C-r><C-w>//g<Left><Left>
 " ノーマルモード時に subp と入力することでコピーした文字列をハイライト付きで置換
 nnoremap subp y:OverCommandLine<CR>%s!<C-r>=substitute(@0, '!', '\\!','g')<CR>!!gI<Left><Left><Left>
 
-call dein#add('andymass/vim-matchup') " 構文のスコープ対応ジャンプ&ハイライトに対応するプラグイン
+" vim-matchup 設定
 let g:loaded_matchit = 1 " matchupの有効化
 " スコープ対応の可視化色
 augroup matchup_matchparen_highlight
@@ -442,16 +479,16 @@ augroup END
 """""""""""""""""""""""""""""
 " 検索UI拡張
 """""""""""""""""""""""""""""
-call dein#add('rhysd/accelerated-jk') " jk移動の高速化
+" accelerated-jk 設定
 nmap j <Plug>(accelerated_jk_gj)
 nmap k <Plug>(accelerated_jk_gk)
 
-call dein#add('rhysd/clever-f.vim') " f キージャンプの拡張
+" clever-f.vim 設定
 let g:clever_f_across_no_line = 0 " 検索対象が現在の行に無ければ次の行へ移動
 let g:clever_f_smart_case = 1 " 小文字検索->大文字&小文字を対象 大文字検索->大文字のみ対象
 let g:clever_f_use_migemo = 0 " 日本語とかの検索に対応(微妙に対応が悪いので無効化)
 
-call dein#add('easymotion/vim-easymotion') " 特定文字へカーソルジャンプ
+" vim-easymotion 設定
 let g:EasyMotion_do_mapping = 0 " デフォルトキーマッピングの無効化
 let g:EasyMotion_smartcase = 1 " 小文字入力時,大文字も含めて検索
 let g:EasyMotion_keys = 'ASDFGHJKL' " ジャンプ先のターゲットキーを指定
@@ -461,20 +498,12 @@ nmap ss <Plug>(easymotion-overwin-f2)
 xmap ss <Plug>(easymotion-overwin-f2)
 omap ss <Plug>(easymotion-overwin-f2)
 
-call dein#add('nelstrom/vim-visual-star-search') " ヴィジュアルモードの選択範囲を「*」で検索
-
-call dein#add('osyo-manga/vim-anzu') " 検索位置を表示(マッチ数等も表示)
+" vim-anzu 設定
 " ハイライト箇所の横に (n/MatchNum) 形式で表示
 nmap n <Plug>(anzu-n)<Plug>(anzu-mode)
 nmap N <Plug>(anzu-N)<Plug>(anzu-mode)
 
-
-
-"""""""""""""""""""""""""""""
-" 検索UI拡張
-"""""""""""""""""""""""""""""
-call dein#add('tpope/vim-fugitive') " vim上でgit操作を可能にする
-call dein#add('airblade/vim-gitgutter') " git の diffを左端に表示
+" vim-gitgutter 設定
 set updatetime=100 " タイピング停止から反映されるまでの時間[ms]
 let g:gitgutter_enabled = 1 " プラグインの有効化
 let g:gitgutter_highlight_lines = 0 " 行のハイライトを無効化
@@ -492,25 +521,13 @@ nmap <C-d> <Plug>(GitGutterPrevHunk)
 
 
 """""""""""""""""""""""""""""
-" FZF - あいまい検索による統合検索UI
-"""""""""""""""""""""""""""""
-" TODO FZFの挙動が不審なので，いったん削除
-
-
-"""""""""""""""""""""""""""""
 " Colorscheme & Statusbar
 """""""""""""""""""""""""""""
-call dein#add('rafi/awesome-vim-colorschemes')
-colorscheme tender
-
-call dein#add('itchyny/lightline.vim') " ステータスライン(&タブライン)カスタマイズ 
+colorscheme iceberg
 set showtabline=2 " タブを常に表示
-" ----------------------------------------
-"  lightline フォーマット設定
-" ----------------------------------------
-" lightline 設定
-let g:lightline = {'separator': {'left': '', 'right': ''}, 'subseparator': {'left': '','right': ''}, 'mode_map': {'c': 'NORMAL'},}
 
+" ---------- lightline 設定 ---------- "
+let g:lightline = {'separator': {'left': '', 'right': ''}, 'subseparator': {'left': '','right': ''}, 'mode_map': {'c': 'NORMAL'},}
 " lightline.componet 定義
 let g:lightline.component           = {}
 let g:lightline.component.dir       = '%.35(%{expand("%:h:s?\\S$?\\0/?")}%)'
@@ -560,24 +577,18 @@ let g:lightline.inactive.right = [['lineinfo']]
 let g:lightline.tabline = {}
 let g:lightline.tabline = {'left': [ ['buffers'] ], 'right': [ ['fileformat'], ['fileencoding'], ['filetype'], ['cd'] ]}
 
-
-" ----------------------------------------
-" component 定義
-" ----------------------------------------
+" ---------- component 定義 ---------- "
 function! LightlineModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
   endfunction
-
 function! LightlineReadonly()
   return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
   endfunction
-
 function! LightlineFilename()
   return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
           \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
                   \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
                   endfunction
-
 function! LightlineFugitive()
   if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
       return fugitive#head()
@@ -585,42 +596,31 @@ function! LightlineFugitive()
             return ''
               endif
               endfunction
-
 function! LightlineFileformat()
   return winwidth(0) > 70 ? &fileformat : ''
   endfunction
-
 function! LightlineFiletype()
   return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
   endfunction
-
 function! LightlineFileencoding()
   return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
   endfunction
-
 function! LightlineMode()
   return winwidth(0) > 40 ? lightline#mode() : ''
   endfunction
 function! LspServerStatusForStatusLine()
     return g:lsp#get_server_status()
     endfunction
-
 function! LspWarningNum()
     let s:warning_num = lsp#get_buffer_diagnostics_counts()['warning']
     return s:warning_num == 0 ? '' : 'Warning:' . s:warning_num
 endfunction
-
 function! LspErrorNum()
     let s:error_num = lsp#get_buffer_diagnostics_counts()['error']
     return s:error_num == 0 ? '' : 'Error:' . s:error_num
 endfunction
 
-
-" ----------------------------------------
-"  lightline colorscheme for gruvbox
-" ----------------------------------------
-" how to check color group -> :highlight
-
+" ---------- lightline カラー定義 ---------- "
 " initialization
 command! -bar LightLineUpdate call lightline#init()| call lightline#colorscheme()| call lightline#update()
 
@@ -628,22 +628,22 @@ let g:lightline.colorscheme = 'mypalette'
 let g:pltt = {'inactive': {}, 'normal': {}, 'insert': {}, 'visual': {}, 'replace': {}, 'tabline': {}}
 
 " let s:hoge = [ {guifg}, {guibg}, {ctermfg}, {ctermbg} ]
-let s:base_0 = ['#eeeeee', '#323232', 255, 236]  " basic
-let s:base_1 = ['#323232', '#eeeeee', 236, 255]  " basic reverse
-let s:base_2 = ['#eeeeee', '#323232', 255, 236]  " tabline
+let s:base_0 = ['#c6c8d1', '#1e2132', 252, 235]  " basic
+let s:base_1 = ['#1e2132', '#c6c8d1', 235, 252]  " basic reverse
+let s:base_2 = ['#c6c8d1', '#1e2132', 252, 235]  " tabline
 
 " mode color
-let s:mode_stl = ['#73cef4', '#282c34', 81 , 238]
-let s:mode_nor = ['#282c34', '#73cef4', 235, 81 ]
-let s:mode_ins = ['#282c34', '#9faa00', 235, 142]
-let s:mode_vis = ['#282c34', '#ffc24b', 238, 215]
-let s:mode_rep = ['#282c34', '#f43753', 238, 203]
-let s:mode_war = ['#ffc24b', '#323232', 215, 236]
-let s:mode_err = ['#f43753', '#323232', 203, 236]
+let s:mode_stl = ['#e27878', '#1e2132', 203, 235]
+let s:mode_nor = ['#282828', '#84a0c6', 235, 110]
+let s:mode_ins = ['#282828', '#a093c7', 235, 140]
+let s:mode_vis = ['#282828', '#e2a478', 235, 216]
+let s:mode_rep = ['#282828', '#818596', 235, 234]
+let s:mode_war = ['#e2a478', '#1e2132', 216, 236]
+let s:mode_err = ['#e27878', '#1e2132', 203, 236]
 
 " tabline
-let s:tab_f = ['#c9d05c', '#282828', 185, 235]
-let s:tab_b = ['#999999', '#323232', 246, 236]
+let s:tab_f = ['#a093c7', '#161821', 140, 234]
+let s:tab_b = ['#c6c8d1', '#1e2132', 252, 235]
 
 " statusline basic
 let g:STL_BASECOLOR = s:base_0
@@ -681,33 +681,19 @@ let g:pltt.normal.error   = [s:mode_err]
 let g:lightline#colorscheme#mypalette#palette = g:pltt
 unlet g:pltt g:STL_BASECOLOR g:STL_ATTRIBUTECOLOR
 
-
-call dein#add('mengelbrecht/lightline-bufferline') " ウィンドウ上部のタブを拡張
+" lightline-bufferline 設定
 let g:lightline#bufferline#show_number = 0 " バッファ名に番号を表示しない
 let g:lightline#bufferline#shorten_path = 1 " バッファ名を表示するときにパスを省略型で表示
 let g:lightline#bufferline#unnamed = '[E]' " 名前の付いていないバッファが表示された時の標記方法
 let g:lightline#bufferline#filename_modifier = '%f' " バッファの表示設定(相対パスで表示)
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-call dein#end()
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" プラグインが入っていなければvim起動時に自動でインストール
-if dein#check_install()
-    call dein#install()
-endif
-" filetype plugin on
-filetype plugin indent on
-syntax enable
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 " GVim用設定ファイル
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 if has('win32')
-    "----------------------
-    " Screen UI
-    "----------------------
+    " Screen UI 設定
     set lines=30 " ウインドウの高さ
     set columns=100 " ウインドウの幅
     set cmdheight=1 " コマンドラインの高さ(GUI使用時)
@@ -722,17 +708,13 @@ if has('win32')
     set guioptions-=b
     set guioptions-=h
 
-    "----------------------
-    " Mouse UX
-    "----------------------
+    " Mouse UX 設定
     set mouse=a " どのモードでもマウスを使えるようにする
     set nomousefocus " マウスの移動でフォーカスを自動的に切替えない (mousefocus:切り替える)
     set mousehide " 入力時にマウスポインタを隠す (nomousehide:隠さない)
     " set guioptions+=a " ビジュアル選択(D&D他)を自動的にクリップボードへ (:help guioptions_a)
 
-    "----------------------
-    " Input for japanese
-    "----------------------
+    " Input for japanese 設定
     if has('multi_byte_ime') || has('xim') " IME ON時のカーソルの色を設定(設定例:紫)
         highlight CursorIM guibg=Purple guifg=Purple
         set iminsert=0 imsearch=0 " 挿入モード・検索モードでのデフォルトのIME状態設定 (8.0.1114 でデフォルトになったが念のため残してある)
@@ -740,9 +722,7 @@ if has('win32')
         inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
     endif
 
-    "----------------------
-    " Font
-    "----------------------
+    " Font 設定
     " フォント確認 : Win+R実行後, %windir%\fonts を入力 (Cica[https://github.com/miiton/Cica/releases]などがオススメ)
     set guifont=Cica-Regular:h16:cSHIFTJIS  " 使わなくても良いかも(くどい)
     " set guifont=MS_Gothic:h12:cSHIFTJIS  " Default
