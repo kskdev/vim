@@ -153,8 +153,20 @@ endif
 "  | $$$$$$$/|  $$$$$$$| $$| $$  | $$
 "  |_______/  \_______/|__/|__/  |__/
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Python3インタープリターのパス指定(2系を指定する必要はほぼ無いかも)
-let g:python3_path = substitute(system('which python3'),"\n","","")
+if has('win64') && has('win32') " 64bit & 32bit windows用の設定
+    " Pythonインタープリターのパス指定
+    let g:python3_path = expand('~\Anaconda3\python.exe')
+    " Gvimで [vim-hug-neovim-rpc] Vim(python):E370: ライブラリ python27.dll をロードできませんでした.という状況に対する対応 : .dll のファイル位置を指定する
+    " 参考 : https://github.com/vim/vim-win32-installer/issues/48
+    " if has('vim')
+        let &pythonthreedll = expand('~\Anaconda3\python36.dll')
+    " endif
+
+elseif has('unix') " Linux用の設定
+    " Python3インタープリターのパス指定(2系を指定する必要はほぼ無いかも)
+    let g:python3_path = substitute(system('which python3'),"\n","","")
+endif
+
 let g:python3_host_prog = g:python3_path
 set pyxversion=3
 
@@ -498,12 +510,6 @@ set showtabline=2 " タブを常に表示
 " ----------------------------------------
 " lightline 設定
 let g:lightline = {'separator': {'left': '', 'right': ''}, 'subseparator': {'left': '','right': ''}, 'mode_map': {'c': 'NORMAL'},}
-" for powerline (with Cica-font by brew cask install font-cica)
-" 様々な導入方法があるが個人的にこれが一番楽だった(MacOS) : https://joppot.info/2018/11/05/4215
-" シンボル一覧 : https://github.com/ryanoasis/powerline-extra-symbols
-" Cica font などが有効な場合にコメントアウトして使うが良い...
-" let g:lightline = {'separator': {'left': "\ue0c6", 'right': "\ue0c7"}, 'subseparator': {'left': "\ue0c4", 'right': "\ue0c5"}, 'mode_map': {'c': 'NORMAL'},}
-" let g:lightline = {'separator': {'left': "\ue0b0", 'right': "\ue0b2"}, 'subseparator': {'left': "\ue0b1", 'right': "\ue0b3"}, 'mode_map': {'c': 'NORMAL'},}
 
 " lightline.componet 定義
 let g:lightline.component           = {}
@@ -679,7 +685,7 @@ unlet g:pltt g:STL_BASECOLOR g:STL_ATTRIBUTECOLOR
 call dein#add('mengelbrecht/lightline-bufferline') " ウィンドウ上部のタブを拡張
 let g:lightline#bufferline#show_number = 0 " バッファ名に番号を表示しない
 let g:lightline#bufferline#shorten_path = 1 " バッファ名を表示するときにパスを省略型で表示
-let g:lightline#bufferline#unnamed = '[  ]' " 名前の付いていないバッファが表示された時の標記方法
+let g:lightline#bufferline#unnamed = '[E]' " 名前の付いていないバッファが表示された時の標記方法
 let g:lightline#bufferline#filename_modifier = '%f' " バッファの表示設定(相対パスで表示)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -695,3 +701,54 @@ endif
 filetype plugin indent on
 syntax enable
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" GVim用設定ファイル
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has('win32')
+    "----------------------
+    " Screen UI
+    "----------------------
+    set lines=30 " ウインドウの高さ
+    set columns=100 " ウインドウの幅
+    set cmdheight=1 " コマンドラインの高さ(GUI使用時)
+    set guioptions-=e " タブバーCUI化
+    set guioptions-=T " ツールバー非表示
+    set guioptions-=m " メニューバー非表示
+    " スクロールバー非表示(左右/水平)
+    set guioptions-=r
+    set guioptions-=R
+    set guioptions-=l
+    set guioptions-=L
+    set guioptions-=b
+    set guioptions-=h
+
+    "----------------------
+    " Mouse UX
+    "----------------------
+    set mouse=a " どのモードでもマウスを使えるようにする
+    set nomousefocus " マウスの移動でフォーカスを自動的に切替えない (mousefocus:切り替える)
+    set mousehide " 入力時にマウスポインタを隠す (nomousehide:隠さない)
+    " set guioptions+=a " ビジュアル選択(D&D他)を自動的にクリップボードへ (:help guioptions_a)
+
+    "----------------------
+    " Input for japanese
+    "----------------------
+    if has('multi_byte_ime') || has('xim') " IME ON時のカーソルの色を設定(設定例:紫)
+        highlight CursorIM guibg=Purple guifg=Purple
+        set iminsert=0 imsearch=0 " 挿入モード・検索モードでのデフォルトのIME状態設定 (8.0.1114 でデフォルトになったが念のため残してある)
+        " 挿入モードでのIME状態を記憶させない場合、次行のコメントを解除
+        inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
+    endif
+
+    "----------------------
+    " Font
+    "----------------------
+    " フォント確認 : Win+R実行後, %windir%\fonts を入力 (Cica[https://github.com/miiton/Cica/releases]などがオススメ)
+    set guifont=Cica-Regular:h16:cSHIFTJIS  " 使わなくても良いかも(くどい)
+    " set guifont=MS_Gothic:h12:cSHIFTJIS  " Default
+    set linespace=1 " 行間隔の設定
+    " 一部のUCS文字の幅を自動計測して決める
+    if has('kaoriya')
+        set ambiwidth=auto
+    endif
+endif
