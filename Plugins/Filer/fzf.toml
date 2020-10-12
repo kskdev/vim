@@ -8,6 +8,7 @@
 # - 何より余計なインストールの手間を省くことが目標
 # - fzf & ripgrep インストールについて自作した方が早いまである
 # - floatingwindowをオサレにしたい
+# - 結論 : 実行ファイルを本レポジトリで保有する(ダメな気がする....)
 
 
 # 曖昧検索(ファジー検索)インターフェース
@@ -15,81 +16,8 @@
 repo = 'junegunn/fzf'
 merged = 0
 lazy = 1
-hook_post_update = '''
-" --- fzfのインストール	---
-" バイナリファイルのディレクトリ
-let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
-if has('mac')
-    try
-        let g:dein#plugin.build = './install --all'
-        throw "Error messege: Cannot install fzf..."
-    catch /error/  " エラーメッセージにマッチする正規表現
-    catch          " 空の場合は必ずマッチする
-        " ... 例外処理 ...
-        if strlen(glob(s:fzf_bin_dir . '/fzf.exe')) == 0
-            execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-darwin_amd64.tgz'
-            execute '!tar -zxvf fzf-0.18.0-darwin_amd64.tgz'
-            execute '!mv fzf' s:fzf_bin_dir
-            execute '!rm -rf *.tgz'
-        endif
-    endtry
-elseif has('unix')
-    try
-        let g:dein#plugin.build = './install --all'
-        throw "Error messege: Cannot install fzf..."
-    catch /error/  " エラーメッセージにマッチする正規表現
-    catch          " 空の場合は必ずマッチする
-        " ... 例外処理 ...
-        if strlen(glob(s:fzf_bin_dir . '/fzf.exe')) == 0
-            execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-linux_amd64.tgz'
-            execute '!tar -zxvf fzf-0.18.0-linux_amd64.tgz'
-            execute '!mv fzf' s:fzf_bin_dir
-            execute '!rm -rf *.tgz'
-        endif
-    endtry
-elseif has('win64')
-    " windowsの場合ビルド方法が分からないため,バイナリを取得(かなり強引)
-    if strlen(glob(s:fzf_bin_dir . '/fzf.exe')) == 0
-        execute '!curl -OLsS https://github.com/junegunn/fzf-bin/releases/download/0.18.0/fzf-0.18.0-windows_amd64.zip'
-        execute '!unzip fzf-0.18.0-windows_amd64.zip'
-        execute '!move fzf.exe' s:fzf_bin_dir
-        execute '!del *.zip'
-    endif
-else
-endif
-
-" --- ripgrep のインストール ---
-" ripgrepのバイナリを強引に取得
-if has('mac')
-    if strlen(glob(s:fzf_bin_dir . '/rg')) == 0
-        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep-11.0.2-x86_64-apple-darwin.tar.gz'
-        execute '!tar -zxvf ripgrep-11.0.2-x86_64-apple-darwin.tar.gz'
-        execute '!mv ./ripgrep*/rg' s:fzf_bin_dir
-        execute '!rm -rf ./ripgrep-11.0.2-x86_64-*'
-    endif
-    
-elseif has('unix')
-    let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
-    if strlen(glob(s:fzf_bin_dir . '/rg')) == 0
-        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep-11.0.2-x86_64-unknown-linux-musl.tar.gz'
-        execute '!tar -zxvf ripgrep-11.0.2-x86_64-unknown-linux-musl.tar.gz'
-        execute '!mv ./ripgrep*/rg' s:fzf_bin_dir
-        execute '!rm -rf ./ripgrep-11.0.2-x86_64-unknown-linux-musl*'
-    endif
-
-elseif has('win64')
-    if strlen(glob(s:fzf_bin_dir . '/rg.exe')) == 0
-        execute '!curl -OLsS https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep-11.0.2-x86_64-pc-windows-gnu.zip'
-        execute '!unzip ripgrep-11.0.2-x86_64-pc-windows-gnu.zip'
-        execute '!move rg.exe' s:fzf_bin_dir
-        execute '!del *.zip'
-        execute '!del *.ps1'
-    endif
-else
-endif
-'''
 hook_add = '''
-" Windows 環境でripgrep を利用できるようにPATHを通す
+" fzf 及び rg の実行ファイルをここに置く
 let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
 if has('win64')
     let $PATH .= ';' . s:fzf_bin_dir
