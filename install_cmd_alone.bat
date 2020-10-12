@@ -22,14 +22,14 @@ ECHO LaunchGVim(色々ウィンドウが立ち上がる(即終了で良い))
 gvim.exe
 
 REM FZF用バイナリを所定の場所にコピー(BIN_SRCは適宜変更すること！)
-SET BIN_SRC=%CURRENT_DIR%\bins\fzf_bin\fzf-0.23.0-windows_amd64\fzf.exe
+SET BIN_SRC=%CURRENT_DIR%\bins\fzf_bin\fzf-0.23.0-windows_amd64\fzf
 SET BIN_DST=%HOME_PATH%\.vim\dein\repos\github.com\junegunn\fzf\bin\fzf.exe
 ECHO ----------------------------------
 ECHO "Copy ::: %BIN_SRC%   ->   %BIN_DST%"
 XCOPY %BIN_SRC% %BIN_DST% 
 
 REM FZF用(Ripgrep)バイナリを所定の場所にコピー(BIN_SRCは適宜変更すること！)
-SET BIN_SRC=%CURRENT_DIR%\bins\rg\ripgrep-12.1.1-x86_64-pc-windows-msvc\rg.exe
+SET BIN_SRC=%CURRENT_DIR%\bins\rg\ripgrep-12.1.1-x86_64-pc-windows-msvc\rg
 SET BIN_DST=%HOME_PATH%\.vim\dein\repos\github.com\junegunn\fzf\bin\rg.exe
 ECHO ----------------------------------
 ECHO "Copy ::: %BIN_SRC%   ->   %BIN_DST%"
