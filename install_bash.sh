@@ -17,6 +17,12 @@ if [ "$(uname)" == "Darwin" ]; then
     nvim -e -c ":silent! call dein#install() | :q"
     nvim -e -c ":Defx | :silent! UpdateRemotePlugins | :q"
 
+    SOURCE_FZF="./bins/fzf_bin/fzf-0.23.0-linux_amd64/fzf"
+    SOURCE_RIP="./bins/rg/ripgrep-12.1.1-x86_64-unknown-linux-musl/rg"
+    TARGET_FZF="${HOME}/.config/nvim/repos/github.com/junegunn/fzf/bin/"
+    cp ${SOURCE_FZF} ${TARGET_FZF}
+    cp ${SOURCE_RIP} ${TARGET_FZF}
+
 elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
     # Windows (MinGW series???)
     SOURCE_VIMRC="./vimrc"
@@ -47,6 +53,12 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
 
     nvim -e -c ":silent! call dein#install() | :q!"
     nvim -e -c ":Defx | :silent! UpdateRemotePlugins | :q"
+
+    SOURCE_FZF="./bins/fzf_bin/fzf-0.23.0-linux_amd64/fzf"
+    SOURCE_RIP="./bins/rg/ripgrep-12.1.1-x86_64-unknown-linux-musl/rg"
+    TARGET_FZF="${HOME}/.config/nvim/repos/github.com/junegunn/fzf/bin/"
+    cp ${SOURCE_FZF} ${TARGET_FZF}
+    cp ${SOURCE_RIP} ${TARGET_FZF}
 else
     echo "Unsupported..."
 fi
