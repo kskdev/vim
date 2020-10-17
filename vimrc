@@ -1,3 +1,13 @@
+" //        外部依存        //
+" LSP用 pythonモジュール : pip install python-language-server
+" 暗黒美無王製プラグイン : pip install pynvim
+" Python3インタープリターのパス指定(2系を指定する必要はほぼ無いかも)
+" Python3のパスを指定(一部プラグインがPython3に依存.適宜書き換えが必要)
+let g:python3_path_win = expand('~\Anaconda3\python.exe')
+let g:python3_path_win_dll = expand('~\Anaconda3\python36.dll')
+let g:python3_path_lin = substitute(system('which python3'),"\n","","")
+let g:python3_path_mac = substitute(system('which python3'),"\n","","")
+
 "//		vim setting and tips		//
 " Backspaceで何でも文字を削除できるように設定
 set backspace=start,eol,indent
@@ -173,38 +183,36 @@ if has('mac') " mac用の設定
     " ヤンクをClipboardに入れる
     set clipboard+=unnamed
     " Pythonインタープリターのパス指定
-    let g:python3_path = substitute(system('which python3'),"\n","","")
+    let g:python3_path = g:python3_path_mac
     " プラグインのパス指定
-    let s:neovim_dein_dir = expand('~/.config/nvim')
     let s:vim_dein_dir = expand('~/.vim/dein')
-    let s:neovim_toml_dir = expand('~/.config/nvim')
     let s:vim_toml_dir = expand('~/.vim/dein')
+    let s:neovim_dein_dir = expand('~/.config/nvim')
+    let s:neovim_toml_dir = expand('~/.config/nvim')
 
 elseif has('unix') " unix用の設定
     " ヤンクをClipboardに入れる
     set clipboard+=unnamedplus
     " Pythonインタープリターのパス指定
-    let g:python3_path = expand(substitute(system('which python3'),"\n","",""))
+    let g:python3_path = g:python3_path_lin
     " プラグインのパス指定
-    let s:neovim_dein_dir = expand('~/.config/nvim')
     let s:vim_dein_dir = expand('~/.vim/dein')
-    let s:neovim_toml_dir = expand('~/.config/nvim')
     let s:vim_toml_dir = expand('~/.vim/dein')
+    let s:neovim_dein_dir = expand('~/.config/nvim')
+    let s:neovim_toml_dir = expand('~/.config/nvim')
 
 elseif has('win64') && has('win32') " 64bit & 32bit windows用の設定
     " Pythonインタープリターのパス指定
-    let g:python3_path = expand('~\Anaconda3\python.exe')
-    " プラグインのパス指定
-    let s:neovim_dein_dir = expand('~\.cache\dein')
-    let s:vim_dein_dir = expand('~\GVim')
-    let s:neovim_toml_dir = expand('~\AppData\Local\nvim')
-    let s:vim_toml_dir = expand('~\GVim')
-    " Gvimで [vim-hug-neovim-rpc] Vim(python):E370: ライブラリ python27.dll をロードできませんでした
-    " という状況に対する対応 : .dll のファイル位置を指定する
+    let g:python3_path = g:python3_path_win
+    " Gvimで [vim-hug-neovim-rpc] Vim(python):E370: ライブラリ python27.dll をロードできませんでした.という状況に対する対応
     " 参考 : https://github.com/vim/vim-win32-installer/issues/48
-    " if has('vim')
-        let &pythonthreedll = expand('~\Anaconda3\python36.dll')
-    " endif
+    let &pythonthreedll = g:python3_path_win_dll
+    " プラグインのパス指定
+    let s:vim_dein_dir = expand('~\GVim')
+    let s:vim_toml_dir = expand('~\GVim')
+    let s:neovim_dein_dir = expand('~\.cache\dein')
+    let s:neovim_toml_dir = expand('~\AppData\Local\nvim')
+
 elseif has('win32unix') " Cygwin固有の設定
     echo 'No implementation!'
 endif
