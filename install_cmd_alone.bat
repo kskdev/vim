@@ -1,13 +1,13 @@
 @ECHO OFF
 REM --- plugin installer for GVim windows
 
-REM ホームディレクトリとカレントディレクトリを変数に格納
+REM �z�[���f�B���N�g���ƃJ�����g�f�B���N�g����ϐ��Ɋi�[
 SET HOME_PATH=%HOMEDRIVE%%HOMEPATH%
 SET CURRENT_DIR=%~dp0
 ECHO %HOME_PATH%
 ECHO %CURRENT_DIR%
 
-REM ホームディレクトリにvimrc_alone をリネームしてコピー
+REM �z�[���f�B���N�g����vimrc_alone �����l�[�����ăR�s�[
 ECHO ----------------------------------------
 ECHO "Rename Copy ::: %CURRENT_DIR%vimrc_alone   ->   %HOME_PATH%\_vimrc"
 XCOPY %CURRENT_DIR%vimrc_alone %HOME_PATH%\_vimrc
@@ -16,26 +16,26 @@ ECHO ----------------------------------------
 ECHO "Rename Copy ::: %CURRENT_DIR%vimrc_alone   ->   %HOME_PATH%\_gvimrc"
 XCOPY %CURRENT_DIR%vimrc_alone %HOME_PATH%\_gvimrc
 
-REM インストールのためにGVimを起動(環境変数にパスが通っていると動く)
+REM �C���X�g�[���̂��߂�GVim���N��(���ϐ��Ƀp�X���ʂ��Ă���Ɠ���)
 ECHO -------------------------------------
-ECHO LaunchGVim(色々ウィンドウが立ち上がる(即終了で良い))
+ECHO LaunchGVim(�F�X�E�B���h�E�������オ��(���I���ŗǂ�))
 gvim.exe
 
-REM FZF用バイナリを所定の場所にコピー(BIN_SRCは適宜変更すること！)
+REM FZF�p�o�C�i��������̏ꏊ�ɃR�s�[(BIN_SRC�͓K�X�ύX���邱�ƁI)
 SET BIN_SRC=%CURRENT_DIR%\bins\fzf_bin\fzf-0.23.0-windows_amd64\fzf
 SET BIN_DST=%HOME_PATH%\.vim\dein\repos\github.com\junegunn\fzf\bin\fzf.exe
 ECHO ----------------------------------
 ECHO "Copy ::: %BIN_SRC%   ->   %BIN_DST%"
 XCOPY %BIN_SRC% %BIN_DST% 
 
-REM FZF用(Ripgrep)バイナリを所定の場所にコピー(BIN_SRCは適宜変更すること！)
+REM FZF�p(Ripgrep)�o�C�i��������̏ꏊ�ɃR�s�[(BIN_SRC�͓K�X�ύX���邱�ƁI)
 SET BIN_SRC=%CURRENT_DIR%\bins\rg\ripgrep-12.1.1-x86_64-pc-windows-msvc\rg
 SET BIN_DST=%HOME_PATH%\.vim\dein\repos\github.com\junegunn\fzf\bin\rg.exe
 ECHO ----------------------------------
 ECHO "Copy ::: %BIN_SRC%   ->   %BIN_DST%"
 XCOPY %BIN_SRC% %BIN_DST% 
 
-REM 挙動確認のために再度GVimを起動
+REM �����m�F�̂��߂ɍēxGVim���N��
 ECHO -------------------------------------
-ECHO Re-launchGVim(色々ウィンドウが立ち上がる(即終了で良い))
+ECHO Re-launchGVim(�F�X�E�B���h�E�������オ��(���I���ŗǂ�))
 gvim.exe

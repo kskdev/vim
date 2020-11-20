@@ -1,23 +1,23 @@
-" How to this file.
+" How to use this file.
 " このファイルを .vimrc として，HOMEディレクトリに配置して，vimを起動するだけ．
-" Windows Gvim : このファイルを _gvimrc _vimrc にリネームしてホームディレクトリに配置. [_gvimrc or _vimrc だけだとカラースキーマが反映されなかったり，一部のコマンドが受け付けなかったりする．(原因は調べてない)]
+" Installer for Windows: ./install_cmd_alone.bat
+" Installer for MacOS/Linux: ./install_vim_zsh.sh
+"
+" Windows Gvim対応がメイン : このファイルを _gvimrc _vimrc にリネームしてホームディレクトリに配置. [_gvimrc or _vimrc だけだとカラースキーマが反映されなかったり，一部のコマンドが受け付けなかったりする．(原因は調べてない)]
 " 現状FZFがうまく機能していないので省略しているが，それ以外はほぼこのファイル単独で動作する
 " 確認状況 : 
 " Ubuntu18.04 on WSL
-" GVim8.2 (vim82-kaoriya-win64-8.2.0087-20200106.zipのファイル群を C:/Program files/Vim/に配置．さらに，Python3.6.1+ が必要)
-
-" //        外部依存        //
-" LSP用 pythonモジュール : pip install python-language-server
-" 暗黒美無王製プラグイン : pip install pynvim
-" Python3インタープリターのパス指定(2系を指定する必要はほぼ無いかも)
-" Python3のパスを指定(一部プラグインがPython3に依存.適宜書き換えが必要)
-let g:python3_path_win = expand('~\Anaconda3\python.exe')
-let g:python3_path_win_dll = expand('~\Anaconda3\python36.dll')
-let g:python3_path_lin = substitute(system('which python3'),"\n","","")
-let g:python3_path_mac = substitute(system('which python3'),"\n","","")
-
+" GVim8.2 (vim82-kaoriya-win64-8.2.0087-20200106.zipのファイル群を C:/Program files/Vim/に配置)
+" 外部依存のPython を削除してほぼvimscriptで完結するようにプラグインを再考
+" せいぜい,FZFで利用するバイナリファイル程度
+" TODO 本当にPython
+" の依存から脱却できているかは微妙.(vim-lspは使っているかもしれないため...)
 
 " //		vim setting and tips		//
+" vim起動時にReplace Modeで起動されてしまう現象の対策
+" 詳しくは : https://github.com/vim-jp/issues/issues/578
+set t_u7=
+set t_RV=
 " Backspaceで何でも文字を削除できるように設定
 set backspace=start,eol,indent
 " バッファの文字コードの設定
@@ -167,21 +167,6 @@ endif
 "  | $$$$$$$/|  $$$$$$$| $$| $$  | $$
 "  |_______/  \_______/|__/|__/  |__/
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" OS別にPython3インタープリターを指定
-if has('win64') && has('win32') " 64bit & 32bit windows用の設定
-    let g:python3_path = g:python3_path_win
-    " Gvimで [vim-hug-neovim-rpc] Vim(python):E370: ライブラリ python27.dll をロードできませんでした.という状況に対する対応 : .dll のファイル位置を指定する
-    " 参考 : https://github.com/vim/vim-win32-installer/issues/48
-    let &pythonthreedll = g:python3_path_win_dll
-
-elseif has('unix') " Linux用の設定
-    let g:python3_path = g:python3_path_lin
-elseif has('mac') " Mac用の設定
-    let g:python3_path = g:python3_path_mac
-endif
-
-let g:python3_host_prog = g:python3_path
-set pyxversion=3
 
 " viとの互換を切る
 if &compatible 
@@ -203,43 +188,33 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" if dein#load_state(g:dein_dir)
+if dein#load_state(g:dein_dir)
 call dein#begin(g:dein_dir)
 call dein#add(s:dein_repo_dir) " dein.vim 本体
 
-" Language Server Protocol - コーディングサポート with python3
-" 必要モジュール : python-language-server
+" Language-Server-Protocol
 call dein#add('prabirshrestha/vim-lsp') " LSP本体
-call dein#add('prabirshrestha/async.vim') " vim-lspの補助
 call dein#add('mattn/vim-lsp-settings') " Language Server の簡単インストール
-call dein#add('lighttiger2505/deoplete-vim-lsp') " Deoplete 連携
 call dein#add('liuchengxu/vista.vim') " LSP経由でタグジャンプなどを可能にする
 
-call dein#add('jmcantrell/vim-virtualenv') " 仮想環境回りを云々かんぬんする
-
-" Deoplete - 補完プラグインと拡張プラグイン with python3
-" 必要モジュール : pynvim
-call dein#add('Shougo/deoplete.nvim')
-if !has('nvim')
-    call dein#add('roxma/nvim-yarp')
-    call dein#add('roxma/vim-hug-neovim-rpc')
-endif
-call dein#add('ujihisa/neco-look') " 英単語補完 (lookコマンド依存)
-call dein#add('Shougo/neco-vim') " vimコマンド補完
-call dein#add('zchee/deoplete-zsh') " zshコマンド補完 
+" 補完形
 call dein#add('Shougo/echodoc.vim') " 関数等の引数を表示
 call dein#add('Shougo/neosnippet-snippets') " スニペット集
 call dein#add('Shougo/neosnippet.vim') " スニペット補完の動作定義
+call dein#add('prabirshrestha/asyncomplete.vim')  " asyncomplete.vim 本体
+" Asyncomplete 拡張
+call dein#add('prabirshrestha/asyncomplete-lsp.vim')  " LSP経由で補完候補に追加
+call dein#add('prabirshrestha/asyncomplete-buffer.vim')  " バッファを補完候補に追加
+call dein#add('prabirshrestha/asyncomplete-file.vim')  " ファイルパスを補完候補に追加
+call dein#add('machakann/asyncomplete-ezfilter.vim')  " fuzzy な補完を実現
 
-" その他Shougoプラグイン(Defx - ファイラ / Deol / 仮想端末) with python3
-" 必要モジュール : pynvim
-call dein#add('Shougo/defx.nvim')
-call dein#add('Shougo/deol.nvim', {'lazy':1})
+" ファイラ
+call dein#add('lambdalisue/fern.vim', {'lazy':0})
 
 " 入力UI拡張 (スモールプラグイン限定)
-call dein#add('jiangmiao/auto-pairs', {'lazy':1}) " 括弧やクォーテーションなどを補間
+call dein#add('jiangmiao/auto-pairs') " 括弧やクォーテーションなどを補間
 call dein#add('machakann/vim-sandwich', {'lazy':1}) " 記号ペアで範囲を囲んだり置換や削除を行う
-call dein#add('tomtom/tcomment_vim', {'lazy':1}) " gcc でコメントアウト
+call dein#add('tomtom/tcomment_vim', {'lazy':0}) " gcc でコメントアウト
 call dein#add('junegunn/vim-easy-align', {'lazy':1}) " 表示を整える
 call dein#add('terryma/vim-expand-region') " vi) vi' などを使わずに登録キー連打でスコープ範囲を選択
 
@@ -263,13 +238,12 @@ call dein#add('junegunn/fzf.vim') " 'junegunn/fzf' のvim用プラグイン
 
 " Colorscheme & Statusbar
 call dein#add('rafi/awesome-vim-colorschemes') " カラースキーマ詰め合わせ
-" call dein#add('cocopon/iceberg.vim') " 素敵なカラースキーマ
 call dein#add('itchyny/lightline.vim') " ステータスライン(&タブライン)カスタマイズ 
 call dein#add('mengelbrecht/lightline-bufferline') " ウィンドウ上部のタブを拡張
 
 call dein#end()
-"  call dein#save_state()
-" endif
+call dein#save_state()
+endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -319,122 +293,180 @@ let g:vista#renderer#icons = {"function":"f", "variable":"v"} " アイコンの�
 let g:vista_default_executive = 'vim_lsp' " Vistaの実行プラグインを指定
 let g:vista_executive_for = {'python':'vim_lsp'} " Vista の実行プラグインを言語別に指定可能
 
+" """""""""""""""""""""""""""""
+" 補完
+" """""""""""""""""""""""""""""
 
-"""""""""""""""""""""""""""""
-" Deoplete - 補完プラグインと拡張プラグイン with python3
-"""""""""""""""""""""""""""""
-" Deoplete 設定
-let g:deoplete#enable_at_startup = 1
-call deoplete#custom#var('auto_complete_delay', 10) " 補完に掛かる時間を指定(ms)
-call deoplete#custom#var('auto_refresh_delay', 10) " 非同期時から同期に移る時間(ms)
-call deoplete#custom#var('auto_complete_start_length', 1) " 補完が始まるまでに必要な文字数
-let g:deoplete#enable_camel_case = 1 " キャメルケースに対応(細かいことはよくわからん)
-let g:deoplete#enable_ignore_case = 1 " 大文字小文字を無視して補完
-call deoplete#custom#var('enable_refresh_always', 1) " 補完機能が作用するたびに候補表示を再表示
-call deoplete#custom#var('max_list', 100) " 補完候補の表示数の最大値を設定
-let g:skip_multibyte = 1 " マルチバイト文字の補完を無効化
-call deoplete#custom#var('num_processes', 4) " deopleteの並列処理のスレッド数 (default : 4)
-" TAB で補完(順選択) / Shift TAB で補完(逆順選択)
-inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+" asyncomplete 設定
+" popup表示までのち円時間[ms] (defaulat:30)
+let g:asyncomplete_popup_delay = 10
+" TAB で補完(順選択)
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+" Shift TAB で補完(逆順選択)
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" リターンキーで補完ポップアップを閉じる
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+
+" asyncompelte-buffer.vim 設定
+call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'allowlist': ['*'],
+    \ 'priority': 10,
+    \ 'blocklist': ['go'],
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ 'config': {
+    \    'max_buffer_size': 5000000,
+    \  },
+    \ }))
+
+" asyncomplete-file.vim 設定
+au User asyncomplete_setup call asyncomplete#register_source(
+    \ asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'allowlist': ['*'],
+    \ 'priority': 20,
+    \ 'completor': function('asyncomplete#sources#file#completor')
+    \ }))
+
+" asyncompelte-ezfilter.vim 設定
+" 大文字小文字を区別しないフィルタリング ver
+let g:asyncomplete_preprocessor =
+  \ [function('asyncomplete#preprocessor#ezfilter#filter')]
+let g:asyncomplete#preprocessor#ezfilter#config = {}
+let g:asyncomplete#preprocessor#ezfilter#config['*'] =
+  \ {ctx, items -> ctx.filter(items)}
+
+" neosnippet 設定
+let g:neosnippet#enable_snipmate_compatibility = 1
+let g:neosnippet#enable_completed_snippet = 1
+let g:neosnippet#expand_word_boundary = 1
 " 補完候補選択中に Ctrl+k でスニペットを展開
 imap <expr><C-k> neosnippet#expandable_or_jumpable() ?"\<Plug>(neosnippet_expand_or_jump)" : ""
 smap <expr><C-k> neosnippet#expandable_or_jumpable() ?"\<Plug>(neosnippet_expand_or_jump)" : ""
 
-" neosnippet 設定
-let g:neosnippet#enable_snipmate_compatibility = 1
-let g:neosnippet#enable_completed_snippet = 0
-let g:neosnippet#expand_word_boundary = 1
-" For conceal markers.
-if has('conceal')
-    set conceallevel=2 concealcursor=niv
-endif
 
 " echodoc 設定
 let g:echodoc#enable_at_startup = 1
 let g:echodoc#type = 'echo'
 
 
-"""""""""""""""""""""""""""""
-" Defx - ファイラ with python3
-"""""""""""""""""""""""""""""
-" Ctrl + n でdefx起動. トグル対応. (画面左側に表示)
-nnoremap <silent> <C-n> :<C-u>Defx -toggle -split=vertical -winwidth=30 -direction=topleft<CR>
-" defxウィンドウ内専用キーマップ
-autocmd FileType defx call s:defx_my_settings()
-function! s:defx_my_settings() abort
-    " ファイル展開(展開後もdefxバッファを開いたまま. nerdtree に近い振る舞い)
-    nnoremap <silent><buffer><expr> <CR> defx#do_action('multi', ['drop', 'vsplit'])
-    " ファイル展開(展開後もdefxバッファ削除)
-    nnoremap <silent><buffer><expr> o defx#do_action('multi', ['drop', 'quit'])
-    " 終了
-    nnoremap <silent><buffer><expr> q defx#do_action('quit')
-    nnoremap <silent><buffer><expr> <ESC> defx#do_action('quit')
-    " カーソル行のファイルパス名をyank
-    nnoremap <silent><buffer><expr> y defx#do_action('yank_path')
-    " カーソル行のファイルをコピー
-    nnoremap <silent><buffer><expr> c defx#do_action('copy')
-    " カーソル行のファイルの移動元を指定
-    nnoremap <silent><buffer><expr> m defx#do_action('move')
-    " copy や move の貼り付け
-    nnoremap <silent><buffer><expr> p defx#do_action('paste')
-    " 新しいディレクトリの作成
-    nnoremap <silent><buffer><expr> d defx#do_action('new_directory')
-    " 新しいファイルの作成
-    nnoremap <silent><buffer><expr> f defx#do_action('new_file')
-    " ファイル(ディレクトリも)削除
-    nnoremap <silent><buffer><expr> x defx#do_action('remove')
-    " ファイル(ディレクトリ)の名前を変更
-    nnoremap <silent><buffer><expr> r defx#do_action('rename')
-    " ドットファイルの表示/非表示切り替え
-    nnoremap <silent><buffer><expr> a defx#do_action('toggle_ignored_files')
-    " 一つ上のディレクトリへ移動
-    nnoremap <silent><buffer><expr> u defx#do_action('cd', ['..'])
-    " ホームディレクトリへ移動
-    nnoremap <silent><buffer><expr> ~ defx#do_action('cd')
-    " vimのワーキングディレクトリを設定
-    nnoremap <silent><buffer><expr> w defx#do_action('change_vim_cwd')
-    " 複数選択
-    nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select') . 'j'
-    " 全選択
-    nnoremap <silent><buffer><expr> * defx#do_action('toggle_select_all')
-    " 直前の操作を実行
-    nnoremap <silent><buffer><expr> . defx#do_action('repeat')
-    " 外部コマンド実行
-    nnoremap <silent><buffer><expr> e defx#do_action('execute_command')
-    " カーソル循環上下移動
-    nnoremap <silent><buffer><expr> j line('.') == line('$') ? 'gg' : 'j'
-    nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
-    " 再描画?
-    nnoremap <silent><buffer><expr> <C-l> defx#do_action('redraw')
-    " ステータスラインにフルパスを表示
-    nnoremap <silent><buffer><expr> <C-g> defx#do_action('print')
-endfunction
 
 
 """""""""""""""""""""""""""""
-" Deol - ウィンドウ内で端末起動 with python3
+" Fern - ファイラ
 """""""""""""""""""""""""""""
-" <Leader> + i でdeol 起動
-if has('nvim')
-    " floating window版
-    nnoremap <silent><Leader>i :<C-u>Deol -split=floating<CR>
-    autocmd FileType deol set winblend=30
-else
-    " ウィンドウ分割版
-    nnoremap <silent><Leader>i :<C-u>Deol -split=horizontal<CR>
-endif
-" deol起動後のターミナルバッファ専用キーマップ
-autocmd FileType deol call s:deol_my_settings()
-function! s:deol_my_settings() abort
-    " ターミナルモード : ESCでバッファを閉じる
-    tnoremap <silent><ESC> <C-\><C-n>:bd!<CR>
-    " ターミナルモード : ESCでバッファを閉じる
-    tnoremap <silent><Leader><Space> <C-\><C-n>:bd!<CR>
-    " ターミナルモード : fffでノーマルモードへ以降
-    tnoremap <silent>fff <C-\><C-n>
-    " Deol コマンドで開いたウィンドウは全て半透明にする。
+" 現状最小構成の設定
+function! s:fern_init() abort
+  let g:fern#disable_viewer_hide_cursor = 1
+  " 終了コマンド
+  nnoremap <buffer> <silent> q :q<CR>
+  nnoremap <buffer> <silent> <C-n> :q<CR>
+  " カーソル位置のファイルの開き方
+  map <buffer> <silent> <C-x> <Plug>(fern-action-open:split)
+  map <buffer> <silent> <C-v> <Plug>(fern-action-open:vsplit)
+  " カーソル行のファイルパス名をyank
+  map <buffer> <silent> y <Plug>(fern-action-yank:path)
+  " カーソル行のファイルをコピー
+  map <buffer> <silent> c <Plug>(fern-action-copy)
+  " カーソル行のファイルの移動元を指定
+  map <buffer> <silent> m <Plug>(fern-action-move)
+  " 新しいディレクトリの作成
+  map <buffer> <silent> d <Plug>(fern-action-new-dir)
+  " 新しいファイルの作成
+  map <buffer> <silent> f <Plug>(fern-action-new-file)
+  " ファイル(ディレクトリも)削除
+  map <buffer> <silent> x <Plug>(fern-action-remove)
+"     " ファイル(ディレクトリ)の名前を変更
+"     nnoremap <silent><buffer><expr> r defx#do_action('rename')
+"     " ドットファイルの表示/非表示切り替え
+"     nnoremap <silent><buffer><expr> a defx#do_action('toggle_ignored_files')
+"     " 一つ上のディレクトリへ移動
+"     nnoremap <silent><buffer><expr> u defx#do_action('cd', ['..'])
+"     " ホームディレクトリへ移動
+"     nnoremap <silent><buffer><expr> ~ defx#do_action('cd')
+"     " vimのワーキングディレクトリを設定
+"     nnoremap <silent><buffer><expr> w defx#do_action('change_vim_cwd')
+"     " 複数選択
+"     nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select') . 'j'
+"     " 全選択
+"     nnoremap <silent><buffer><expr> * defx#do_action('toggle_select_all')
+"     " 直前の操作を実行
+"     nnoremap <silent><buffer><expr> . defx#do_action('repeat')
+"     " 外部コマンド実行
+"     nnoremap <silent><buffer><expr> e defx#do_action('execute_command')
+"     " カーソル循環上下移動
+"     nnoremap <silent><buffer><expr> j line('.') == line('$') ? 'gg' : 'j'
+"     nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
+"     " 再描画?
+"     nnoremap <silent><buffer><expr> <C-l> defx#do_action('redraw')
+"     " ステータスラインにフルパスを表示
+"     nnoremap <silent><buffer><expr> <C-g> defx#do_action('print')
 endfunction
+
+augroup fern-setteings
+  au!
+  au FileType fern call s:fern_init()
+augroup END
+
+nnoremap <silent> <C-n> :Fern . -drawer<CR>
+
+" TODO ファイル編集のキーマップをdefxと揃えたいので，参照用にdefxの設定を残してある
+
+" """""""""""""""""""""""""""""
+" " Defx - ファイラ with python3
+" """""""""""""""""""""""""""""
+" " Ctrl + n でdefx起動. トグル対応. (画面左側に表示)
+" nnoremap <silent> <C-n> :<C-u>Defx -toggle -split=vertical -winwidth=30 -direction=topleft<CR>
+" " defxウィンドウ内専用キーマップ
+" autocmd FileType defx call s:defx_my_settings()
+" function! s:defx_my_settings() abort
+"     " ファイル展開(展開後もdefxバッファを開いたまま. nerdtree に近い振る舞い)
+"     nnoremap <silent><buffer><expr> <CR> defx#do_action('multi', ['drop', 'vsplit'])
+"     " ファイル展開(展開後もdefxバッファ削除)
+"     nnoremap <silent><buffer><expr> o defx#do_action('multi', ['drop', 'quit'])
+"     " 終了
+"     nnoremap <silent><buffer><expr> q defx#do_action('quit')
+"     nnoremap <silent><buffer><expr> <ESC> defx#do_action('quit')
+"     " カーソル行のファイルパス名をyank
+"     nnoremap <silent><buffer><expr> y defx#do_action('yank_path')
+"     " カーソル行のファイルをコピー
+"     nnoremap <silent><buffer><expr> c defx#do_action('copy')
+"     " カーソル行のファイルの移動元を指定
+"     nnoremap <silent><buffer><expr> m defx#do_action('move')
+"     " copy や move の貼り付け
+"     nnoremap <silent><buffer><expr> p defx#do_action('paste')
+"     " 新しいディレクトリの作成
+"     nnoremap <silent><buffer><expr> d defx#do_action('new_directory')
+"     " 新しいファイルの作成
+"     nnoremap <silent><buffer><expr> f defx#do_action('new_file')
+"     " ファイル(ディレクトリも)削除
+"     nnoremap <silent><buffer><expr> x defx#do_action('remove')
+"     " ファイル(ディレクトリ)の名前を変更
+"     nnoremap <silent><buffer><expr> r defx#do_action('rename')
+"     " ドットファイルの表示/非表示切り替え
+"     nnoremap <silent><buffer><expr> a defx#do_action('toggle_ignored_files')
+"     " 一つ上のディレクトリへ移動
+"     nnoremap <silent><buffer><expr> u defx#do_action('cd', ['..'])
+"     " ホームディレクトリへ移動
+"     nnoremap <silent><buffer><expr> ~ defx#do_action('cd')
+"     " vimのワーキングディレクトリを設定
+"     nnoremap <silent><buffer><expr> w defx#do_action('change_vim_cwd')
+"     " 複数選択
+"     nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select') . 'j'
+"     " 全選択
+"     nnoremap <silent><buffer><expr> * defx#do_action('toggle_select_all')
+"     " 直前の操作を実行
+"     nnoremap <silent><buffer><expr> . defx#do_action('repeat')
+"     " 外部コマンド実行
+"     nnoremap <silent><buffer><expr> e defx#do_action('execute_command')
+"     " カーソル循環上下移動
+"     nnoremap <silent><buffer><expr> j line('.') == line('$') ? 'gg' : 'j'
+"     nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
+"     " 再描画?
+"     nnoremap <silent><buffer><expr> <C-l> defx#do_action('redraw')
+"     " ステータスラインにフルパスを表示
+"     nnoremap <silent><buffer><expr> <C-g> defx#do_action('print')
+" endfunction
 
 
 """""""""""""""""""""""""""""
@@ -461,7 +493,7 @@ let g:expand_region_text_objects = {
             \ 'iB'  :1,
             \ 'il'  :0,
             \ 'ip'  :0,
-            \ 'ie' :0,
+            \ 'ie'  :0,
             \ }
 
 
@@ -541,10 +573,10 @@ nmap <C-d> <Plug>(GitGutterPrevHunk)
 let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
 " Windows 環境でripgrep を利用できるようにPATHを通す
 let s:fzf_bin_dir = expand(g:dein_dir . '/repos/github.com/junegunn/fzf/bin')
-if has('win64')
-    let $PATH .= ';' . s:fzf_bin_dir
-else
-endif
+" if has('win64')
+let $PATH .= ';' . s:fzf_bin_dir
+" else
+" endif
 
 " fzf.vim 設定
 " <Leader> + a でRipgrep(ripgrepがインストールされていないと使えない)
@@ -572,16 +604,19 @@ augroup END
 let g:fzf_buffers_jump = 1
 " 表示領域を画面下部N%以内にする
 let g:fzf_layout = {'down': '~40%'}
-" :Rg コマンドでプレビュー表示 (TODO windowsに対応できていない?)
-command! -bang -nargs=* Rg
-            \ call fzf#vim#grep(
-            \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-            \   <bang>0 ? fzf#vim#with_preview('up:~60%')
-            \           : fzf#vim#with_preview('right:45%'),
-            \   <bang>0)
-" :Files コマンドでプレビュー表示
-command! -bang -nargs=? -complete=dir Files
-            \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+if has('mac') && has('unix')
+    " :Rg コマンドでプレビュー表示 (TODO windowsに対応できていない?)
+    command! -bang -nargs=* Rg
+                \ call fzf#vim#grep(
+                \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+                \   <bang>0 ? fzf#vim#with_preview('up:~60%')
+                \           : fzf#vim#with_preview('right:45%'),
+                \   <bang>0)
+    " :Files コマンドでプレビュー表示
+    command! -bang -nargs=? -complete=dir Files
+                \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+else
+endif
 " ファイル展開方法
 let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
@@ -594,6 +629,7 @@ let g:fzf_action = {
 " Colorscheme & Statusbar
 """""""""""""""""""""""""""""
 colorscheme iceberg
+set bg=dark
 set showtabline=2 " タブを常に表示
 
 " ---------- lightline 設定 ---------- "
@@ -758,14 +794,13 @@ let g:lightline#bufferline#unnamed = '[E]' " 名前の付いていないバッ�
 let g:lightline#bufferline#filename_modifier = '%f' " バッファの表示設定(相対パスで表示)
 
 
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-" GVim用設定ファイル
+" GVim用設定ファイル(ターミナルからvim.exeを起動するとおかしくなるので一部コメント化)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
-if has('win32')
-    " Screen UI 設定
-    set lines=30 " ウインドウの高さ
-    set columns=100 " ウインドウの幅
+if has('win32')  && has('gui')
+    " Screen UI 設定(余計なGUIを削除)
+    " set lines=30 " ウインドウの高さ
+    " set columns=100 " ウインドウの幅
     set cmdheight=1 " コマンドラインの高さ(GUI使用時)
     set guioptions-=e " タブバーCUI化
     set guioptions-=T " ツールバー非表示
@@ -793,12 +828,14 @@ if has('win32')
     endif
 
     " Font 設定
-    " フォント確認 : Win+R実行後, %windir%\fonts を入力 (Cica[https://github.com/miiton/Cica/releases]などがオススメ)
+    " フォント確認 : Win+R実行後, %windir%\fonts を入力
+    " Cica[https://github.com/miiton/Cica/releases]などがオススメ
     set guifont=Cica-Regular:h16:cSHIFTJIS  " 使わなくても良いかも(くどい)
-    " set guifont=MS_Gothic:h12:cSHIFTJIS  " Default
+    " set guifont=MS_Gothic:h12:cSHIFTJIS  " Default value
     set linespace=1 " 行間隔の設定
     " 一部のUCS文字の幅を自動計測して決める
     if has('kaoriya')
         set ambiwidth=auto
     endif
+
 endif

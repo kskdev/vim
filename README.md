@@ -8,17 +8,19 @@
 (プラグインを導入する前にあれこれ操作を要求しないで環境構築したい)
 
 ## Target Environment
+複数の環境で動作して欲しいので，微妙に環境が異なるneovim用とvim用の設定ファイルを書いた．(複数のファイルに分割したdeoplete版と単一ファイルに設定が記載されたasyncomplete版)
 - **neovim**
+  - MacOS / Ubuntu で動作確認済み
 - vim8(動かないことは無いと思うが，自分の環境では一部プラグイン動作の確認が出来ない)
+  - Windows / MacOS / Ubuntu
 - GVim (<https://www.kaoriya.net/software/vim/>)
-  - Gvimのベースはvim8だがwindows環境でなぜか簡単に動作した．環境依存っぽいので普通のvim8で動作しないか要チェック
+  - Windows only
 
 ## Requirement
 - python(3.6.1+)
-- curl
 
 ## How to install
-あらかじめ，python3系 の環境は用意しておく必要があることに注意．
+あらかじめ，python3系 の環境は用意しておく必要があることに注意．(deoplete版)
 
 python3 環境が整っている場合，以下を実行することでインストール
 ``` bash
@@ -69,20 +71,7 @@ brew install neovim
 https://github.com/neovim/neovim/wiki/Installing-Neovim
 に記述されているので参考に
 
-
-
-[追記]<br>
-
-GVim for Windows に対応．
-
-Windows環境での編集がようやくいい感じになってきた．
-
-
-
-ただし，KaoriyaさんのGVimはFloating Windowに対応していないので注意.
-
-(プラグインの振る舞いがちょっと違うかも?)
-
+KaoriyaさんのGVimはFloating Windowに対応していないので注意.
 
 
 <br>
@@ -98,7 +87,18 @@ sudo apt install vim
 <br>
 
 ## Memo
-**思ったことをダラダラと記述**
+**思ったことをダラダラと記述無視しても良い**
+
+- だいぶ環境がぐちゃぐちゃになってきた．どこかのタイミングで破壊的な再構成が必要になると思う．
+- そのタイミングは，fuzzyな補完且つ,vim scriptsで完結するasyncomplete.vim とか出てきたら？
+
+
+- asyncomplete.vim はfuzzy な補完が出来なかったが，どうやら出来る拡張があるらしい．
+  - https://github.com/machakann/asyncomplete-ezfilter.vim
+    - 外部依存はなさそうな気がするが設定を確認していない．
+  - https://github.com/tsufeki/asyncomplete-fuzzy-match
+    - おそらく理想の処理はこっちだと思われるが，rust環境が必要．
+
 
 - 以下の関数を s:getGruvColor('GruvboxBg0') みたいに使うと定義された色を見れるっぽい
 

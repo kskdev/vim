@@ -1,31 +1,31 @@
 @ECHO OFF
 REM --- plugin installer for GVim windows
 
-REM ãƒ›ãƒ¼ãƒ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¨ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’å¤‰æ•°ã«æ ¼ç´
+REM ƒz[ƒ€ƒfƒBƒŒƒNƒgƒŠ‚ÆƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ‚ð•Ï”‚ÉŠi”[
 SET HOME_PATH=%HOMEDRIVE%%HOMEPATH%
 SET CURRENT_DIR=%~dp0
 ECHO %HOME_PATH%
 ECHO %CURRENT_DIR%
 
-REM ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®ãƒ‘ã‚¹ã‚’è¨­å®š
+REM ƒ^[ƒQƒbƒgƒfƒBƒŒƒNƒgƒŠ‚ÌƒpƒX‚ðÝ’è
 ECHO ----------------------------------------
 ECHO "Target Dir ::: %TARGET_DIR%
 SET TARGET_DIR=%HOME_PATH%\GVim\
 
-REM ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªä½œæˆ
+REM ƒ^[ƒQƒbƒgƒfƒBƒŒƒNƒgƒŠì¬
 ECHO ----------------------------------------
 IF EXIST %TARGET_DIR% (
-    REM å­˜åœ¨ã™ã‚Œã°å‰Šé™¤ã—ã¦ã‹ã‚‰ä½œã‚Šç›´ã™
+    REM ‘¶Ý‚·‚ê‚Îíœ‚µ‚Ä‚©‚çì‚è’¼‚·
     ECHO "Target Dir is existed."
-    REM RMDIR /s /q %TARGET_DIR%  REM ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚‚å‰Šé™¤(ç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸éžè¡¨ç¤º)
+    REM RMDIR /s /q %TARGET_DIR%  REM ƒTƒuƒfƒBƒŒƒNƒgƒŠ‚àíœ(Šm”FƒƒbƒZ[ƒW”ñ•\Ž¦)
     REM MKDIR %TARGET_DIR%
 ) ELSE (
-    REM ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½œæˆ
+    REM ƒ^[ƒQƒbƒgƒfƒBƒŒƒNƒgƒŠ‚ðì¬
     ECHO "Target Dir is not existed."
     MKDIR %TARGET_DIR%
 )
 
-REM ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«Plugins, cheatsheetã‚’ã‚³ãƒ”ãƒ¼
+REM ƒ^[ƒQƒbƒgƒfƒBƒŒƒNƒgƒŠ‚ÉPlugins, cheatsheet‚ðƒRƒs[
 rem ECHO ----------------------------------------
 rem XCOPY /e %CURRENT_DIR%Plugins %TARGET_DIR%\Plugins\
 rem ECHO %CURRENT_DIR%Plugins
@@ -35,22 +35,22 @@ rem XCOPY %CURRENT_DIR%vimrc %HOME_PATH%\_vimrc
 rem ECHO %CURRENT_DIR%_vimrc
 
 
-REM Plugins/ ã‚’ã‚³ãƒ”ãƒ¼
-SET SRC=%CURRENT_DIR%\Plugins
-SET DST=%TARGET_DIR%\Plugins\
+REM Plugins/ ‚ðƒRƒs[
+SET SRC=%CURRENT_DIR%Plugins
+SET DST=%TARGET_DIR%Plugins\
 ECHO ----------------------------------
 ECHO "Copy ::: %SRC%   ->   %DST%"
 XCOPY /e %SRC% %DST% 
 
-REM cheatsheetã‚’ã‚³ãƒ”ãƒ¼
-SET SRC=%CURRENT_DIR%\cheatsheet.md
+REM cheatsheet‚ðƒRƒs[
+SET SRC=%CURRENT_DIR%cheatsheet.md
 SET DST=%TARGET_DIR%
 ECHO ----------------------------------
 ECHO "Copy ::: %SRC%   ->   %DST%"
 XCOPY %SRC% %DST% 
 
-REM vimrc ã‚’ãƒ›ãƒ¼ãƒ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã« _vimrc, _gvimrc ã¨ã—ã¦ã‚³ãƒ”ãƒ¼
-SET VIMRC_SRC=%CURRENT_DIR%\vimrc
+REM vimrc ‚ðƒz[ƒ€ƒfƒBƒŒƒNƒgƒŠ‚É _vimrc, _gvimrc ‚Æ‚µ‚ÄƒRƒs[
+SET VIMRC_SRC=%CURRENT_DIR%vimrc
 SET VIMRC_DST1=%HOME_PATH%\_vimrc
 SET VIMRC_DST2=%HOME_PATH%\_gvimrc
 ECHO ----------------------------------
@@ -59,15 +59,15 @@ XCOPY %VIMRC_SRC% %VIMRC_DST1%
 ECHO "Copy ::: %VIMRC_SRC%   ->   %VIMRC_DST2%"
 XCOPY %VIMRC_SRC% %VIMRC_DST2% 
 
-REM FZFç”¨ãƒã‚¤ãƒŠãƒªã‚’æ‰€å®šã®å ´æ‰€ã«ã‚³ãƒ”ãƒ¼(BIN_SRCã¯é©å®œå¤‰æ›´ã™ã‚‹ã“ã¨ï¼)
-SET BIN_SRC=%CURRENT_DIR%\bins\fzf_bin\fzf-0.23.0-windows_amd64\fzf
+REM FZF—pƒoƒCƒiƒŠ‚ðŠ’è‚ÌêŠ‚ÉƒRƒs[(BIN_SRC‚Í“K‹X•ÏX‚·‚é‚±‚ÆI)
+SET BIN_SRC=%CURRENT_DIR%bins\fzf_bin\fzf-0.23.0-windows_amd64\fzf
 SET BIN_DST=%HOME_PATH%\GVim\repos\github.com\junegunn\fzf\bin\fzf.exe
 ECHO ----------------------------------
 ECHO "Copy ::: %BIN_SRC%   ->   %BIN_DST%"
 XCOPY %BIN_SRC% %BIN_DST% 
 
-REM FZFç”¨(Ripgrep)ãƒã‚¤ãƒŠãƒªã‚’æ‰€å®šã®å ´æ‰€ã«ã‚³ãƒ”ãƒ¼(BIN_SRCã¯é©å®œå¤‰æ›´ã™ã‚‹ã“ã¨ï¼)
-SET BIN_SRC=%CURRENT_DIR%\bins\rg\ripgrep-12.1.1-x86_64-pc-windows-msvc\rg
+REM FZF—p(Ripgrep)ƒoƒCƒiƒŠ‚ðŠ’è‚ÌêŠ‚ÉƒRƒs[(BIN_SRC‚Í“K‹X•ÏX‚·‚é‚±‚ÆI)
+SET BIN_SRC=%CURRENT_DIR%bins\rg\ripgrep-12.1.1-x86_64-pc-windows-msvc\rg
 SET BIN_DST=%HOME_PATH%\GVim\repos\github.com\junegunn\fzf\bin\rg.exe
 ECHO ----------------------------------
 ECHO "Copy ::: %BIN_SRC%   ->   %BIN_DST%"
