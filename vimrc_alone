@@ -81,26 +81,36 @@ nnoremap <silent><ESC> :nohlsearch<CR>
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::indent setting
-" Tabを押した時，Tab文字を使わず半角スペースを使う
-set expandtab
-" タブ文字の幅の設定
+" Tabを押したときの幅の設定
 set tabstop=4
 " 自動インデントの幅
 set shiftwidth=4
-" 改行時に行からインデントの増減を行う．
+" いくつの連続した空白を1回で削除できるようにするか
+set softtabstop=4
+" Tabを押した時，Tab文字を使わず半角スペースを使う
+set expandtab
+" 改行時に自動でインデント
+set autoindent
+"  {があると次の行は自動で1段深く自動インデントしてくれる
 set smartindent
 " 言語別設定
-filetype on
-filetype indent on
 augroup fileTypeIndent
     autocmd!
     au BufNewFile,BufRead *.py setlocal tabstop=4 softtabstop=4 shiftwidth=4
-    au BufNewFile,BufRead *.zsh setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    au BufNewFile,BufRead *.js setlocal tabstop=4 softtabstop=4 shiftwidth=4
+    au BufNewFile,BufRead *.ts setlocal tabstop=4 softtabstop=4 shiftwidth=4
     au BufNewFile,BufRead *.sh setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    au BufNewFile,BufRead *.zsh setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    au BufNewFile,BufRead *.bash setlocal tabstop=2 softtabstop=2 shiftwidth=2
     au BufNewFile,BufRead *.vim setlocal tabstop=2 softtabstop=2 shiftwidth=2
     au BufNewFile,BufRead *.tex setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    au BufNewFile,BufRead *.xml setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    au BufNewFile,BufRead *.json setlocal tabstop=2 softtabstop=2 shiftwidth=2
     au BufNewFile,BufRead *.yaml setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    au BufNewFile,BufRead *.html setlocal tabstop=1 softtabstop=1 shiftwidth=1
 augroup END
+" filetype on
+" filetype indent on
 
 "::::::::::::::::::::::::::::::::::::::
 "::::::::::autoComplete setting
@@ -292,8 +302,10 @@ let g:vista#renderer#enable_icon = 0 " アイコン表示を無効化
 let g:vista#renderer#icons = {"function":"f", "variable":"v"} " アイコンの定義
 let g:vista_default_executive = 'vim_lsp' " Vistaの実行プラグインを指定
 let g:vista_executive_for = {'python':'vim_lsp'} " Vista の実行プラグインを言語別に指定可能
-" Ctrl+vで表示/非表示をトグルで切り替える
-nnoremap <silent> <C-v> :Vista!!<cr>
+" Leader -> v で示/非表示をトグルで切り替える
+nnoremap <Leader>v :Vista!!<CR>
+
+
 
 " """""""""""""""""""""""""""""
 " 補完
